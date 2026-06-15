@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>i-Farmate — Robotic Farm Assistant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --soil:#0A0D08;--soil-2:#111508;--chloro:#39FF14;--chloro-dim:#1a7a08;
+  --amber:#E8A020;--off-white:#F0F4EC;--muted:#7a8870;
+  --surface:#141a10;--surface-2:#1c2416;--border:rgba(57,255,20,0.12);
+  --fd:'Space Grotesk',sans-serif;--fb:'Inter',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--soil);color:var(--off-white);font-family:var(--fb);overflow-x:hidden;cursor:none}
+
+/* ── LOADER ── */
+#loader{position:fixed;inset:0;background:#000;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s ease}
+#loader.done{opacity:0;pointer-events:none}
+.ll{font-family:var(--fd);font-size:3rem;font-weight:700;color:#fff;letter-spacing:-.03em}
+.ll span{color:var(--chloro)}
+.lbw{width:200px;height:2px;background:rgba(255,255,255,.1);margin-top:1.5rem;border-radius:2px;overflow:hidden}
+.lb{height:100%;background:var(--chloro);width:0;animation:lf 1.4s ease forwards}
+.lt{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-top:.8rem}
+@keyframes lf{0%{width:0}100%{width:100%}}
+
+/* ── CURSOR ── */
+#cursor{position:fixed;width:10px;height:10px;background:var(--chloro);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .15s,height .15s;mix-blend-mode:screen}
+#cr{position:fixed;width:36px;height:36px;border:1.5px solid rgba(57,255,20,.45);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:transform .16s ease,width .15s,height .15s}
+
+/* ── SIDE ELEMENTS ── */
+#sr{position:fixed;right:0;top:0;width:104px;height:100vh;z-index:50;pointer-events:none}
+#sr canvas{display:block;width:104px;height:100vh}
+#rbd{position:fixed;left:16px;z-index:51;pointer-events:none;width:54px;height:74px}
+#rbu{position:fixed;left:16px;z-index:51;pointer-events:none;width:54px;height:74px;display:none}
+
+/* ── ROBOT TOOLTIP ── */
+.robot-tip{
+  position:fixed;left:76px;z-index:52;pointer-events:none;
+  background:rgba(5,10,4,0.97);border:1px solid var(--chloro);
+  color:var(--off-white);font-family:var(--fd);font-size:.72rem;font-weight:500;
+  padding:.5rem .85rem .5rem 2.2rem;border-radius:6px;white-space:nowrap;
+  opacity:0;transition:opacity .35s ease, transform .35s cubic-bezier(.16,1,.3,1);
+  transform:translateX(-8px);box-shadow:0 0 22px rgba(57,255,20,.22), 0 0 60px rgba(57,255,20,.06);
+  max-width:210px;white-space:normal;line-height:1.55;overflow:hidden;
+}
+.robot-tip::before{content:'';position:absolute;left:-7px;top:50%;transform:translateY(-50%);border:6px solid transparent;border-right-color:var(--chloro);border-left:none;}
+.robot-tip::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(57,255,20,.07) 50%,transparent 100%);animation:tipScan 1.8s linear infinite;pointer-events:none;}
+@keyframes tipScan{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.robot-tip .tip-bar{position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,transparent,var(--chloro),transparent);animation:tipBarPulse 1.4s ease-in-out infinite;}
+@keyframes tipBarPulse{0%,100%{opacity:.4}50%{opacity:1}}
+.robot-tip .tip-icon{position:absolute;left:.55rem;top:50%;transform:translateY(-50%);width:10px;height:10px;border-radius:50%;background:var(--chloro);box-shadow:0 0 8px var(--chloro);animation:tipDotPulse 1.2s ease-in-out infinite;}
+@keyframes tipDotPulse{0%,100%{transform:translateY(-50%) scale(1)}50%{transform:translateY(-50%) scale(1.5);opacity:.6}}
+.robot-tip.show{opacity:1;transform:translateX(0)}
+
+/* ── DRONE TOOLTIP ── */
+#drone-wrap{position:fixed;z-index:200;pointer-events:none;transition:opacity 0.5s ease}
+#drone-canvas{display:block;pointer-events:none}
+#drone-tooltip{
+  position:absolute;left:50%;transform:translateX(-50%) translateY(-8px);
+  bottom:calc(100% + 14px);background:rgba(5,10,4,.97);border:1px solid var(--chloro);
+  color:var(--off-white);font-family:var(--fd);font-size:.78rem;font-weight:500;
+  padding:.55rem .9rem .55rem 2rem;border-radius:6px;opacity:0;pointer-events:none;
+  transition:opacity .3s,transform .3s;box-shadow:0 0 20px rgba(57,255,20,.2);
+  min-width:160px;max-width:240px;white-space:normal;text-align:left;overflow:hidden;
+}
+#drone-tooltip::after{content:'';position:absolute;left:50%;bottom:-7px;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--chloro);border-bottom:none;}
+#drone-tooltip::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(57,255,20,.06) 50%,transparent 100%);animation:tipScan 2s linear infinite;}
+.drone-tip-bar{position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,transparent,var(--chloro),transparent);animation:tipBarPulse 1.4s ease-in-out infinite;}
+.drone-tip-dot{position:absolute;left:.5rem;top:50%;transform:translateY(-50%);width:8px;height:8px;border-radius:50%;background:var(--chloro);box-shadow:0 0 6px var(--chloro);animation:tipDotPulse 1.2s ease-in-out infinite;}
+
+/* ── NAV — hidden at top, shows on scroll near top ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.2rem 4rem;
+  background:rgba(10,13,8,0.92);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+  transform:translateY(-100%);
+  transition:transform .38s cubic-bezier(.16,1,.3,1), padding .3s ease, background .3s ease;
+}
+nav.nav-visible{transform:translateY(0)}
+.nl{font-family:var(--fd);font-size:1.35rem;font-weight:700;color:var(--off-white);text-decoration:none;letter-spacing:-.02em}
+.nl span{color:var(--chloro)}
+.nm{display:flex;gap:2rem;list-style:none}
+.nm a{font-size:.82rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s;position:relative}
+.nm a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--chloro);transition:width .3s}
+.nm a:hover{color:var(--off-white)}.nm a:hover::after{width:100%}
+.nc{font-size:.82rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:.55rem 1.4rem;border:1.5px solid var(--chloro);color:var(--chloro);background:transparent;border-radius:2px;cursor:pointer;text-decoration:none;transition:background .2s,color .2s}
+.nc:hover{background:var(--chloro);color:var(--soil)}
+
+/* ── HERO ── */
+#hero{min-height:100vh;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#rc{position:absolute;inset:0;width:100%;height:100%;opacity:.4}
+#gc{position:absolute;bottom:0;left:0;right:0;height:170px;pointer-events:none;z-index:1}
+.hc{position:relative;z-index:2;text-align:center;padding:2rem;margin-top:-60px;}
+.he{font-size:.75rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--chloro);margin-bottom:1.5rem;opacity:0;transform:translateY(20px);animation:fu .7s ease 2.2s forwards}
+.ht{font-family:var(--fd);font-size:clamp(2.5rem,6vw,5rem);font-weight:600;line-height:1;letter-spacing:-.03em;color:var(--off-white);margin-bottom:1.5rem;white-space:nowrap;}
+.ht .ln{display:inline-block;overflow:hidden}
+.ht .ln span{display:block;transform:translateY(110%);animation:su .8s cubic-bezier(.16,1,.3,1) forwards}
+.ht .ln:nth-child(1) span{animation-delay:2.3s}
+.ht .ln:nth-child(2) span{animation-delay:2.5s}
+.ht .ln:nth-child(3) span{animation-delay:2.7s}
+.ht .ac{color:var(--chloro)}
+.hs{font-size:clamp(0.9rem,1.1vw,1.1rem);font-weight:400;color:rgba(255,255,255,0.7);max-width:700px;margin:0 auto 2rem;line-height:1.7;letter-spacing:0.2px;opacity:0;animation:fu .7s ease 3s forwards;}
+.hb{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;opacity:0;animation:fu .7s ease 3.2s forwards}
+.bp{position:relative;overflow:hidden;font-family:var(--fd);font-size:.9rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:.9rem 2.5rem;border:none;border-radius:2px;background:var(--chloro);color:var(--soil);cursor:pointer;text-decoration:none;transition:transform .2s;display:inline-block}
+.bp::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,.2);transform:translateX(-110%) skewX(-15deg);transition:transform .35s}
+.bp:hover::before{transform:translateX(110%) skewX(-15deg)}
+.bp:hover{transform:translateY(-2px)}
+.bo{font-family:var(--fd);font-size:.9rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;padding:.9rem 2.5rem;border:1px solid rgba(240,244,236,.2);border-radius:2px;color:var(--off-white);background:transparent;cursor:pointer;text-decoration:none;transition:border-color .2s;display:inline-block}
+.bo:hover{border-color:var(--off-white)}
+.hscr{position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.5rem;opacity:0;animation:fu .7s ease 3.5s forwards;z-index:3}
+.hscr span{font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}
+.leaf-arrow{position:relative;width:40px;height:50px;margin-top:5px;animation:floatLeaf 2s ease-in-out infinite}
+.leaf-left,.leaf-right{position:absolute;width:18px;height:12px;background:linear-gradient(135deg,#7dff9b,#39ff14);box-shadow:0 0 10px rgba(57,255,20,.6)}
+.leaf-left{left:2px;top:0;border-radius:100% 0;transform:rotate(-35deg)}
+.leaf-right{right:2px;top:0;border-radius:0 100%;transform:rotate(35deg)}
+.arrow-down{position:absolute;left:50%;top:18px;transform:translateX(-50%);color:#39ff14;font-size:1.2rem;text-shadow:0 0 10px #39ff14}
+@keyframes floatLeaf{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
+
+section{padding:7rem 5rem 7rem 5.5rem;position:relative}
+.slb{font-size:.72rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--chloro);margin-bottom:1rem;display:flex;align-items:center;gap:.75rem}
+.slb::before{content:'';display:block;width:28px;height:1px;background:var(--chloro)}
+.st{font-family:var(--fd);font-size:clamp(2rem,4vw,3.2rem);font-weight:700;letter-spacing:-.03em;line-height:1.1;color:var(--off-white);margin-bottom:1.5rem}
+.sb{font-size:1rem;color:var(--muted);line-height:1.8;max-width:540px}
+
+/* ── ABOUT ── */
+#about{display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:center;background:var(--surface);border-top:1px solid var(--border)}
+.av{position:relative;aspect-ratio:1;display:flex;align-items:center;justify-content:center}
+.ar{position:absolute;border-radius:50%;border:1px solid var(--border);animation:ss linear infinite}
+.ar:nth-child(1){width:80%;height:80%;animation-duration:30s}
+.ar:nth-child(2){width:60%;height:60%;animation-duration:20s;animation-direction:reverse;border-style:dashed}
+.ar:nth-child(3){width:40%;height:40%;animation-duration:15s}
+.ac2{position:relative;z-index:2;width:28%;aspect-ratio:1;border-radius:50%;background:var(--surface-2);border:1.5px solid var(--chloro);display:flex;align-items:center;justify-content:center;box-shadow:0 0 40px rgba(57,255,20,.12)}
+.ad{position:absolute;width:8px;height:8px;border-radius:50%;background:var(--chloro);box-shadow:0 0 8px var(--chloro)}
+.ab{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:2rem}
+.abg{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;padding:.4rem 1rem;border:1px solid var(--border);border-radius:2px;color:var(--chloro);background:rgba(57,255,20,.04);transition:border-color .3s,background .3s}
+.abg:hover{border-color:var(--chloro);background:rgba(57,255,20,.1)}
+
+/* ── MEET THE MACHINE ── */
+#rcs{
+  background:var(--soil-2);padding:0;text-align:center;overflow:hidden;position:relative;
+  background-image:url('https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1400&auto=format&fit=crop&q=80');
+  background-size:cover;background-position:center;background-attachment:fixed;
+}
+#scene-canvas{display:block;width:100%;height:600px;max-height:none}
+.scene-header{position:absolute; top:2rem; left:2%; transform:translateX(-50%); z-index:2; width:100%;text-align:center;}
+.scene-header .slb{justify-content:center}
+.scene-header .st{text-align:center}
+.scene-header .sb{text-align:center;margin:0 auto}
+
+/* ── CAPABILITIES — CAROUSEL ── */
+#cap{background:var(--soil-2)}
+.cph{margin-bottom:3rem}
+.carousel-wrapper{position:relative;overflow:hidden;}
+.carousel-track{display:flex;transition:transform .65s cubic-bezier(.16,1,.3,1);}
+.carousel-page{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--border);background:var(--border);min-width:100%;}
+
+.cpc{
+  position:relative;overflow:hidden;transition:background .3s;cursor:default;
+  min-height:320px;display:flex;flex-direction:column;justify-content:flex-end;padding:2.5rem;
+  background:var(--surface);
+}
+.cpc-img{
+  position:absolute;inset:0;background-size:cover;background-position:center;
+  opacity:0.28;transition:opacity .4s;
+}
+.cpc:hover .cpc-img{opacity:0.48}
+.cpc::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(57,255,20,.08) 0%,transparent 60%);opacity:0;transition:opacity .3s;z-index:1}
+.cpc:hover{filter:brightness(1.06)}.cpc:hover::before{opacity:1}
+.cn{font-family:var(--fd);font-size:.78rem;font-weight:800;color:var(--soil);background:var(--chloro);position:absolute;top:.8rem;right:.8rem;width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:50%;box-shadow:0 0 10px rgba(57,255,20,.25);z-index:2}
+.ci{width:44px;height:44px;margin-bottom:1.2rem;color:var(--chloro);position:relative;z-index:2}
+.ct{font-family:var(--fd);font-size:1.05rem;font-weight:600;color:var(--off-white);margin-bottom:.6rem;position:relative;z-index:2}
+.cd{font-size:.85rem;color:rgba(240,244,236,.75);line-height:1.65;position:relative;z-index:2}
+.cbar{margin-top:1.2rem;height:2px;background:var(--border);position:relative;z-index:2;border-radius:2px;overflow:hidden}
+.cbf{height:100%;background:var(--chloro);border-radius:2px;transform:scaleX(0);transform-origin:left;transition:transform .7s cubic-bezier(.16,1,.3,1)}
+.cpc:hover .cbf{transform:scaleX(1)}
+
+/* Carousel controls */
+.carousel-controls{display:flex;align-items:center;justify-content:center;gap:1.5rem;margin-top:1.8rem;}
+.carousel-btn{width:40px;height:40px;border:1.5px solid var(--border);border-radius:50%;background:transparent;color:var(--chloro);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .2s,background .2s;}
+.carousel-btn:hover{border-color:var(--chloro);background:rgba(57,255,20,.08)}
+.carousel-dots{display:flex;gap:.6rem}
+.carousel-dot{width:8px;height:8px;border-radius:50%;background:var(--border);border:1.5px solid rgba(57,255,20,.3);transition:background .3s,border-color .3s;cursor:pointer}
+.carousel-dot.active{background:var(--chloro);border-color:var(--chloro)}
+.carousel-timer{width:100%;height:2px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:.8rem}
+.carousel-timer-bar{height:100%;background:var(--chloro);border-radius:2px;width:0;transition:width linear}
+
+/* ── WHO BENEFITS — FLIP CARDS ── */
+#ben{background:var(--soil)}
+.bnh{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:end;margin-bottom:4rem}
+.bng{display:grid;grid-template-columns:repeat(5,1fr);gap:1.2rem}
+.flip-card{height:240px;perspective:1000px;cursor:pointer;}
+.flip-card-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.4,0,.2,1);}
+.flip-card.flipped .flip-card-inner{transform:rotateY(180deg)}
+.flip-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:6px;}
+.flip-front{
+  border:1px solid var(--border);background:var(--surface);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:1.5rem 1rem;
+  transition:border-color .3s,box-shadow .3s;
+  position:relative;overflow:hidden;
+}
+.flip-front::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--chloro);transform:scaleX(0);transition:transform .3s}
+.flip-card:hover .flip-front::after{transform:scaleX(1)}
+.flip-back{
+  background:linear-gradient(135deg,rgba(20,35,10,0.98),rgba(10,20,5,0.98));
+  border:1px solid rgba(57,255,20,.5);
+  transform:rotateY(180deg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:1.4rem 1rem;gap:.8rem;
+  border-radius:6px;
+}
+.bni{width:48px;height:48px;margin:0 auto .9rem;color:var(--chloro)}
+.bnt{font-family:var(--fd);font-size:.92rem;font-weight:600;color:var(--off-white);margin-bottom:.3rem}
+.bns{font-size:.72rem;color:var(--muted)}
+.bnn{font-family:var(--fd);font-size:.78rem;font-weight:800;color:var(--soil);background:var(--chloro);position:absolute;top:.6rem;right:.6rem;width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:50%}
+.flip-back-title{font-family:var(--fd);font-size:.88rem;font-weight:700;color:var(--chloro);}
+.flip-back-text{font-size:.78rem;color:rgba(240,244,236,.8);line-height:1.6;}
+.flip-read-more{font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--soil);background:var(--chloro);padding:.3rem .9rem;border-radius:2px;border:none;cursor:pointer;margin-top:.2rem;text-decoration:none;display:inline-block;transition:opacity .2s}
+.flip-read-more:hover{opacity:.85}
+.flip-hint{font-size:.68rem;color:rgba(57,255,20,.5);position:absolute;bottom:.5rem;left:50%;transform:translateX(-50%);white-space:nowrap;}
+
+/* ── HOW IT WORKS — mini 3D robot cursor ── */
+#how{background:var(--surface);border-top:1px solid var(--border)}
+.hi{display:grid;grid-template-columns:1fr 1.4fr;gap:6rem;align-items:center}
+.sps{display:flex;flex-direction:column}
+.sp{padding:2rem 0;border-bottom:1px solid var(--border);display:flex;gap:1.5rem;align-items:flex-start;cursor:pointer;position:relative}
+.sp:last-child{border-bottom:none}
+.si{font-family:var(--fd);font-size:.75rem;font-weight:600;color:var(--chloro-dim);letter-spacing:.1em;min-width:2rem;padding-top:.2rem;transition:color .3s}
+.sp.active .si{color:var(--chloro)}
+.stt{font-family:var(--fd);font-size:1.05rem;font-weight:600;color:var(--muted);margin-bottom:.5rem;transition:color .3s}
+.sp.active .stt{color:var(--off-white)}
+.sd{font-size:.88rem;color:var(--muted);line-height:1.7;max-height:0;overflow:hidden;transition:max-height .4s,opacity .3s;opacity:0}
+.sp.active .sd{max-height:200px;opacity:1}
+.sv{position:relative;aspect-ratio:4/3;background:var(--soil);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+.sv canvas{position:absolute;inset:0}
+.vl{position:absolute;top:1rem;left:1rem;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--chloro);background:rgba(10,13,8,.8);padding:.3rem .6rem;border:1px solid var(--border);border-radius:2px;z-index:2}
+.vd{position:absolute;bottom:1rem;right:1rem;display:flex;flex-direction:column;gap:.5rem;z-index:2}
+.vr{font-size:.75rem;color:var(--off-white);background:rgba(10,13,8,.85);padding:.3rem .7rem;border-radius:2px;display:flex;gap:.75rem;align-items:center}
+.vdot{width:5px;height:5px;border-radius:50%;background:var(--chloro)}
+
+/* mini robot that follows cursor in #how */
+#how-robot{position:absolute;pointer-events:none;z-index:50;transform:translate(-50%,-50%);transition:left .12s ease,top .12s ease;display:none;}
+
+/* ── PRODUCTS ── */
+#prod{background:var(--soil-2)}
+.pg{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;margin-top:3rem}
+.pc{border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--surface);transition:transform .3s,border-color .3s,box-shadow .3s;cursor:pointer}
+.pc:hover{transform:translateY(-8px);border-color:rgba(57,255,20,.3);box-shadow:0 24px 48px rgba(0,0,0,.5)}
+.pi1{background:#0d2b0d;display:flex;align-items:center;justify-content:center;padding:2rem;aspect-ratio:16/9}
+.pi2{background:#2d6e2d;display:flex;align-items:center;justify-content:center;padding:2rem;aspect-ratio:16/9}
+.pi3{background:#f0f4ec;display:flex;align-items:center;justify-content:center;padding:2rem;aspect-ratio:16/9}
+.pn{font-family:var(--fd);font-size:1.4rem;font-weight:700;color:var(--off-white)}
+.ptg{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--chloro);margin-bottom:.3rem}
+.pb{padding:1.5rem}
+.pdc{font-size:.85rem;color:var(--muted);margin-top:.5rem;line-height:1.6}
+.pa{display:inline-flex;align-items:center;gap:.4rem;font-size:.8rem;color:var(--chloro);margin-top:1rem;letter-spacing:.06em;text-transform:uppercase;font-weight:500}
+
+/* ── CONTACT ── */
+#cta{background:var(--soil-2);text-align:center;padding:8rem 5.5rem;position:relative;overflow:hidden;border-top:1px solid var(--border)}
+#cta::before{content:'';position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(57,255,20,.05) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
+.contact-grid{display:grid;grid-template-columns:1fr 1.3fr;gap:5rem;align-items:start;max-width:1100px;margin:3rem auto 0;text-align:left}
+.contact-info .sb{max-width:100%;margin-bottom:2rem}
+.contact-detail{display:flex;flex-direction:column;gap:1.2rem;margin-bottom:2rem}
+.cd-item{display:flex;align-items:flex-start;gap:.75rem}
+.cd-icon{width:36px;height:36px;border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--chloro)}
+.cd-text{font-size:.88rem;color:var(--muted);line-height:1.6}
+.cd-label{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--chloro);font-weight:600;margin-bottom:.2rem}
+.cform{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:2.5rem;position:relative;overflow:hidden}
+.cform::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--chloro),transparent)}
+.cform-title{font-family:var(--fd);font-size:1.2rem;font-weight:700;color:var(--off-white);margin-bottom:2rem;display:flex;align-items:center;gap:.5rem}
+.cform-title span{color:var(--chloro)}
+.fg{display:flex;flex-direction:column;gap:1.2rem}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+.fi{display:flex;flex-direction:column;gap:.4rem}
+.fi label{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--chloro);font-weight:600}
+.fi input,.fi select,.fi textarea{width:100%;background:var(--soil);border:1px solid var(--border);border-radius:4px;color:var(--off-white);font-family:var(--fb);font-size:.9rem;padding:.75rem 1rem;outline:none;transition:border-color .2s,box-shadow .2s;appearance:none;-webkit-appearance:none;}
+.fi input:focus,.fi select:focus,.fi textarea:focus{border-color:rgba(57,255,20,.5);box-shadow:0 0 0 3px rgba(57,255,20,.07)}
+.fi input::placeholder,.fi textarea::placeholder{color:var(--muted)}
+.fi select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2339FF14' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center;padding-right:2.5rem;cursor:pointer}
+.fi select option{background:var(--soil);color:var(--off-white)}
+.fi textarea{resize:vertical;min-height:110px}
+.recaptcha-box{display:flex;align-items:center;gap:1rem;border:1px solid var(--border);border-radius:4px;background:var(--soil);padding:.9rem 1.2rem;cursor:pointer;user-select:none;transition:border-color .2s;}
+.recaptcha-box:hover{border-color:rgba(57,255,20,.3)}
+.recaptcha-check{width:22px;height:22px;border:2px solid rgba(57,255,20,.4);border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s,border-color .2s;}
+.recaptcha-check.checked{background:rgba(57,255,20,.15);border-color:var(--chloro)}
+.recaptcha-check svg{opacity:0;transition:opacity .2s}
+.recaptcha-check.checked svg{opacity:1}
+.recaptcha-label{font-size:.85rem;color:var(--muted);flex:1}
+.recaptcha-logo{display:flex;flex-direction:column;align-items:center;gap:.2rem;flex-shrink:0}
+.recaptcha-logo span{font-size:.6rem;color:var(--muted);letter-spacing:.05em}
+.recaptcha-logo strong{font-size:.65rem;color:rgba(57,255,20,.5);letter-spacing:.08em}
+.submit-btn{position:relative;overflow:hidden;font-family:var(--fd);font-size:.9rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:1rem 2rem;border:none;border-radius:4px;background:var(--chloro);color:var(--soil);cursor:pointer;width:100%;transition:transform .2s,box-shadow .2s;}
+.submit-btn::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,.2);transform:translateX(-110%) skewX(-15deg);transition:transform .35s}
+.submit-btn:hover::before{transform:translateX(110%) skewX(-15deg)}
+.submit-btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(57,255,20,.25)}
+.submit-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.form-success{text-align:center;padding:2rem;display:none;}
+.form-success .tick{width:56px;height:56px;border-radius:50%;background:rgba(57,255,20,.12);border:2px solid var(--chloro);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;color:var(--chloro)}
+.form-success h3{font-family:var(--fd);font-size:1.2rem;color:var(--off-white);margin-bottom:.5rem}
+.form-success p{font-size:.88rem;color:var(--muted)}
+
+/* ── FOOTER ── */
+footer{position:relative;overflow:hidden;background:#000;}
+.footer-video-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.72);z-index:1;}
+.footer-main{position:relative;z-index:2;padding:4rem 5.5rem 2.5rem;}
+.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1.4fr 1fr;gap:3rem;margin-bottom:3rem;}
+.footer-col-title{font-family:var(--fd);font-size:.82rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--off-white);margin-bottom:1.4rem;padding-bottom:.7rem;border-bottom:1px solid rgba(57,255,20,.25);text-decoration:underline;text-underline-offset:4px;}
+.footer-about-text{font-size:.88rem;color:rgba(255,255,255,.65);line-height:1.8;margin-bottom:1.4rem;}
+.footer-socials{display:flex;gap:.85rem;flex-wrap:wrap;}
+.footer-socials a{width:38px;height:38px;border:1px solid rgba(255,255,255,.25);border-radius:50%;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.7);text-decoration:none;font-size:.8rem;font-weight:600;transition:border-color .2s,color .2s,background .2s,transform .2s;}
+.footer-socials a:hover{border-color:var(--chloro);color:var(--chloro);transform:scale(1.1)}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:.75rem;}
+.footer-links a{font-size:.88rem;color:rgba(255,255,255,.6);text-decoration:none;transition:color .2s,padding-left .2s;display:inline-block;}
+.footer-links a:hover{color:var(--off-white);padding-left:6px}
+.footer-contact-item{display:flex;flex-direction:column;gap:.2rem;margin-bottom:1rem;}
+.footer-contact-label{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--chloro);font-weight:600;}
+.footer-contact-value{font-size:.85rem;color:rgba(255,255,255,.7);line-height:1.6;}
+.footer-contact-value a{color:rgba(255,255,255,.7);text-decoration:none;transition:color .2s;}
+.footer-contact-value a:hover{color:var(--chloro)}
+.footer-solutions-list{list-style:none;display:flex;flex-direction:column;gap:.6rem;}
+.footer-solutions-list li{font-size:.85rem;color:rgba(255,255,255,.6);display:flex;align-items:center;gap:.5rem;transition:color .2s;cursor:default;}
+.footer-solutions-list li::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--chloro);flex-shrink:0;box-shadow:0 0 4px var(--chloro);}
+.footer-solutions-list li:hover{color:rgba(255,255,255,.9)}
+.footer-bottom{position:relative;z-index:2;padding:1.2rem 5.5rem;border-top:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;}
+.footer-bottom-text{font-size:.8rem;color:rgba(255,255,255,.45);letter-spacing:.04em;text-align:center;}
+.footer-bottom-text strong{color:rgba(255,255,255,.7)}
+
+/* ── ANIMATIONS ── */
+@keyframes fu{to{opacity:1;transform:translateY(0)}}
+@keyframes su{to{transform:translateY(0)}}
+@keyframes ss{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes pl{0%,100%{transform:scale(1);opacity:1;box-shadow:0 0 8px var(--chloro)}50%{transform:scale(1.8);opacity:.4}}
+.rv{opacity:0;transform:translateY(55px);transition:opacity .8s ease,transform .8s cubic-bezier(.16,1,.3,1)}
+.rv.vs{opacity:1;transform:translateY(0)}
+.rl{opacity:0;transform:translateX(-70px);transition:opacity .8s ease,transform .8s cubic-bezier(.16,1,.3,1)}
+.rl.vs{opacity:1;transform:translateX(0)}
+.rr{opacity:0;transform:translateX(70px);transition:opacity .8s ease,transform .8s cubic-bezier(.16,1,.3,1)}
+.rr.vs{opacity:1;transform:translateX(0)}
+.rs{opacity:0;transform:scale(.88);transition:opacity .8s ease,transform .8s cubic-bezier(.16,1,.3,1)}
+.rs.vs{opacity:1;transform:scale(1)}
+#pb{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--chloro),var(--amber));z-index:200}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;z-index:9990;opacity:.3}
+
+@media(max-width:900px){
+  nav{padding:1rem 1.5rem}.nm{display:none}
+  section{padding:4rem 1.5rem 4rem 2rem}
+  #about{grid-template-columns:1fr}.bng{grid-template-columns:repeat(2,1fr)}
+  .hi{grid-template-columns:1fr}.bnh{grid-template-columns:1fr}
+  .pg{grid-template-columns:1fr}
+  .contact-grid{grid-template-columns:1fr}
+  .frow{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .footer-main{padding:2rem 1.5rem 1.5rem}
+  .footer-bottom{padding:1rem 1.5rem}
+  #sr,#rbd,#rbu,#drone-wrap,.robot-tip,#how-robot{display:none!important}
+  .carousel-page{grid-template-columns:1fr 1fr}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div id="pb" style="width:0%"></div>
+<div id="loader">
+  <div class="ll">i-<span>Farmate</span></div>
+  <div class="lbw"><div class="lb"></div></div>
+  <div class="lt">Initializing Farm Intelligence</div>
+</div>
+<div id="cursor"></div>
+<div id="cr"></div>
+<div id="sr"><canvas id="scr"></canvas></div>
+<div id="rbd"></div>
+<div id="rbu"></div>
+<div class="robot-tip" id="robot-tip">
+  <div class="tip-bar"></div>
+  <div class="tip-icon"></div>
+  <span class="tip-text"></span>
+</div>
+<div id="drone-wrap">
+  <canvas id="drone-canvas" width="90" height="90"></canvas>
+  <div id="drone-tooltip">
+    <div class="drone-tip-bar"></div>
+    <div class="drone-tip-dot"></div>
+    <span class="drone-tip-text"></span>
+  </div>
+</div>
+
+<!-- Mini 3D robot for #how section -->
+<canvas id="how-robot" width="60" height="80"></canvas>
+
+<nav id="nav">
+  <a href="#hero" class="nl">i-<span>Farmate</span></a>
+  <ul class="nm">
+    <li><a href="#hero">Home</a></li>
+    <li><a href="#cap">Features</a></li>
+    <li><a href="#about">About Us</a></li>
+    <li><a href="#prod">Others</a></li>
+    <li><a href="#cta">Contact Us</a></li>
+  </ul>
+  <a href="#cta" class="nc">Request Demo</a>
+</nav>
+
+<section id="hero">
+  <canvas id="rc"></canvas>
+  <canvas id="gc"></canvas>
+  <div class="hc">
+    <p class="he">Autonomous Agricultural Robot</p>
+    <h1 class="ht">
+      The Future of Farming
+      <br>
+      is <span class="ac">Intelligent.</span>
+    </h1>
+    <p class="hs">i-Farmate is an autonomous agricultural robot that works 24/7 — weeding, seeding, monitoring, and protecting your crops with AI precision.</p>
+    <div class="hb">
+      <a href="#cta" class="bp">Schedule a Demo</a>
+      <a href="#cap" class="bo">Explore Features</a>
+    </div>
+  </div>
+  <div class="hscr">
+    <span>Scroll</span>
+    <div class="leaf-arrow">
+      <div class="leaf-left"></div>
+      <div class="leaf-right"></div>
+      <div class="arrow-down">↓</div>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="rl">
+    <p class="slb">About i-Farmate</p>
+    <h2 class="st">Revolutionizing Farming from the Ground Up</h2>
+    <p class="sb">i-Farmate is a pioneering force redefining agriculture from the root level. An autonomous robot meticulously engineered for the living, breathing complexity of modern farmland — fusing edge-AI inference, multi-spectral vision, and precision mechanics into a single tireless field companion.</p>
+    <div class="ab">
+      <span class="abg">⚡ Edge-AI Inference</span><span class="abg">🌱 Zero-Chemical Protocol</span>
+      <span class="abg">📡 Real-Time Telemetry</span><span class="abg">🔋 24/7 Autonomous Ops</span>
+      <span class="abg">🛰 GPS + Vision Fusion</span><span class="abg">🧬 Soil Bio-Intelligence</span>
+    </div>
+  </div>
+  <div class="av rr" style="transition-delay:.2s">
+    <div class="ar"></div><div class="ar"></div><div class="ar"></div>
+    <div class="ac2">
+      <svg viewBox="0 0 48 48" fill="none" style="width:50%;height:50%">
+        <circle cx="24" cy="24" r="22" stroke="#39FF14" stroke-width="1.5"/>
+        <path d="M24 8L24 40M8 24L40 24" stroke="#39FF14" stroke-width="1" stroke-dasharray="2 3"/>
+        <circle cx="24" cy="24" r="6" fill="#39FF14" fill-opacity=".15" stroke="#39FF14" stroke-width="1.5"/>
+        <circle cx="24" cy="24" r="2" fill="#39FF14"/>
+      </svg>
+    </div>
+    <div class="ad" style="top:15%;right:15%;animation:pl 2s ease-in-out infinite"></div>
+    <div class="ad" style="bottom:20%;left:18%;animation:pl 2s ease-in-out .7s infinite"></div>
+    <div class="ad" style="top:50%;right:8%;animation:pl 2s ease-in-out 1.2s infinite"></div>
+  </div>
+</section>
+
+<!-- MEET THE MACHINE -->
+<section id="rcs" style="padding:0;">
+  <div class="scene-header rv">
+    <p class="slb" style="justify-content:center">The Machine</p>
+    <h2 class="st" style="text-align:center;transition-delay:.1s">Meet i-Farmate <span style="color:var(--chloro)">In Person</span></h2>
+    <p class="sb rv" style="text-align:center;margin:0 auto 1rem;transition-delay:.2s;max-width:480px">An introduction from the field — watch as a farmer meets i-Farmate for the first time.</p>
+  </div>
+  <canvas id="scene-canvas" height="600"></canvas>
+</section>
+
+<!-- CAPABILITIES CAROUSEL -->
+<section id="cap">
+  <div class="cph">
+    <p class="slb rv">Capabilities</p>
+    <h2 class="st rv" style="transition-delay:.1s">Maximizing Farmers' Productivity Around the Clock</h2>
+    <p class="sb rv" style="transition-delay:.2s;margin-bottom:0">Enormous data capture powers i-Farmate's advanced capabilities.</p>
+  </div>
+  <div class="carousel-wrapper rv" style="transition-delay:.3s">
+    <div class="carousel-track" id="cap-track">
+      <!-- Page 1: cards 1-4 -->
+      <div class="carousel-page">
+        <div class="cpc">
+          <div class="cpc-img" style="background-image:url('https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?w=600&auto=format&fit=crop&q=70')"></div>
+          <div class="cn">01</div>
+          <svg class="ci" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="20" stroke="currentColor" stroke-width="1.2"/><path d="M22 6C22 6 14 14 14 22C14 30 22 38 22 38C22 38 30 30 30 22C30 14 22 6 22 6Z" stroke="currentColor" stroke-width="1.2" fill="currentColor" fill-opacity=".1"/><line x1="6" y1="22" x2="38" y2="22" stroke="currentColor" stroke-width="1" stroke-dasharray="2 3"/></svg>
+          <div class="ct">24/7 Weeding</div>
+          <div class="cd">Operates around the clock, precisely identifying and removing weeds without disturbing soil structure or crops.</div>
+          <div class="cbar"><div class="cbf"></div></div>
+        </div>
+        <div class="cpc">
+          <div class="cpc-img" style="background-image:url('https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=600&auto=format&fit=crop&q=70')"></div>
+          <div class="cn">02</div>
+          <svg class="ci" viewBox="0 0 44 44" fill="none"><path d="M22 8L22 36" stroke="currentColor" stroke-width="1.5"/><path d="M14 20L22 12L30 20" stroke="currentColor" stroke-width="1.5"/><circle cx="22" cy="38" r="4" stroke="currentColor" stroke-width="1.2"/></svg>
+          <div class="ct">24/7 Seeding</div>
+          <div class="cd">Automated seeding with uninterrupted precision planting. Optimal seed placement, depth control, and spacing — every time.</div>
+          <div class="cbar"><div class="cbf"></div></div>
+        </div>
+        <div class="cpc">
+          <div class="cpc-img" style="background-image:url('https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=600&auto=format&fit=crop&q=70')"></div>
+          <div class="cn">03</div>
+          <svg class="ci" viewBox="0 0 44 44" fill="none"><rect x="6" y="14" width="32" height="22" rx="2" stroke="currentColor" stroke-width="1.2"/><circle cx="22" cy="25" r="6" stroke="currentColor" stroke-width="1.2"/><path d="M6 18L38 18" stroke="currentColor" stroke-width="1"/></svg>
+          <div class="ct">Disease Management</div>
+          <div class="cd">High-resolution cameras and AI models detect early signs of disease before spread across your field.</div>
+          <div class="cbar"><div class="cbf"></div></div>
+        </div>
+        <div class="cpc">
+          <div class="cpc-img" style="background-image:url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&auto=format&fit=crop&q=70')"></div>
+          <div class="cn">04</div>
+          <svg class="ci" viewBox="0 0 44 44" fill="none"><path d="M22 6L26 16L38 16L28 24L32 36L22 28L12 36L16 24L6 16L18 16Z" stroke="currentColor" stroke-width="1.2" fill="currentColor" fill-opacity=".08"/></svg>
+          <div class="ct">Pest Management</div>
+          <div class="cd">Real-time monitoring and AI-driven analysis detects pests before economic damage occurs on the farm.</div>
+          <div class="cbar"><div class="cbf"></div></div>
+        </div>
+      </div>
+      <!-- Page 2: cards 5-8 -->
+      <div class="carousel-page">
+        <div class="cpc">
+          <div class="cpc-img" style="background-image:url('https://images.unsplash.com/photo-1500651230702-0e2d8a49d4e8?w=600&auto=format&fit=crop&q=70')"></div>
+          <div class="cn">05</div>
+          <svg class="ci" viewBox="0 0 44 44" fill="none"><polyline points="6,32 14,20 20,26 28,12 38,18" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+          <div class="ct">Real-Time Crop Monitoring</div>
+          <div class="cd">Continuous monitoring of crop health, growth patterns, and environmental conditions across every row.</div>
+          <div class="cbar"><div class="cbf"></div></div>
+        </div>
+        <div class="cpc">
+          <div class="cpc-img" style="background-image:url('https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=600&auto=format&fit=crop&q=70')"></div>
+          <div class="cn">06</div>
+          <svg class="ci" viewBox="0 0 44 44" fill="none"><path d="M22 6Q32 10 36 18Q38 30 22 40Q6 30 8 18Q12 10 22 6Z" stroke="currentColor" stroke-width="1.2" fill="currentColor" fill-opacity=".08"/></svg>
+          <div class="ct">Weather-Triggered Actions</div>
+          <div class="cd">Automatically adjusts operations based on live weather feeds — protecting crops in real time.</div>
+          <div class="cbar"><div class="cbf"></div></div>
+        </div>
+        <div class="cpc">
+          <div class="cpc-img" style="background-image:url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&auto=format&fit=crop&q=70')"></div>
+          <div class="cn">07</div>
+          <svg class="ci" viewBox="0 0 44 44" fill="none"><rect x="8" y="10" width="28" height="26" rx="2" stroke="currentColor" stroke-width="1.2"/><line x1="14" y1="18" x2="30" y2="18" stroke="currentColor" stroke-width="1"/><line x1="14" y1="24" x2="26" y2="24" stroke="currentColor" stroke-width="1"/></svg>
+          <div class="ct">Historical Data Analysis</div>
+          <div class="cd">Aggregates seasons of field data to reveal yield patterns and soil trends for better future decisions.</div>
+          <div class="cbar"><div class="cbf"></div></div>
+        </div>
+        <div class="cpc">
+          <div class="cpc-img" style="background-image:url('https://images.unsplash.com/photo-1581091226033-d5c48150dbaa?w=600&auto=format&fit=crop&q=70')"></div>
+          <div class="cn">08</div>
+          <svg class="ci" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="16" stroke="currentColor" stroke-width="1.2"/><path d="M14 22Q18 14 22 22Q26 30 30 22" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+          <div class="ct">Precise Data Capture</div>
+          <div class="cd">Thousands of sensor readings per hour — the most detailed field picture possible for smart decisions.</div>
+          <div class="cbar"><div class="cbf"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="carousel-controls rv" style="transition-delay:.4s">
+    <button class="carousel-btn" id="cap-prev" aria-label="Previous">&#8592;</button>
+    <div class="carousel-dots">
+      <div class="carousel-dot active" data-idx="0"></div>
+      <div class="carousel-dot" data-idx="1"></div>
+    </div>
+    <button class="carousel-btn" id="cap-next" aria-label="Next">&#8594;</button>
+  </div>
+  <div class="carousel-timer"><div class="carousel-timer-bar" id="cap-timer-bar"></div></div>
+</section>
+
+<!-- WHO BENEFITS — FLIP CARDS -->
+<section id="ben">
+  <div class="bnh">
+    <div class="rl"><p class="slb">Who Benefits</p><h2 class="st">Harvest Benefits<br>with i-Farmate</h2></div>
+    <div class="rr" style="transition-delay:.15s"><p class="sb">i-Farmate's impact extends beyond the field — it reshapes the entire agricultural value chain. Click a card to learn more.</p></div>
+  </div>
+  <div class="bng rv" style="transition-delay:.2s">
+
+    <!-- Card 1: Agri-Ecosystem -->
+    <div class="flip-card" id="fc1">
+      <div class="flip-card-inner">
+        <div class="flip-face flip-front">
+          <div class="bnn">01</div>
+          <svg class="bni" viewBox="0 0 48 48" fill="none"><path d="M24 4C24 4 10 14 10 26C10 36 16 44 24 44C32 44 38 36 38 26C38 14 24 4 24 4Z" stroke="currentColor" stroke-width="1.5" fill="currentColor" fill-opacity=".08"/><circle cx="24" cy="20" r="4" stroke="currentColor" stroke-width="1.5"/></svg>
+          <div class="bnt">Agri-Ecosystem</div>
+          <div class="bns">Biodiversity Protection</div>
+          <div class="flip-hint">Click to flip ↩</div>
+        </div>
+        <div class="flip-face flip-back">
+          <div class="flip-back-title">🌿 Ecosystem Guard</div>
+          <div class="flip-back-text">i-Farmate eliminates chemical use entirely, preserving soil microbiomes and protecting local wildlife habitats from pesticide damage.</div>
+          <a href="#cta" class="flip-read-more">Read More</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2: Crops -->
+    <div class="flip-card" id="fc2">
+      <div class="flip-card-inner">
+        <div class="flip-face flip-front">
+          <div class="bnn">02</div>
+          <svg class="bni" viewBox="0 0 48 48" fill="none"><ellipse cx="24" cy="30" rx="16" ry="10" stroke="currentColor" stroke-width="1.5"/><path d="M24 20C24 20 16 12 24 6C32 12 24 20 24 20Z" fill="currentColor" fill-opacity=".15" stroke="currentColor" stroke-width="1.5"/></svg>
+          <div class="bnt">Crops</div>
+          <div class="bns">Yield Enhancement</div>
+          <div class="flip-hint">Click to flip ↩</div>
+        </div>
+        <div class="flip-face flip-back">
+          <div class="flip-back-title">🌾 Crop Optimizer</div>
+          <div class="flip-back-text">Precision seeding, targeted weed control, and early disease detection combine to boost crop yields by up to 40% per season.</div>
+          <a href="#cta" class="flip-read-more">Read More</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3: Consumers -->
+    <div class="flip-card" id="fc3">
+      <div class="flip-card-inner">
+        <div class="flip-face flip-front">
+          <div class="bnn">03</div>
+          <svg class="bni" viewBox="0 0 48 48" fill="none"><path d="M24 8L28 20L42 20L32 28L36 40L24 32L12 40L16 28L6 20L20 20Z" stroke="currentColor" stroke-width="1.5" fill="currentColor" fill-opacity=".1"/></svg>
+          <div class="bnt">Consumers</div>
+          <div class="bns">Safe Nutrition</div>
+          <div class="flip-hint">Click to flip ↩</div>
+        </div>
+        <div class="flip-face flip-back">
+          <div class="flip-back-title">🍅 Pure Produce</div>
+          <div class="flip-back-text">Zero-chemical farming ensures every product reaching consumers is pesticide-free, nutritionally richer, and certified safe to eat.</div>
+          <a href="#cta" class="flip-read-more">Read More</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 4: Farmers -->
+    <div class="flip-card" id="fc4">
+      <div class="flip-card-inner">
+        <div class="flip-face flip-front">
+          <div class="bnn">04</div>
+          <svg class="bni" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="16" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M8 40C8 32 14 26 24 26C34 26 40 32 40 40" stroke="currentColor" stroke-width="1.5"/></svg>
+          <div class="bnt">Farmers</div>
+          <div class="bns">Farming Support</div>
+          <div class="flip-hint">Click to flip ↩</div>
+        </div>
+        <div class="flip-face flip-back">
+          <div class="flip-back-title">👨‍🌾 Farmer's Ally</div>
+          <div class="flip-back-text">Reduces labor costs by 60%, automates repetitive tasks 24/7, and provides a live dashboard so farmers can manage from anywhere.</div>
+          <a href="#cta" class="flip-read-more">Read More</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 5: Soil & Water -->
+    <div class="flip-card" id="fc5">
+      <div class="flip-card-inner">
+        <div class="flip-face flip-front">
+          <div class="bnn">05</div>
+          <svg class="bni" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="18" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 2"/><path d="M14 24Q20 14 24 24Q28 34 34 24" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+          <div class="bnt">Soil &amp; Water</div>
+          <div class="bns">Environmental Care</div>
+          <div class="flip-hint">Click to flip ↩</div>
+        </div>
+        <div class="flip-face flip-back">
+          <div class="flip-back-title">💧 Earth Protector</div>
+          <div class="flip-back-text">Precision irrigation and zero runoff chemicals keep groundwater clean and soil biology thriving for generations to come.</div>
+          <a href="#cta" class="flip-read-more">Read More</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <p class="slb rv">Process</p>
+  <h2 class="st rv" style="margin-bottom:3rem;transition-delay:.1s">How i-Farmate Works</h2>
+  <div class="hi">
+    <div class="sps rl" style="transition-delay:.2s">
+      <div class="sp active" data-step="0"><span class="si">01</span><div><div class="stt">Autonomous Field Patrol</div><div class="sd">i-Farmate navigates the field using GPS and computer vision, mapping every row and plant.</div></div></div>
+      <div class="sp" data-step="1"><span class="si">02</span><div><div class="stt">AI-Powered Detection</div><div class="sd">Multi-spectral cameras and onboard AI classify weeds, detect pests, and assess disease indicators.</div></div></div>
+      <div class="sp" data-step="2"><span class="si">03</span><div><div class="stt">Precision Intervention</div><div class="sd">Identified issues trigger immediate, targeted action without disturbing surrounding crops.</div></div></div>
+      <div class="sp" data-step="3"><span class="si">04</span><div><div class="stt">Data &amp; Insight Reporting</div><div class="sd">Every action is logged. Farmers receive a live dashboard of field health and predictive alerts.</div></div></div>
+    </div>
+    <div class="sv rr" style="transition-delay:.3s">
+      <canvas id="fc"></canvas>
+      <div class="vl" id="vl">Field Patrol</div>
+      <div class="vd">
+        <div class="vr"><div class="vdot"></div><span id="v1">Coverage: 94%</span></div>
+        <div class="vr"><div class="vdot" style="background:var(--amber)"></div><span id="v2">Speed: 0.8 m/s</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="prod">
+  <p class="slb rv">Ecosystem</p>
+  <h2 class="st rv" style="transition-delay:.1s">Our Other Products</h2>
+  <p class="sb rv" style="transition-delay:.2s">Beyond i-Farmate, APSI Technologies builds a full stack for the future of food.</p>
+  <div class="pg">
+    <div class="pc rv" style="transition-delay:.1s"><div class="pi1"><div style="text-align:center"><div style="font-family:var(--fd);font-size:2rem;font-weight:700;color:#fff">FAR<span style="color:var(--chloro)">▲</span>FAIR</div><div style="font-size:.8rem;color:rgba(255,255,255,.5);letter-spacing:.1em;text-transform:uppercase;margin-top:.3rem">Farm to Home</div></div></div><div class="pb"><div class="ptg">Direct Commerce</div><div class="pn">FarmFair</div><div class="pdc">Connecting farmers directly to consumers. Fresh produce, fair prices, zero middlemen.</div><div class="pa">Learn More →</div></div></div>
+    <div class="pc rv" style="transition-delay:.2s"><div class="pi2"><div style="text-align:center"><div style="font-family:var(--fd);font-size:2.2rem;font-weight:700;color:#fff">TERRA<span style="color:var(--amber)">MATE</span></div><div style="font-size:.75rem;color:rgba(255,255,255,.6);letter-spacing:.12em;text-transform:uppercase;margin-top:.3rem">Soil Intelligence</div></div></div><div class="pb"><div class="ptg">IoT Platform</div><div class="pn">TerraMate</div><div class="pdc">Smart soil monitoring IoT platform that tracks moisture, nutrients, and microbiome health.</div><div class="pa">Learn More →</div></div></div>
+    <div class="pc rv" style="transition-delay:.3s"><div class="pi3"><div style="text-align:center"><div style="width:56px;height:56px;margin:0 auto .5rem;background:linear-gradient(135deg,#f59e0b,#84cc16);border-radius:50%;display:flex;align-items:center;justify-content:center"><svg width="30" height="30" viewBox="0 0 32 32" fill="none"><path d="M16 4Q22 8 22 16Q22 24 16 28Q10 24 10 16Q10 8 16 4Z" fill="#fff"/></svg></div><div style="font-family:var(--fd);font-size:1.5rem;font-weight:700;color:#2d6e2d">Thaniyas</div></div></div><div class="pb"><div class="ptg">Organic Brand</div><div class="pn">Thaniyas Organic</div><div class="pdc">Certified organic produce grown with i-Farmate's chemical-free precision.</div><div class="pa">Learn More →</div></div></div>
+  </div>
+</section>
+
+<section id="cta">
+  <p class="slb rv" style="justify-content:center">Get Started</p>
+  <h2 class="st rv" style="transition-delay:.1s;text-align:center">Ready to Transform<br>Your Farm?</h2>
+  <p class="sb rv" style="transition-delay:.2s;max-width:480px;margin:0 auto 1rem;text-align:center">Experience i-Farmate's impact firsthand. Fill the form below or reach us directly.</p>
+  <div class="contact-grid rv" style="transition-delay:.3s">
+    <div class="contact-info">
+      <p class="sb" style="color:var(--muted);margin-bottom:2rem">Our expert team is ready to help you transition to intelligent, autonomous agriculture. Schedule a demo or just ask us anything.</p>
+      <div class="contact-detail">
+        <div class="cd-item">
+          <div class="cd-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 014.88 15a19.79 19.79 0 01-3.07-8.67A2 2 0 013.79 4.13h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L7.91 11.81A16 16 0 0013 16.88l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7a2 2 0 011.72 2.01z"/></svg></div>
+          <div><div class="cd-label">Phone</div><div class="cd-text">+91 (44) 2278-1279</div></div>
+        </div>
+        <div class="cd-item">
+          <div class="cd-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+          <div><div class="cd-label">Email</div><div class="cd-text">contact@farmate.tech</div></div>
+        </div>
+        <div class="cd-item">
+          <div class="cd-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+          <div><div class="cd-label">Address</div><div class="cd-text">8, Vembuliamman Koil Street,<br>Gowrivakkam, Chennai – 600073,<br>Tamil Nadu, India.</div></div>
+        </div>
+        <div class="cd-item">
+          <div class="cd-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <div><div class="cd-label">Working Hours</div><div class="cd-text">Mon – Fri: 9:30 am – 6:30 pm</div></div>
+        </div>
+      </div>
+      <div class="hb" style="justify-content:flex-start;opacity:1;animation:none">
+        <a href="mailto:contact@farmate.tech" class="bp">Email Us Directly</a>
+        <a href="tel:04422781279" class="bo">Call Now</a>
+      </div>
+    </div>
+    <div class="cform">
+      <div class="cform-title">Book Your <span>Demo</span> &nbsp;🌱</div>
+      <div id="form-body">
+        <div class="fg">
+          <div class="frow">
+            <div class="fi"><label for="f-name">Your Name</label><input type="text" id="f-name" placeholder="e.g. Ramesh Kumar" autocomplete="name"></div>
+            <div class="fi"><label for="f-email">Your Email</label><input type="email" id="f-email" placeholder="you@example.com" autocomplete="email"></div>
+          </div>
+          <div class="fi">
+            <label for="f-service">Select Service</label>
+            <select id="f-service">
+              <option value="" disabled selected>Choose a service…</option>
+              <option value="weeding">24/7 Automated Weeding</option>
+              <option value="seeding">Precision Seeding</option>
+              <option value="disease">Disease Detection & Management</option>
+              <option value="pest">Pest Monitoring & Control</option>
+              <option value="monitoring">Real-Time Crop Monitoring</option>
+              <option value="weather">Weather-Triggered Automation</option>
+              <option value="data">Historical Data Analysis</option>
+              <option value="full">Full i-Farmate Suite</option>
+              <option value="demo">General Demo Request</option>
+            </select>
+          </div>
+          <div class="fi"><label for="f-msg">Your Message</label><textarea id="f-msg" placeholder="Tell us about your farm, land area, current challenges…"></textarea></div>
+          <div class="recaptcha-box" id="recaptcha-box">
+            <div class="recaptcha-check" id="recaptcha-check">
+              <svg width="13" height="10" viewBox="0 0 13 10" fill="none"><polyline points="1.5,5 5,8.5 11.5,1.5" stroke="#39FF14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <span class="recaptcha-label">I'm not a robot</span>
+            <div class="recaptcha-logo">
+              <svg width="28" height="28" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="30" stroke="rgba(57,255,20,0.4)" stroke-width="2"/><path d="M32 14C22.06 14 14 22.06 14 32s8.06 18 18 18 18-8.06 18-18" stroke="rgba(57,255,20,0.7)" stroke-width="3" stroke-linecap="round"/><path d="M50 32l-6-6m6 6l-6 6" stroke="#39FF14" stroke-width="2.5" stroke-linecap="round"/></svg>
+              <strong>reCAPTCHA</strong><span>Privacy · Terms</span>
+            </div>
+          </div>
+          <button class="submit-btn" id="submit-btn" disabled>📅 Make an Appointment</button>
+        </div>
+      </div>
+      <div class="form-success" id="form-success">
+        <div class="tick"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <h3>Appointment Requested!</h3>
+        <p>Thank you! Our team will contact you within 24 hours to confirm your demo slot.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer id="footer-section">
+  <video autoplay muted loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+    <source src="video/farm.mp4" type="video/mp4">
+  </video>
+  <div class="footer-video-overlay"></div>
+  <div class="footer-main">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-col-title">About us</div>
+        <p class="footer-about-text">Introducing i-Farmate, pioneering force in agriculture. Innovative Autonomous agricultural robot for farmers.</p>
+        <div class="footer-socials">
+          <a href="https://www.youtube.com" aria-label="YouTube"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg></a>
+          <a href="https://www.facebook.com/profile.php?id=61564126917995" aria-label="Facebook"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.1C24 5.4 18.6 0 12 0S0 5.4 0 12.1c0 6 4.4 11 10.1 11.9v-8.4H7.1v-3.5h3V9.4c0-3 1.8-4.7 4.5-4.7 1.3 0 2.7.2 2.7.2v3h-1.5c-1.5 0-2 .9-2 1.9v2.2h3.3l-.5 3.5h-2.8V24C19.6 23.1 24 18.1 24 12.1z"/></svg></a>
+          <a href="" aria-label="Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 3.3.2 4.8 1.7 5 5 .1 1.3.1 1.6.1 4.8 0 3.2 0 3.6-.1 4.8-.2 3.3-1.7 4.8-5 5-1.3.1-1.6.1-4.9.1-3.2 0-3.6 0-4.8-.1-3.3-.2-4.8-1.7-5-5C2.1 15.6 2 15.2 2 12c0-3.2 0-3.6.1-4.8.2-3.3 1.7-4.8 5-5C8.4 2.2 8.8 2.2 12 2.2zM12 0C8.7 0 8.3 0 7.1.1 2.7.3.3 2.7.1 7.1 0 8.3 0 8.7 0 12s0 3.7.1 4.9c.2 4.4 2.6 6.8 7 7C8.3 24 8.7 24 12 24s3.7 0 4.9-.1c4.4-.2 6.8-2.6 7-7 .1-1.2.1-1.6.1-4.9s0-3.7-.1-4.9C23.7 2.7 21.3.3 16.9.1 15.7 0 15.3 0 12 0zm0 5.8a6.2 6.2 0 1 0 0 12.4A6.2 6.2 0 0 0 12 5.8zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.4-11.8a1.4 1.4 0 1 0 0 2.8 1.4 1.4 0 0 0 0-2.8z"/></svg></a>
+          <a href="https://www.linkedin.com/showcase/i-farmate/" aria-label="LinkedIn"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d=""/></svg></a>
+          <a href="https://x.com/Farmate_Agribot" aria-label="X"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.3 1.5h3.5L14.3 10l8.8 11.5h-7.3l-5.2-6.8-5.9 6.8H1.2l8-9.2L1 1.5h7.5l4.7 6.2 5.1-6.2zm-1.2 18.3h1.9L7.1 3.4H5.1l12 16.4z"/></svg></a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Quick Link</div>
+        <ul class="footer-links">
+          <li><a href="#hero">Home</a></li><li><a href="#cap">Features</a></li>
+          <li><a href="#about">About Us</a></li><li><a href="#cta">Contact Us</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Contact Info</div>
+        <div class="footer-contact-item"><span class="footer-contact-label">Address</span><span class="footer-contact-value">8, Vembuliamman Koil Street,<br>Gowrivakkam,<br>Chennai – 600073,<br>Tamil Nadu, India.</span></div>
+        <div class="footer-contact-item"><span class="footer-contact-label">Email</span><span class="footer-contact-value"><a href="mailto:contact@farmate.tech">contact@farmate.tech</a></span></div>
+        <div class="footer-contact-item"><span class="footer-contact-label">Phone</span><span class="footer-contact-value"><a href="tel:+914422781279">+91(44) 2278-1279</a></span></div>
+        <div class="footer-contact-item"><span class="footer-contact-label">Work Time</span><span class="footer-contact-value">Mon–Fri: 9.30 am – 6.30 pm</span></div>
+      </div>
+      <div>
+        <div class="footer-col-title">Solutions</div>
+        <ul class="footer-solutions-list">
+          <li>24/7 Weeding</li><li>24/7 Seeding</li><li>Disease Management</li>
+          <li>Pest Management</li><li>Real-time Crop Monitoring</li>
+          <li>Weather-Triggered Actions</li><li>Historical Data Analysis</li><li>Precise Data Capture</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-bottom-text">© 2026. All Rights Reserved. <strong>Auxwit Technologies Private Limited</strong>.</p>
+  </div>
+</footer>
+
+<script>
+"use strict";
+if(!CanvasRenderingContext2D.prototype.roundRect){
+  CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){
+    r=Math.min(r,w/2,h/2);
+    this.moveTo(x+r,y);this.lineTo(x+w-r,y);this.arcTo(x+w,y,x+w,y+r,r);
+    this.lineTo(x+w,y+h-r);this.arcTo(x+w,y+h,x+w-r,y+h,r);
+    this.lineTo(x+r,y+h);this.arcTo(x,y+h,x,y+h-r,r);
+    this.lineTo(x,y+r);this.arcTo(x,y,x+r,y,r);this.closePath();return this;
+  };
+}
+
+/* ── LOADER ── */
+const loader=document.getElementById('loader');
+loader.addEventListener('animationend',()=>{loader.classList.add('done');setTimeout(()=>loader.remove(),650);},{once:true});
+setTimeout(()=>{if(loader.parentNode){loader.classList.add('done');setTimeout(()=>loader.remove(),650);}},2000);
+
+/* ── CURSOR ── */
+const cur=document.getElementById('cursor'),ring=document.getElementById('cr');
+let mx=window.innerWidth/2,my=window.innerHeight/2,rx=mx,ry=my;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+(function ac(){rx+=(mx-rx)*.13;ry+=(my-ry)*.13;cur.style.left=mx+'px';cur.style.top=my+'px';ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(ac);})();
+document.querySelectorAll('a,button').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.style.width='20px';cur.style.height='20px';ring.style.width='52px';ring.style.height='52px'});
+  el.addEventListener('mouseleave',()=>{cur.style.width='10px';cur.style.height='10px';ring.style.width='36px';ring.style.height='36px'});
+});
+
+/* ── NAV: show when near top, hide otherwise ── */
+const nav=document.getElementById('nav'),pb=document.getElementById('pb');
+let lastScrollY=0,navShown=false;
+function updateNav(){
+  const sy=window.scrollY;
+  const msy=document.documentElement.scrollHeight-window.innerHeight;
+  pb.style.width=(sy/msy*100)+'%';
+  // Show nav when: at very top (0-10px) OR scrolled near top (triggered by scroll up near top)
+  const nearTop=sy<80;
+  const scrollingUp=sy<lastScrollY;
+  const shouldShow=nearTop||(scrollingUp&&sy<300);
+  if(shouldShow!==navShown){navShown=shouldShow;nav.classList.toggle('nav-visible',shouldShow);}
+  lastScrollY=sy;
+}
+window.addEventListener('scroll',updateNav,{passive:true});
+// Show immediately if page loads at top
+if(window.scrollY<80)nav.classList.add('nav-visible');
+
+/* ── ROOT CANVAS ── */
+const rcan=document.getElementById('rc'),rctx=rcan.getContext('2d');
+function szRC(){rcan.width=rcan.offsetWidth;rcan.height=rcan.offsetHeight}
+szRC();window.addEventListener('resize',szRC,{passive:true});
+const roots=[];
+class Rt{constructor(x,y,a,d){this.x=x;this.y=y;this.a=a;this.d=d;this.l=0;this.ml=40+Math.random()*80;this.sp=.5+Math.random()*.7;this.sp2=false;this.al=.08+Math.random()*.15;this.w=Math.max(.3,1.6-d*.22);}grow(){if(this.l<this.ml){this.l+=this.sp;if(!this.sp2&&this.l>this.ml*.65&&this.d<5&&Math.random()<.007){this.sp2=true;const s=(Math.random()-.5)*.85;const ex=this.x+Math.cos(this.a)*this.l,ey=this.y+Math.sin(this.a)*this.l;roots.push(new Rt(ex,ey,this.a+s,this.d+1));if(Math.random()<.35)roots.push(new Rt(ex,ey,this.a-s*.6,this.d+1));}}}draw(ctx){const ex=this.x+Math.cos(this.a)*this.l,ey=this.y+Math.sin(this.a)*this.l;ctx.beginPath();ctx.moveTo(this.x,this.y);ctx.lineTo(ex,ey);ctx.strokeStyle=`rgba(57,255,20,${this.al})`;ctx.lineWidth=this.w;ctx.stroke();}}
+for(let i=0;i<7;i++)roots.push(new Rt(rcan.width*(.1+Math.random()*.8),rcan.height*(.5+Math.random()*.5),-Math.PI*.5+(Math.random()-.5)*.55,0));
+let rf=0,rf2=0;
+(function ar(){rf++;if(rf%2===0){rctx.clearRect(0,0,rcan.width,rcan.height);roots.forEach(r=>{r.grow();r.draw(rctx)});rf2++;if(rf2%90===0&&roots.length<250)roots.push(new Rt(rcan.width*(.1+Math.random()*.8),rcan.height*(.6+Math.random()*.4),-Math.PI*.5+(Math.random()-.5)*.5,0));if(roots.length>450)roots.splice(0,40);}requestAnimationFrame(ar);})();
+
+/* ── GRASS CANVAS ── */
+const gcan=document.getElementById('gc'),gctx=gcan.getContext('2d');
+function szGC(){gcan.width=window.innerWidth;gcan.height=170;}
+szGC();window.addEventListener('resize',()=>{szGC();initGrass();},{passive:true});
+class Blade{
+  constructor(x){this.x=x;this.by=gcan.height;this.mh=32+Math.random()*55;this.h=0;this.a=(Math.random()-.5)*.42;this.th=1.6+Math.random()*1.8;this.hue=108+Math.random()*28;this.ph=Math.random()*Math.PI*2;this.amp=.035+Math.random()*.06;this.cut=false;this.gs=.45+Math.random()*.8;this.c1=`hsl(${this.hue},62%,16%)`;this.c2=`hsl(${this.hue+10},82%,36%)`;this.c3=`hsl(${this.hue+22},98%,55%)`;this.c4=`hsla(${this.hue+30},100%,72%,.5)`;this.sw=0;}
+  update(t){if(!this.cut&&this.h<this.mh)this.h=Math.min(this.h+this.gs,this.mh);if(this.cut)this.h=Math.max(this.h-2.2,0);this.sw=Math.sin(t*.00065+this.ph)*this.amp*this.h;}
+  draw(){if(this.h<1)return;const sw=this.sw,h=this.h,bw=this.th;const cp1x=sw*.28,cp1y=-h*.38;const cp2x=sw*.68,cp2y=-h*.72;const tx=sw,ty=-h;const grd=gctx.createLinearGradient(0,0,tx,ty);grd.addColorStop(0,this.c1);grd.addColorStop(.38,this.c2);grd.addColorStop(.78,this.c3);grd.addColorStop(1,this.c4);gctx.save();gctx.translate(this.x,this.by);gctx.rotate(this.a);gctx.beginPath();gctx.moveTo(-bw,0);gctx.bezierCurveTo(-bw+cp1x*.5,cp1y,-bw*.25+cp2x,cp2y,tx-.4,ty);gctx.lineTo(tx,ty-1.5);gctx.lineTo(tx+.4,ty);gctx.bezierCurveTo(bw*.25+cp2x,cp2y,bw+cp1x*.5,cp1y,bw,0);gctx.closePath();gctx.fillStyle=grd;gctx.fill();gctx.beginPath();gctx.moveTo(0,0);gctx.bezierCurveTo(cp1x,cp1y,cp2x,cp2y,tx,ty);gctx.strokeStyle='rgba(57,255,20,.14)';gctx.lineWidth=.35;gctx.stroke();gctx.restore();}
+}
+class Cutter{
+  constructor(){this.x=-70;this.active=false;this.done=false;this.ba=0;this.lp=0;}
+  activate(){this.x=-70;this.active=true;this.done=false;}
+  update(blades){if(!this.active)return;this.x+=2.8;this.ba+=.32;this.lp+=.16;const lo=this.x-24,hi=this.x+24;for(let i=0;i<blades.length;i++){const b=blades[i];if(b.x<lo)continue;if(b.x>hi)break;if(!b.cut&&b.h>3)b.cut=true;}if(this.x>gcan.width+80){this.active=false;this.done=true;}}
+  draw(){if(!this.active)return;const x=this.x,y=gcan.height-20;gctx.save();const tg=gctx.createLinearGradient(x-55,0,x,0);tg.addColorStop(0,'rgba(57,255,20,0)');tg.addColorStop(1,'rgba(57,255,20,.04)');gctx.fillStyle=tg;gctx.fillRect(x-55,y-32,55,38);gctx.fillStyle='#1c2416';gctx.strokeStyle='#39FF14';gctx.lineWidth=1.4;gctx.beginPath();this._rr(x-17,y-25,34,19,4);gctx.fill();gctx.stroke();gctx.beginPath();this._rr(x-11,y-39,22,15,3);gctx.fill();gctx.stroke();const vg=gctx.createLinearGradient(x-7,0,x+7,0);vg.addColorStop(0,'rgba(57,255,20,.15)');vg.addColorStop(.5,'rgba(57,255,20,.85)');vg.addColorStop(1,'rgba(57,255,20,.15)');gctx.fillStyle=vg;gctx.beginPath();this._rr(x-7,y-36,14,5,1.5);gctx.fill();gctx.strokeStyle='rgba(57,255,20,.75)';gctx.lineWidth=1.1;gctx.beginPath();gctx.moveTo(x,y-39);gctx.lineTo(x,y-46);gctx.stroke();gctx.beginPath();gctx.arc(x,y-48,2.8,0,Math.PI*2);gctx.fillStyle='#39FF14';gctx.fill();gctx.strokeStyle='#E8A020';gctx.lineWidth=1.8;gctx.beginPath();gctx.moveTo(x+17,y-17);gctx.lineTo(x+30,y-17);gctx.stroke();gctx.save();gctx.translate(x+30,y-17);for(let i=0;i<4;i++){const a=this.ba+i*Math.PI/2;gctx.beginPath();gctx.moveTo(0,0);gctx.lineTo(Math.cos(a)*8,Math.sin(a)*8);gctx.strokeStyle='rgba(232,160,32,.75)';gctx.lineWidth=1.8;gctx.lineCap='round';gctx.stroke();}gctx.beginPath();gctx.arc(0,0,3,0,Math.PI*2);gctx.fillStyle='#E8A020';gctx.fill();gctx.restore();gctx.strokeStyle='rgba(57,255,20,.55)';gctx.lineWidth=1.3;gctx.beginPath();gctx.moveTo(x-17,y-17);gctx.lineTo(x-26,y-26);gctx.stroke();gctx.beginPath();gctx.arc(x-28,y-28,3.5,0,Math.PI*2);gctx.fillStyle='rgba(57,255,20,.12)';gctx.strokeStyle='rgba(57,255,20,.7)';gctx.lineWidth=1;gctx.fill();gctx.stroke();gctx.save();gctx.translate(x-28,y-28);gctx.rotate(this.ba*.4);gctx.strokeStyle='rgba(57,255,20,.55)';gctx.lineWidth=.9;gctx.beginPath();gctx.moveTo(-3,0);gctx.lineTo(3,0);gctx.stroke();gctx.beginPath();gctx.moveTo(0,-3);gctx.lineTo(0,3);gctx.stroke();gctx.restore();const lo2=Math.sin(this.lp)*2.5;[-11,11].forEach((ox,i)=>{const wy=y+lo2*(i===0?1:-1);gctx.beginPath();gctx.arc(x+ox,wy,6,0,Math.PI*2);gctx.fillStyle='#0a1208';gctx.strokeStyle='#39FF14';gctx.lineWidth=1;gctx.fill();gctx.stroke();gctx.save();gctx.translate(x+ox,wy);gctx.rotate(this.lp*(ox>0?1:-1));gctx.strokeStyle='rgba(57,255,20,.4)';gctx.lineWidth=.8;gctx.beginPath();gctx.moveTo(-4,0);gctx.lineTo(4,0);gctx.stroke();gctx.beginPath();gctx.moveTo(0,-4);gctx.lineTo(0,4);gctx.stroke();gctx.restore();});const blinkOn=Math.floor(this.ba*1.2)%2===0;gctx.beginPath();gctx.arc(x+6,y-30,2,0,Math.PI*2);gctx.fillStyle=blinkOn?'#39FF14':'rgba(57,255,20,.15)';gctx.fill();if(Math.random()<.4){const sx=x-6+Math.random()*12,sy=y-6;gctx.beginPath();gctx.arc(sx,sy,1,0,Math.PI*2);gctx.fillStyle=`rgba(232,160,32,${Math.random()*.6+.2})`;gctx.fill();}gctx.restore();}
+  _rr(x,y,w,h,r){r=Math.min(r,w/2,h/2);gctx.moveTo(x+r,y);gctx.lineTo(x+w-r,y);gctx.arcTo(x+w,y,x+w,y+r,r);gctx.lineTo(x+w,y+h-r);gctx.arcTo(x+w,y+h,x+w-r,y+h,r);gctx.lineTo(x+r,y+h);gctx.arcTo(x,y+h,x,y+h-r,r);gctx.lineTo(x,y+r);gctx.arcTo(x,y,x+r,y,r);gctx.closePath();}
+}
+let blades=[],cutter=new Cutter();
+let gPhase='growing',gStart=Date.now(),gCutTime=0;
+function initGrass(){blades=[];cutter=new Cutter();gPhase='growing';gStart=Date.now();const sp=4.2,cnt=Math.floor(gcan.width/sp);for(let i=0;i<cnt;i++)blades.push(new Blade(sp/2+i*sp+Math.random()*1.2));blades.sort((a,b)=>a.x-b.x);}
+initGrass();
+(function ag(){const now=Date.now(),elapsed=now-gStart;gctx.clearRect(0,0,gcan.width,gcan.height);const sg=gctx.createLinearGradient(0,gcan.height-28,0,gcan.height);sg.addColorStop(0,'rgba(15,20,8,0)');sg.addColorStop(.6,'rgba(12,16,6,.75)');sg.addColorStop(1,'rgba(8,11,4,1)');gctx.fillStyle=sg;gctx.fillRect(0,gcan.height-28,gcan.width,28);blades.forEach(b=>{b.update(now);b.draw();});if(gPhase==='growing'){if(elapsed>6500&&!cutter.active&&!cutter.done)cutter.activate();if(cutter.done){gPhase='cut';gCutTime=now;}}else if(gPhase==='cut'){if(now-gCutTime>10000){gPhase='growing';gStart=now;blades.forEach(b=>{b.cut=false;b.h=0;b.gs=.45+Math.random()*.8;});cutter=new Cutter();}}cutter.update(blades);cutter.draw();requestAnimationFrame(ag);})();
+
+/* ── RIGHT SIDE PLANT ── */
+const src2=document.getElementById('scr');
+const srctx=src2.getContext('2d');
+function szSide(){src2.width=104;src2.height=window.innerHeight;src2.style.height='100vh';}
+szSide();window.addEventListener('resize',szSide,{passive:true});
+const LONG_LEAVES=[{t:.05,d:1,s:28,r:.62,h:115,lw:7},{t:.10,d:-1,s:32,r:-.55,h:118,lw:8},{t:.16,d:1,s:30,r:.5,h:112,lw:7},{t:.22,d:-1,s:34,r:-.48,h:120,lw:9},{t:.28,d:1,s:31,r:.44,h:115,lw:8},{t:.34,d:-1,s:35,r:-.42,h:118,lw:9},{t:.40,d:1,s:32,r:.40,h:113,lw:8},{t:.46,d:-1,s:36,r:-.38,h:120,lw:9},{t:.52,d:1,s:30,r:.36,h:116,lw:7},{t:.58,d:-1,s:34,r:-.35,h:114,lw:8},{t:.64,d:1,s:31,r:.33,h:117,lw:8},{t:.70,d:-1,s:35,r:-.32,h:115,lw:9},{t:.76,d:1,s:29,r:.30,h:112,lw:7},{t:.82,d:-1,s:32,r:-.28,h:118,lw:8},{t:.88,d:1,s:28,r:.27,h:114,lw:7},{t:.93,d:-1,s:30,r:-.25,h:116,lw:8},{t:.97,d:1,s:26,r:.22,h:113,lw:7}];
+let plantTime=0,lastScrollYP=-1;
+function drawRightPlant(ctx,prog,w,h){ctx.clearRect(0,0,w,h);if(prog<=0)return;const soilY=h-12,cx=w*0.35;const sg=ctx.createLinearGradient(0,soilY-6,0,h);sg.addColorStop(0,'rgba(30,16,4,0)');sg.addColorStop(.45,'rgba(38,22,6,.9)');sg.addColorStop(1,'rgba(18,10,2,1)');ctx.fillStyle=sg;ctx.fillRect(0,soilY-6,w,h-soilY+6);const maxStemH=soilY*.96,stemH=maxStemH*Math.min(prog,1),stemTop=soilY-stemH,SEGS=32,segH=stemH/SEGS;const windSway=Math.sin(plantTime*.6)*3.5*prog,growLean=Math.sin(prog*Math.PI*1.6)*(-8)*(1-prog*.75),totalSway=windSway+growLean;const pts=[];for(let i=0;i<=SEGS;i++){const t2=i/SEGS,sw=totalSway*t2*t2;pts.push({x:cx+sw,y:soilY-i*segH});}for(let i=1;i<pts.length;i++){const t2=i/pts.length,thickness=3.8*(1-t2*.7);ctx.beginPath();ctx.moveTo(pts[i-1].x,pts[i-1].y);ctx.lineTo(pts[i].x,pts[i].y);const sg2=ctx.createLinearGradient(cx,soilY,cx,stemTop);sg2.addColorStop(0,'#0e2206');sg2.addColorStop(.4,'#1a4010');sg2.addColorStop(.8,'#256018');sg2.addColorStop(1,'#2d7a1e');ctx.strokeStyle=sg2;ctx.lineWidth=Math.max(.8,thickness);ctx.lineCap='round';ctx.stroke();}LONG_LEAVES.forEach(lf=>{const lp=Math.min(1,Math.max(0,(prog-lf.t)/.09));if(lp<=0)return;const si=Math.round(lf.t*SEGS),sp2=pts[Math.min(si,pts.length-1)];if(!sp2)return;const leafSway=totalSway*lf.t*lf.t,baseAngle=lf.r+leafSway*.015,ls=lf.s*lp,lw=lf.lw*lp,ld=lf.d;ctx.save();ctx.translate(sp2.x,sp2.y);ctx.rotate(baseAngle);const lx=ld*ls*lp,ly=-ls*0.08;const lg=ctx.createLinearGradient(0,0,lx,ly);lg.addColorStop(0,`hsl(${lf.h},55%,10%)`);lg.addColorStop(.25,`hsl(${lf.h+8},70%,20%)`);lg.addColorStop(.55,`hsl(${lf.h+14},80%,30%)`);lg.addColorStop(1,`hsl(${lf.h+20},60%,22%)`);ctx.beginPath();ctx.moveTo(0,0);ctx.bezierCurveTo(ld*ls*.2,-lw*.55,ld*ls*.5,-lw*.72,lx,ly);ctx.bezierCurveTo(ld*ls*.52,lw*.38,ld*ls*.22,lw*.3,0,0);ctx.fillStyle=lg;ctx.fill();ctx.beginPath();ctx.moveTo(0,0);ctx.bezierCurveTo(ld*ls*.28,-lw*.06,ld*ls*.62,-lw*.03,lx,ly);ctx.strokeStyle=`rgba(57,255,20,${0.18*lp})`;ctx.lineWidth=0.7;ctx.stroke();ctx.restore();});if(prog>.90){const fp=Math.min(1,(prog-.90)/.1),last=pts[pts.length-1];ctx.save();ctx.translate(last.x,last.y);const sg3=ctx.createLinearGradient(0,0,0,-18*fp);sg3.addColorStop(0,'#1a4010');sg3.addColorStop(1,'#39FF14');ctx.beginPath();ctx.moveTo(0,0);ctx.bezierCurveTo(-3*fp,-6*fp,-2*fp,-14*fp,0,-18*fp);ctx.bezierCurveTo(2*fp,-14*fp,3*fp,-6*fp,0,0);ctx.fillStyle=sg3;ctx.fill();ctx.restore();}}
+(function asideLoop(){plantTime+=.007;const sy=window.scrollY,msy=document.documentElement.scrollHeight-window.innerHeight,prog=msy>0?Math.min(1,sy/msy):0;if(Math.abs(sy-lastScrollYP)>.4||plantTime%(.007*6)<.008){lastScrollYP=sy;drawRightPlant(srctx,prog,104,src2.height);}requestAnimationFrame(asideLoop);})();
+
+/* ── LEFT SCROLL ROBOTS ── */
+const rbdEl=document.getElementById('rbd'),rbuEl=document.getElementById('rbu');
+const robotTipEl=document.getElementById('robot-tip');
+const tipTextEl=document.querySelector('.tip-text');
+const rdC=document.createElement('canvas');rdC.width=54;rdC.height=74;rbdEl.appendChild(rdC);
+const ruC=document.createElement('canvas');ruC.width=54;ruC.height=74;rbuEl.appendChild(ruC);
+const rdx=rdC.getContext('2d'),rux=ruC.getContext('2d');
+const SECTION_TIPS=[{id:'hero',msg:"🚜 i-Farmate here! I work 24/7 so farmers don't have to."},{id:'about',msg:"🌱 Zero chemicals. Full autonomy. That's how I farm."},{id:'rcs',msg:"🤖 That scene below? That's me meeting a farmer for the first time!"},{id:'cap',msg:"⚡ 8 capabilities — weeding to AI disease detection. All autonomous."},{id:'ben',msg:"🌾 Click the cards to flip and learn more about each benefit!"},{id:'how',msg:"🔄 Patrol → Detect → Act → Report. Four steps to smarter farming."},{id:'prod',msg:"📦 FarmFair, TerraMate, Thaniyas — the full agri-ecosystem!"},{id:'cta',msg:"🚀 Book a demo! I'd love to visit your farm."},{id:'footer-section',msg:"📞 Reach out anytime. Thank you for exploring i-Farmate! 🌿"}];
+let robotTipTimer=null,lastShownSection='';
+function showRobotTip(msg){if(robotTipTimer)clearTimeout(robotTipTimer);tipTextEl.textContent=msg;robotTipEl.classList.add('show');robotTipTimer=setTimeout(()=>robotTipEl.classList.remove('show'),4500);}
+function updateRobotTipForScroll(robotVisualY){let closestSection=null,closestDist=Infinity;SECTION_TIPS.forEach(s=>{const el=document.getElementById(s.id);if(!el)return;const rect=el.getBoundingClientRect(),mid=(rect.top+rect.bottom)/2,dist=Math.abs(robotVisualY-mid);if(dist<closestDist){closestDist=dist;closestSection=s;}});if(closestSection&&closestSection.id!==lastShownSection&&closestDist<window.innerHeight*0.45){lastShownSection=closestSection.id;showRobotTip(closestSection.msg);}}
+function drawHarvester(ctx,lf,active){ctx.clearRect(0,0,54,74);if(!active)return;const t=lf,cx=27,by=62;ctx.save();ctx.translate(cx,by);const lean=Math.sin(t*.07)*1.2;ctx.rotate(lean*Math.PI/180);ctx.save();ctx.globalAlpha=.18;ctx.beginPath();ctx.ellipse(1,4,9,2.5,0,0,Math.PI*2);ctx.fillStyle='#000';ctx.fill();ctx.restore();[[-15,-5],[6,-5]].forEach(([ox,oy])=>{ctx.beginPath();ctx.roundRect(ox,oy,9,9,2.5);ctx.fillStyle='#192414';ctx.strokeStyle='#39FF14';ctx.lineWidth=1;ctx.fill();ctx.stroke();ctx.fillStyle='rgba(57,255,20,.28)';for(let i=0;i<3;i++){ctx.beginPath();ctx.roundRect(ox+i*3,.5+oy,1.8,7,1);ctx.fill();}ctx.fillStyle='#192414';});ctx.fillStyle='#0a1208';ctx.strokeStyle='rgba(57,255,20,.45)';ctx.lineWidth=.8;ctx.beginPath();ctx.roundRect(-4,-2.5,8,5,2);ctx.fill();ctx.stroke();ctx.fillStyle='#1c2416';ctx.strokeStyle='#39FF14';ctx.lineWidth=1.4;ctx.beginPath();ctx.roundRect(-12,-24,24,20,3.5);ctx.fill();ctx.stroke();ctx.strokeStyle='rgba(57,255,20,.32)';ctx.lineWidth=.8;ctx.beginPath();ctx.roundRect(-9,-22,18,13,1.5);ctx.stroke();['#39FF14','#E8A020','#39FF14'].forEach((c,i)=>{ctx.beginPath();ctx.arc(-4+i*4,-18,1.4,0,Math.PI*2);ctx.fillStyle=Math.floor(t*.045+i)%2===0?c:'rgba(57,255,20,.18)';ctx.fill();});ctx.strokeStyle='rgba(57,255,20,.38)';ctx.lineWidth=.65;ctx.beginPath();ctx.moveTo(-6,-13);ctx.lineTo(2,-13);ctx.stroke();ctx.beginPath();ctx.moveTo(-6,-10);ctx.lineTo(5,-10);ctx.stroke();const as=Math.sin(t*.08)*6;ctx.strokeStyle='rgba(57,255,20,.65)';ctx.lineWidth=1.3;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(12,-16);ctx.lineTo(19,-16+as);ctx.stroke();ctx.save();ctx.translate(19,-16+as);for(let i=0;i<3;i++){const ba=t*.12+i*(Math.PI*2/3);ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(Math.cos(ba)*6,Math.sin(ba)*6);ctx.strokeStyle=`rgba(232,160,32,${.6+Math.abs(Math.cos(ba))*.3})`;ctx.lineWidth=1.5;ctx.lineCap='round';ctx.stroke();}ctx.beginPath();ctx.arc(0,0,2.5,0,Math.PI*2);ctx.fillStyle='#E8A020';ctx.fill();ctx.restore();ctx.strokeStyle='rgba(57,255,20,.55)';ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(-12,-16);ctx.lineTo(-19,-14-as*.4);ctx.stroke();ctx.beginPath();ctx.arc(-21,-13-as*.4,2.5,0,Math.PI*2);ctx.fillStyle='rgba(57,255,20,.12)';ctx.strokeStyle='rgba(57,255,20,.55)';ctx.lineWidth=.9;ctx.fill();ctx.stroke();ctx.save();ctx.translate(-21,-13-as*.4);ctx.rotate(t*.06);ctx.strokeStyle='rgba(57,255,20,.45)';ctx.lineWidth=.7;ctx.beginPath();ctx.moveTo(-2.5,0);ctx.lineTo(2.5,0);ctx.stroke();ctx.beginPath();ctx.moveTo(0,-2.5);ctx.lineTo(0,2.5);ctx.stroke();ctx.restore();ctx.fillStyle='#1c2416';ctx.strokeStyle='#39FF14';ctx.lineWidth=1.4;ctx.beginPath();ctx.roundRect(-9,-36,18,13,2.5);ctx.fill();ctx.stroke();const vg=ctx.createLinearGradient(-6,-34,6,-34);vg.addColorStop(0,'rgba(57,255,20,.12)');vg.addColorStop(.5,'rgba(57,255,20,.82)');vg.addColorStop(1,'rgba(57,255,20,.12)');ctx.beginPath();ctx.roundRect(-6,-34.5,12,5.5,1.2);ctx.fillStyle=vg;ctx.fill();ctx.strokeStyle='rgba(57,255,20,.38)';ctx.lineWidth=.65;ctx.beginPath();ctx.moveTo(2.5,-36);ctx.lineTo(6.5,-42);ctx.stroke();ctx.beginPath();ctx.arc(6.5,-44,2.2,0,Math.PI*2);ctx.fillStyle=Math.floor(t*.038)%2===0?'#39FF14':'#1a5a08';ctx.fill();if(Math.random()<.3){const sx=(Math.random()-.5)*10,sy=-3+Math.random()*3;ctx.beginPath();ctx.arc(sx,sy,.8,0,Math.PI*2);ctx.fillStyle=`rgba(232,160,32,${Math.random()*.5+.2})`;ctx.fill();}ctx.restore();}
+function drawInspector(ctx,lf,active){ctx.clearRect(0,0,54,74);if(!active)return;const t=lf,cx=27,by=62;const hv=Math.sin(t*.11)*1.8;ctx.save();ctx.translate(cx,by+hv);const lean=-Math.sin(t*.07)*1.2;ctx.rotate(lean*Math.PI/180);ctx.save();ctx.globalAlpha=.15;ctx.beginPath();ctx.ellipse(1,4-hv,8,2,0,0,Math.PI*2);ctx.fillStyle='#000';ctx.fill();ctx.restore();[-8,8].forEach(ox=>{ctx.beginPath();ctx.arc(ox,0,5,0,Math.PI*2);ctx.fillStyle='#111808';ctx.strokeStyle='#39FF14';ctx.lineWidth=1.1;ctx.fill();ctx.stroke();ctx.save();ctx.translate(ox,0);ctx.rotate(t*.14*(ox>0?1:-1));ctx.strokeStyle='rgba(57,255,20,.45)';ctx.lineWidth=.8;ctx.beginPath();ctx.moveTo(-4,0);ctx.lineTo(4,0);ctx.stroke();ctx.beginPath();ctx.moveTo(0,-4);ctx.lineTo(0,4);ctx.stroke();ctx.restore();});ctx.fillStyle='#1a2614';ctx.strokeStyle='rgba(57,255,20,.85)';ctx.lineWidth=1.4;ctx.beginPath();ctx.roundRect(-10,-23,20,19,4);ctx.fill();ctx.stroke();ctx.strokeStyle='rgba(57,255,20,.28)';ctx.lineWidth=.75;ctx.beginPath();ctx.roundRect(-7,-21,14,11,1.5);ctx.stroke();const sy2=-21+((t*1.8)%11);ctx.fillStyle='rgba(57,255,20,.38)';ctx.fillRect(-6,sy2,12,1.3);ctx.fillStyle='rgba(232,160,32,.38)';ctx.fillRect(-10,-12.5,20,1.4);const as2=Math.sin(t*.09)*4.5;ctx.strokeStyle='rgba(232,160,32,.78)';ctx.lineWidth=1.1;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(10,-14);ctx.lineTo(17,-14+as2);ctx.stroke();ctx.beginPath();ctx.roundRect(16,-17+as2,5.5,5.5,1.5);ctx.fillStyle='rgba(232,160,32,.12)';ctx.strokeStyle='rgba(232,160,32,.65)';ctx.lineWidth=.9;ctx.fill();ctx.stroke();ctx.strokeStyle='rgba(57,255,20,.65)';ctx.lineWidth=1.1;ctx.beginPath();ctx.moveTo(-10,-14);ctx.lineTo(-17,-12-as2*.4);ctx.stroke();ctx.beginPath();ctx.arc(-19,-11-as2*.4,2.5,0,Math.PI*2);ctx.fillStyle='rgba(57,255,20,.12)';ctx.strokeStyle='rgba(57,255,20,.6)';ctx.lineWidth=.9;ctx.fill();ctx.stroke();ctx.fillStyle='#1a2614';ctx.strokeStyle='rgba(57,255,20,.85)';ctx.lineWidth=1.4;ctx.beginPath();ctx.arc(0,-29,9.5,0,Math.PI*2);ctx.fill();ctx.stroke();[[-3.5,-30],[3.5,-30]].forEach(([ex,ey])=>{ctx.beginPath();ctx.arc(ex,ey,2.2,0,Math.PI*2);ctx.fillStyle=Math.floor(t*.055)%2===0?'rgba(57,255,20,.88)':'rgba(57,255,20,.35)';ctx.fill();});ctx.strokeStyle='rgba(57,255,20,.55)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,-38.5);ctx.lineTo(0,-44);ctx.stroke();ctx.save();ctx.translate(0,-45.5);ctx.rotate(t*.07);ctx.strokeStyle='rgba(57,255,20,.45)';ctx.lineWidth=.9;ctx.beginPath();ctx.moveTo(-3.5,0);ctx.lineTo(3.5,0);ctx.stroke();ctx.beginPath();ctx.arc(0,0,3.5,0,Math.PI*2);ctx.strokeStyle='rgba(57,255,20,.28)';ctx.stroke();ctx.restore();ctx.restore();}
+let rY=90,prevSY=0,rLF=0,rActiveDown=true;
+(function aro(){const sy=window.scrollY,msy=document.documentElement.scrollHeight-window.innerHeight,prog=msy>0?Math.min(1,sy/msy):0,delta=sy-prevSY;prevSY=sy;if(Math.abs(delta)>1){const newDown=delta>0;if(newDown!==rActiveDown){rActiveDown=newDown;rbdEl.style.display=newDown?'block':'none';rbuEl.style.display=newDown?'none':'block';}}const targetY=90+prog*(window.innerHeight-190);rY+=(targetY-rY)*.09;rbdEl.style.top=rY+'px';rbuEl.style.top=rY+'px';robotTipEl.style.top=(rY+10)+'px';updateRobotTipForScroll(rY+37);rLF+=Math.abs(delta)>.5?1.8:.25;drawHarvester(rdx,rLF,rActiveDown);drawInspector(rux,rLF,!rActiveDown);requestAnimationFrame(aro);})();
+
+/* ── DRONE ── */
+const droneWrap=document.getElementById('drone-wrap'),droneCvs=document.getElementById('drone-canvas'),droneTip=document.getElementById('drone-tooltip'),dctx=droneCvs.getContext('2d');
+const droneTipText=document.querySelector('.drone-tip-text');
+let droneX=window.innerWidth+60,droneY=-60,droneTX=window.innerWidth/2,droneTY=window.innerHeight/2,dronePropRot=0,droneT=0,droneAngle=0,droneVisible=true,droneTipShown=false;
+function pickDroneTarget(){const margin=120;droneTX=margin+Math.random()*(window.innerWidth-margin*2);droneTY=margin+Math.random()*(window.innerHeight-margin*1.5);}
+pickDroneTarget();setInterval(()=>{if(droneVisible)pickDroneTarget();},10000);
+const DRONE_TIPS=['🌾 Scanning crop health…','🔍 Monitoring soil data…','⚡ All systems nominal!','📡 Sending field report…','🌱 Protecting your harvest.','🤖 AI-powered precision farming.','💧 Checking soil moisture…','🌿 Zero chemicals. Pure results.'];
+let droneNearTarget=false;
+function checkDroneNearTarget(){const dist=Math.hypot(droneX-droneTX,droneY-droneTY);if(dist<30&&!droneNearTarget&&droneVisible&&!droneTipShown){droneNearTarget=true;const msg=DRONE_TIPS[Math.floor(Math.random()*DRONE_TIPS.length)];droneTipText.textContent=msg;droneTip.style.opacity='1';droneTip.style.transform='translateX(-50%) translateY(0)';droneTipShown=true;setTimeout(()=>{droneTip.style.opacity='0';droneTip.style.transform='translateX(-50%) translateY(-8px)';droneTipShown=false;droneNearTarget=false;},2800);}if(dist>60)droneNearTarget=false;}
+function checkDroneVisibility(){const heroEl=document.getElementById('hero');if(!heroEl)return;const heroBottom=heroEl.offsetTop+heroEl.offsetHeight,shouldShow=window.scrollY<heroBottom-100;if(shouldShow!==droneVisible){droneVisible=shouldShow;droneWrap.style.opacity=shouldShow?'1':'0';if(!shouldShow){droneTip.style.opacity='0';droneTipShown=false;}else{pickDroneTarget();}}}
+window.addEventListener('scroll',checkDroneVisibility,{passive:true});checkDroneVisibility();
+setTimeout(()=>{if(!droneVisible)return;droneTipText.textContent='🌱 i-Farmate — AI-powered farming, 24/7.';droneTip.style.opacity='1';droneTip.style.transform='translateX(-50%) translateY(0)';droneTipShown=true;setTimeout(()=>{droneTip.style.opacity='0';droneTip.style.transform='translateX(-50%) translateY(-8px)';droneTipShown=false;},3500);},3000);
+function drawDrone(t){dctx.clearRect(0,0,90,90);const cx=45,cy=48;const glow=dctx.createRadialGradient(cx,cy,4,cx,cy,32);glow.addColorStop(0,'rgba(57,255,20,.18)');glow.addColorStop(1,'rgba(57,255,20,0)');dctx.beginPath();dctx.arc(cx,cy,32,0,Math.PI*2);dctx.fillStyle=glow;dctx.fill();[[-1,-1],[1,-1],[1,1],[-1,1]].forEach(([sx,sy2],i)=>{dctx.save();dctx.translate(cx,cy);dctx.rotate(Math.PI/4+i*Math.PI/2);dctx.fillStyle=i%2===0?'rgba(57,255,20,.7)':'rgba(232,160,32,.55)';dctx.fillRect(-1,0,2,24);dctx.beginPath();dctx.arc(0,24,4,0,Math.PI*2);dctx.fillStyle='#1c2416';dctx.fill();dctx.strokeStyle=i%2===0?'#39FF14':'#E8A020';dctx.lineWidth=1;dctx.stroke();dctx.save();dctx.translate(0,24);dctx.rotate(dronePropRot*(i%2===0?1:-1));dctx.strokeStyle=i%2===0?'rgba(57,255,20,.8)':'rgba(232,160,32,.7)';dctx.lineWidth=1.5;dctx.lineCap='round';dctx.beginPath();dctx.moveTo(-11,0);dctx.lineTo(11,0);dctx.stroke();dctx.beginPath();dctx.moveTo(0,-5);dctx.lineTo(0,5);dctx.stroke();dctx.restore();dctx.restore();});dctx.save();dctx.translate(cx,cy);dctx.beginPath();dctx.roundRect(-10,-4,20,8,3);dctx.fillStyle='#0a1208';dctx.strokeStyle='rgba(57,255,20,.6)';dctx.lineWidth=1.2;dctx.fill();dctx.stroke();dctx.beginPath();dctx.roundRect(-11,-12,22,14,4);dctx.fillStyle='#1c2416';dctx.strokeStyle='#39FF14';dctx.lineWidth=1.4;dctx.fill();dctx.stroke();dctx.beginPath();dctx.ellipse(0,-12,9,5,0,Math.PI,0);dctx.fillStyle='#141a10';dctx.strokeStyle='rgba(57,255,20,.5)';dctx.lineWidth=1;dctx.fill();dctx.stroke();dctx.beginPath();dctx.arc(0,-6,3.5,0,Math.PI*2);dctx.fillStyle='rgba(57,255,20,.1)';dctx.strokeStyle='#39FF14';dctx.lineWidth=1;dctx.fill();dctx.stroke();dctx.beginPath();dctx.arc(0,-6,1.8,0,Math.PI*2);dctx.fillStyle='#39FF14';dctx.fill();const blinkOn=Math.floor(t*.04)%2===0;dctx.beginPath();dctx.arc(-7,-2,1.5,0,Math.PI*2);dctx.fillStyle=blinkOn?'#39FF14':'rgba(57,255,20,.2)';dctx.fill();dctx.beginPath();dctx.arc(7,-2,1.5,0,Math.PI*2);dctx.fillStyle=blinkOn?'#E8A020':'rgba(232,160,32,.2)';dctx.fill();dctx.restore();}
+(function animateDrone(){droneT++;dronePropRot+=0.28;const hoverBob=Math.sin(droneT*.022)*4;droneX+=(droneTX-droneX)*0.018;droneY+=(droneTY+hoverBob-droneY)*0.018;const vx=droneTX-droneX;droneAngle=Math.max(-0.22,Math.min(0.22,vx*0.004));droneWrap.style.left=(droneX-45)+'px';droneWrap.style.top=(droneY-45)+'px';dctx.save();dctx.translate(45,45);dctx.rotate(droneAngle);dctx.translate(-45,-45);drawDrone(droneT);dctx.restore();checkDroneNearTarget();requestAnimationFrame(animateDrone);})();
+
+/* ══ MEET THE MACHINE SCENE ══ */
+const sceneCvs=document.getElementById('scene-canvas');
+const sctx=sceneCvs.getContext('2d');
+function resizeScene(){sceneCvs.width=sceneCvs.offsetWidth||window.innerWidth;sceneCvs.height=600;}
+resizeScene();window.addEventListener('resize',resizeScene,{passive:true});
+const SCENE={ROBOT_ENTER:0,ROBOT_STAND:1,ROBOT_INTRO:2,MAN_ENTER:3,CONVO:4,GOODBYE:5,DONE:6};
+let sceneState=SCENE.ROBOT_ENTER,sceneT=0,stateT=0,sceneStarted=false;
+const robot={x:-120,y:0,targetX:-60,scale:1,wobble:0,legPhase:0,armWave:0,eyeBlink:0,antennaWave:0,speaking:false,facingRight:true};
+const man={x:800,targetX:80,scale:1,legPhase:0,armSwing:0,waving:false,speaking:false,facingLeft:true};
+const CONVO_SCRIPT=[{speaker:'man',text:"What is i-Farmate?",duration:140},{speaker:'robot',text:"I am an AI-powered farming robot\nthat automates planting, weeding,\nand crop monitoring.",duration:200},{speaker:'man',text:"How do you remove weeds?",duration:130},{speaker:'robot',text:"I use cameras and AI to identify\nand remove weeds without\nharming crops.",duration:190},{speaker:'man',text:"How do you monitor crops?",duration:130},{speaker:'robot',text:"I continuously track plant health,\nsoil conditions, and crop growth\nin real time.",duration:190},{speaker:'man',text:"Can you detect pests\nand weather changes?",duration:150},{speaker:'robot',text:"Yes, I detect pest threats early\nand adapt my actions based on\nweather conditions.",duration:200},{speaker:'man',text:"How can farmers track you?",duration:130},{speaker:'robot',text:"Farmers can monitor my work\nand field data through a mobile\nor web application.",duration:200},{speaker:'robot',text:"For more details,\nplease contact us. Thank you!",duration:190},{speaker:'man',text:"Sure, thank you! 😊🌱🤖",duration:150}];
+let convoIndex=0,convoTimer=0,typedChars=0,typingTimer=0;
+let sceneObserved=false;
+const sceneObs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting&&!sceneObserved){sceneObserved=true;sceneStarted=true;sceneObs.disconnect();}});},{threshold:0.3});
+sceneObs.observe(sceneCvs);
+function drawSceneBackground(ctx,W,H){ctx.clearRect(0,0,W,H);const bg=ctx.createLinearGradient(0,0,0,H);bg.addColorStop(0,'rgba(6,10,5,0.5)');bg.addColorStop(.6,'rgba(10,18,8,0.6)');bg.addColorStop(1,'rgba(13,26,10,0.7)');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);const gy=H*0.78;const groundGrad=ctx.createLinearGradient(0,gy,0,H);groundGrad.addColorStop(0,'rgba(26,46,10,0.9)');groundGrad.addColorStop(.4,'rgba(20,34,8,0.95)');groundGrad.addColorStop(1,'rgba(10,18,5,0.98)');ctx.fillStyle=groundGrad;ctx.fillRect(0,gy,W,H-gy);ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(W,gy);ctx.strokeStyle='rgba(57,255,20,.3)';ctx.lineWidth=1.5;ctx.stroke();const gg=ctx.createLinearGradient(0,gy-20,0,gy+30);gg.addColorStop(0,'rgba(57,255,20,0)');gg.addColorStop(.4,'rgba(57,255,20,.07)');gg.addColorStop(1,'rgba(57,255,20,0)');ctx.fillStyle=gg;ctx.fillRect(0,gy-20,W,50);ctx.save();ctx.globalAlpha=0.06;for(let i=0;i<8;i++){const gx=W*i/8;ctx.beginPath();ctx.moveTo(gx,gy);ctx.lineTo(W/2,gy-60);ctx.strokeStyle='#39FF14';ctx.lineWidth=0.8;ctx.stroke();}for(let i=0;i<5;i++){const yy=gy+i*(H-gy)/5;ctx.beginPath();ctx.moveTo(0,yy);ctx.lineTo(W,yy);ctx.strokeStyle='#39FF14';ctx.lineWidth=0.5;ctx.stroke();}ctx.restore();ctx.save();ctx.globalAlpha=0.18;for(let i=0;i<12;i++){const px=((sceneT*0.3+i*97)%W),py=40+((sceneT*0.1+i*61)%(gy-60)),pr=0.8+Math.sin(sceneT*.02+i)*0.4;ctx.beginPath();ctx.arc(px,py,pr,0,Math.PI*2);ctx.fillStyle='#39FF14';ctx.fill();}ctx.restore();}
+function drawRobot3D(ctx,cx,gy,t,scale,opts){const S=scale*1.0,fw=opts.facingRight?1:-1,wobble=opts.wobble||0,lp=opts.legPhase||0,aw=opts.armWave||0,speaking=opts.speaking||false;ctx.save();ctx.translate(cx,gy);ctx.save();ctx.globalAlpha=.22;const shadowGrad=ctx.createRadialGradient(0,8,0,0,8,55*S);shadowGrad.addColorStop(0,'rgba(0,0,0,0.55)');shadowGrad.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=shadowGrad;ctx.scale(1,0.3);ctx.beginPath();ctx.arc(0,8*S/0.3,45*S,0,Math.PI*2);ctx.fill();ctx.restore();const treadY=-28*S+wobble;[-1,1].forEach(side=>{const tx2=side*28*S*fw;ctx.save();ctx.translate(tx2,treadY);ctx.fillStyle='#0d1a08';ctx.strokeStyle='rgba(57,255,20,.5)';ctx.lineWidth=1.2*S;ctx.beginPath();ctx.roundRect(-12*S,-8*S,24*S,16*S,4*S);ctx.fill();ctx.stroke();for(let i=0;i<5;i++){const tx3=-8*S+i*4*S;ctx.beginPath();ctx.moveTo(tx3,-8*S);ctx.lineTo(tx3,8*S);ctx.strokeStyle='rgba(57,255,20,.18)';ctx.lineWidth=0.8*S;ctx.stroke();}[-6*S,6*S].forEach(wx=>{ctx.beginPath();ctx.arc(wx,0,5*S,0,Math.PI*2);ctx.fillStyle='#0a1208';ctx.strokeStyle='rgba(57,255,20,.6)';ctx.lineWidth=1.2*S;ctx.fill();ctx.stroke();ctx.save();ctx.rotate(lp*(side===1?1:-1));ctx.strokeStyle='rgba(57,255,20,.4)';ctx.lineWidth=0.8*S;ctx.beginPath();ctx.moveTo(-4*S,0);ctx.lineTo(4*S,0);ctx.stroke();ctx.beginPath();ctx.moveTo(0,-4*S);ctx.lineTo(0,4*S);ctx.stroke();ctx.restore();});ctx.restore();});ctx.fillStyle='#111e0a';ctx.strokeStyle='rgba(57,255,20,.3)';ctx.lineWidth=1*S;ctx.beginPath();ctx.roundRect(-14*S,-56*S+wobble,28*S,14*S,3*S);ctx.fill();ctx.stroke();const bodyY=-100*S+wobble;const bodyGrad=ctx.createLinearGradient(-20*S,bodyY,20*S,bodyY+54*S);bodyGrad.addColorStop(0,'#1c2e10');bodyGrad.addColorStop(.5,'#152208');bodyGrad.addColorStop(1,'#0e1a06');ctx.fillStyle=bodyGrad;ctx.strokeStyle='#39FF14';ctx.lineWidth=1.8*S;ctx.beginPath();ctx.roundRect(-22*S,bodyY,44*S,54*S,6*S);ctx.fill();ctx.stroke();ctx.strokeStyle='rgba(57,255,20,.15)';ctx.lineWidth=0.7*S;ctx.beginPath();ctx.moveTo(-18*S,bodyY+12*S);ctx.lineTo(18*S,bodyY+12*S);ctx.stroke();ctx.beginPath();ctx.moveTo(-18*S,bodyY+30*S);ctx.lineTo(18*S,bodyY+30*S);ctx.stroke();const dispY=bodyY+14*S;ctx.fillStyle='rgba(57,255,20,.08)';ctx.strokeStyle='rgba(57,255,20,.4)';ctx.lineWidth=1*S;ctx.beginPath();ctx.roundRect(-14*S,dispY,28*S,14*S,2*S);ctx.fill();ctx.stroke();const scanY=dispY+(t*1.2%(14*S));ctx.fillStyle='rgba(57,255,20,.35)';ctx.fillRect(-13*S,scanY,26*S,1.5*S);[-6*S,0,6*S].forEach((lx2,li)=>{ctx.beginPath();ctx.arc(lx2,bodyY+34*S,2.5*S,0,Math.PI*2);const colors=['#39FF14','#E8A020','#39FF14'];ctx.fillStyle=Math.floor(t*.05+li)%3===0?colors[li]:'rgba(57,255,20,.15)';ctx.fill();});const armAngleR=fw>0?(-0.15+Math.sin(lp*0.5)*0.08+aw*0.4):(-0.15-Math.sin(lp*0.5)*0.08);const armAngleL=fw>0?(0.15-Math.sin(lp*0.5)*0.08):(0.15+Math.sin(lp*0.5)*0.08+aw*0.4);[[-1,armAngleL],[1,armAngleR]].forEach(([side2,aa])=>{ctx.save();ctx.translate(side2*fw*24*S,bodyY+8*S);ctx.rotate(aa);ctx.fillStyle='#1c2e10';ctx.strokeStyle='rgba(57,255,20,.5)';ctx.lineWidth=1.2*S;ctx.beginPath();ctx.roundRect(-5*S,0,10*S,22*S,3*S);ctx.fill();ctx.stroke();ctx.save();ctx.translate(0,22*S);ctx.rotate(aa*0.5);ctx.fillStyle='#111e0a';ctx.strokeStyle='rgba(57,255,20,.4)';ctx.lineWidth=1*S;ctx.beginPath();ctx.roundRect(-4*S,0,8*S,18*S,3*S);ctx.fill();ctx.stroke();ctx.translate(0,18*S);ctx.beginPath();ctx.arc(0,0,5*S,0,Math.PI*2);ctx.fillStyle='#0a1208';ctx.strokeStyle='rgba(57,255,20,.7)';ctx.lineWidth=1.2*S;ctx.fill();ctx.stroke();ctx.restore();ctx.restore();});const headY=-142*S+wobble+Math.sin(t*.03)*2*S;const headGrad=ctx.createLinearGradient(-18*S,headY,18*S,headY+36*S);headGrad.addColorStop(0,'#1e3010');headGrad.addColorStop(1,'#0e1e06');ctx.fillStyle=headGrad;ctx.strokeStyle='#39FF14';ctx.lineWidth=1.8*S;ctx.beginPath();ctx.roundRect(-18*S,headY,36*S,36*S,8*S);ctx.fill();ctx.stroke();ctx.fillStyle='rgba(57,255,20,.06)';ctx.strokeStyle='rgba(57,255,20,.35)';ctx.lineWidth=1*S;ctx.beginPath();ctx.roundRect(-14*S,headY+4*S,28*S,18*S,4*S);ctx.fill();ctx.stroke();const blinkH=opts.eyeBlink>0.8?0.5:1.0;[-7*S,7*S].forEach((ex2)=>{ctx.beginPath();ctx.arc(ex2,headY+14*S,5*S,0,Math.PI*2);ctx.fillStyle='rgba(57,255,20,.12)';ctx.fill();const eyeGlow=ctx.createRadialGradient(ex2,headY+14*S,0,ex2,headY+14*S,4.5*S);eyeGlow.addColorStop(0,'rgba(57,255,20,0.9)');eyeGlow.addColorStop(1,'rgba(57,255,20,0.1)');ctx.save();ctx.beginPath();ctx.ellipse(ex2,headY+14*S,4*S,4*S*blinkH,0,0,Math.PI*2);ctx.fillStyle=eyeGlow;ctx.fill();ctx.restore();ctx.beginPath();ctx.arc(ex2+fw*1*S,headY+14*S,1.5*S,0,Math.PI*2);ctx.fillStyle='#0a1208';ctx.fill();});if(speaking){const mw=(5+Math.sin(t*.15)*4)*S;ctx.fillStyle='rgba(57,255,20,.6)';ctx.beginPath();ctx.roundRect(-mw/2,headY+24*S,mw,3*S,1*S);ctx.fill();}else{ctx.fillStyle='rgba(57,255,20,.3)';ctx.beginPath();ctx.roundRect(-6*S,headY+24*S,12*S,2*S,1*S);ctx.fill();}const antWave=Math.sin(t*.08)*3*S+(opts.antennaWave||0)*5*S;ctx.strokeStyle='rgba(57,255,20,.7)';ctx.lineWidth=1.5*S;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(0,headY);ctx.lineTo(antWave,headY-16*S);ctx.stroke();const antGlow=ctx.createRadialGradient(antWave,headY-16*S,0,antWave,headY-16*S,4*S);antGlow.addColorStop(0,speaking?'rgba(57,255,20,1)':'rgba(57,255,20,0.6)');antGlow.addColorStop(1,'rgba(57,255,20,0)');ctx.beginPath();ctx.arc(antWave,headY-16*S,3.5*S,0,Math.PI*2);ctx.fillStyle=antGlow;ctx.fill();ctx.restore();}
+function drawMan(ctx,cx,gy,t,opts){const S=1.0,fw=opts.facingLeft?-1:1,lp=opts.legPhase||0,waving=opts.waving||false,speaking=opts.speaking||false;ctx.save();ctx.translate(cx,gy);ctx.save();ctx.globalAlpha=0.2;const shadowGrad=ctx.createRadialGradient(0,5,0,0,5,40);shadowGrad.addColorStop(0,'rgba(0,0,0,0.5)');shadowGrad.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=shadowGrad;ctx.scale(1.2,0.25);ctx.beginPath();ctx.arc(0,5/0.25,38,0,Math.PI*2);ctx.fill();ctx.restore();const leftLegAngle=Math.sin(lp)*0.35,rightLegAngle=-Math.sin(lp)*0.35;[[fw*8,leftLegAngle],[fw*-8,rightLegAngle]].forEach(([lx2,la])=>{ctx.save();ctx.translate(lx2,-10);ctx.rotate(la);ctx.fillStyle='#2a3d1a';ctx.beginPath();ctx.roundRect(-5,-2,10,24,3);ctx.fill();ctx.save();ctx.translate(0,24);ctx.rotate(la*0.5);ctx.fillStyle='#1e2e10';ctx.beginPath();ctx.roundRect(-4,0,8,22,3);ctx.fill();ctx.save();ctx.translate(fw*2,22);ctx.fillStyle='#111';ctx.beginPath();ctx.roundRect(fw>0?-5:-9,-2,14,8,3);ctx.fill();ctx.restore();ctx.restore();ctx.restore();});const torsoY=-85;const shirtGrad=ctx.createLinearGradient(-14,torsoY,14,torsoY+40);shirtGrad.addColorStop(0,'#2d4a18');shirtGrad.addColorStop(1,'#1e3210');ctx.fillStyle=shirtGrad;ctx.beginPath();ctx.roundRect(-14,torsoY,28,42,5);ctx.fill();ctx.strokeStyle='rgba(57,255,20,.15)';ctx.lineWidth=0.8;ctx.beginPath();ctx.moveTo(-10,torsoY+8);ctx.lineTo(10,torsoY+8);ctx.stroke();ctx.fillStyle='#0a0f06';ctx.strokeStyle='rgba(57,255,20,.3)';ctx.lineWidth=0.8;ctx.beginPath();ctx.roundRect(-14,torsoY+38,28,5,1);ctx.fill();ctx.stroke();ctx.fillStyle='rgba(57,255,20,.5)';ctx.beginPath();ctx.roundRect(-4,torsoY+38.5,8,4,1);ctx.fill();const walkArmL=Math.sin(lp)*0.3,walkArmR=-Math.sin(lp)*0.3,waveArm=waving?(-0.8+Math.sin(t*.1)*0.4):walkArmR;[[fw*14,torsoY+4,walkArmL,false],[fw*-14,torsoY+4,waving?waveArm:walkArmL,waving]].forEach(([ax,ay,aa,isWave])=>{ctx.save();ctx.translate(ax,ay);ctx.rotate(aa);ctx.fillStyle='#2d4a18';ctx.beginPath();ctx.roundRect(fw>0?0:-8,0,8,20,3);ctx.fill();ctx.save();ctx.translate(fw>0?4:-4,20);if(isWave)ctx.rotate(-0.6+Math.sin(t*.1)*0.3);else ctx.rotate(aa*0.4);ctx.fillStyle='#d4956a';ctx.beginPath();ctx.roundRect(-4,0,8,16,3);ctx.fill();ctx.translate(0,16);ctx.beginPath();ctx.arc(0,0,5,0,Math.PI*2);ctx.fillStyle='#d4956a';ctx.fill();ctx.restore();ctx.restore();});ctx.fillStyle='#d4956a';ctx.beginPath();ctx.roundRect(-5,-100,10,12,3);ctx.fill();const faceGrad=ctx.createRadialGradient(0,-116,2,0,-116,16);faceGrad.addColorStop(0,'#e8aa80');faceGrad.addColorStop(1,'#c4805a');ctx.fillStyle=faceGrad;ctx.beginPath();ctx.arc(0,-116,15,0,Math.PI*2);ctx.fill();ctx.fillStyle='#1a0f08';ctx.beginPath();ctx.arc(0,-116,15,Math.PI,0);ctx.fill();ctx.fillRect(-15,-120,30,8);[-5,5].forEach(ex2=>{ctx.beginPath();ctx.arc(ex2,-117,2.5,0,Math.PI*2);ctx.fillStyle='#1a0f08';ctx.fill();ctx.beginPath();ctx.arc(ex2+0.5,-117.5,0.8,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,0.6)';ctx.fill();});ctx.strokeStyle='#1a0f08';ctx.lineWidth=1.5;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(-8,-121);ctx.lineTo(-3,-122);ctx.stroke();ctx.beginPath();ctx.moveTo(3,-122);ctx.lineTo(8,-121);ctx.stroke();if(speaking){const mw=3+Math.sin(t*.12)*2;ctx.beginPath();ctx.ellipse(0,-113,mw,1.5+Math.abs(Math.sin(t*.12)),0,0,Math.PI*2);ctx.fillStyle='#6a3020';ctx.fill();}else{ctx.strokeStyle='#6a3020';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(-4,-113);ctx.quadraticCurveTo(0,-111,4,-113);ctx.stroke();}ctx.fillStyle='#c4a055';ctx.strokeStyle='#8a6030';ctx.lineWidth=1.2;ctx.beginPath();ctx.ellipse(0,-129,22,5,0,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.fillStyle='#c4a055';ctx.strokeStyle='#8a6030';ctx.lineWidth=1.2;ctx.beginPath();ctx.roundRect(-12,-146,24,18,4);ctx.fill();ctx.stroke();ctx.fillStyle='#2d4a18';ctx.fillRect(-12,-133,24,4);ctx.restore();}
+function drawSpeechBubble(ctx,x,y,text,fromLeft,W,H){const lines=text.split('\n'),maxLen=Math.max(...lines.map(l=>l.length));const bubbleW=Math.min(Math.max(maxLen*8+32,120),260),lineH=18,bubbleH=lines.length*lineH+24;let bx=fromLeft?x+30:x-bubbleW-30;bx=Math.max(10,Math.min(bx,W-bubbleW-10));const by=y-bubbleH-20;ctx.save();ctx.globalAlpha=0.3;ctx.fillStyle='rgba(0,0,0,0.5)';ctx.beginPath();ctx.roundRect(bx+3,by+3,bubbleW,bubbleH,8);ctx.fill();ctx.restore();ctx.fillStyle=fromLeft?'rgba(20,35,12,0.96)':'rgba(12,22,8,0.96)';ctx.strokeStyle=fromLeft?'rgba(57,255,20,0.8)':'rgba(232,160,32,0.8)';ctx.lineWidth=1.5;ctx.beginPath();ctx.roundRect(bx,by,bubbleW,bubbleH,8);ctx.fill();ctx.stroke();ctx.fillStyle=fromLeft?'rgba(20,35,12,0.96)':'rgba(12,22,8,0.96)';ctx.strokeStyle=fromLeft?'rgba(57,255,20,0.8)':'rgba(232,160,32,0.8)';ctx.lineWidth=1.5;const tailX=fromLeft?bx+20:bx+bubbleW-20;ctx.beginPath();ctx.moveTo(tailX-8,by+bubbleH);ctx.lineTo(fromLeft?x+10:x-10,by+bubbleH+18);ctx.lineTo(tailX+8,by+bubbleH);ctx.closePath();ctx.fill();ctx.stroke();const label=fromLeft?'🤖 i-Farmate':'👨 Farmer';ctx.font=`bold 9px 'Space Grotesk', sans-serif`;ctx.fillStyle=fromLeft?'rgba(57,255,20,0.7)':'rgba(232,160,32,0.7)';ctx.textAlign='left';ctx.fillText(label,bx+10,by+13);ctx.font=`12px 'Inter', sans-serif`;ctx.fillStyle=fromLeft?'rgba(240,244,236,0.95)':'rgba(255,240,200,0.95)';ctx.textAlign='left';lines.forEach((line,i)=>{ctx.fillText(line,bx+12,by+28+i*lineH);});}
+function drawNameLabel(ctx,cx,gy,name,isRobot){ctx.save();ctx.font=`bold 11px 'Space Grotesk', sans-serif`;ctx.textAlign='center';const tw=ctx.measureText(name).width,bw=tw+20,bh=18,bx=cx-bw/2,by=gy+8;ctx.fillStyle=isRobot?'rgba(20,35,12,0.8)':'rgba(12,22,8,0.8)';ctx.strokeStyle=isRobot?'rgba(57,255,20,0.5)':'rgba(232,160,32,0.4)';ctx.lineWidth=1;ctx.beginPath();ctx.roundRect(bx,by,bw,bh,3);ctx.fill();ctx.stroke();ctx.fillStyle=isRobot?'#39FF14':'#E8A020';ctx.fillText(name,cx,by+13);ctx.restore();}
+function drawReplayBtn(ctx,W,H){const bw=140,bh=40,bx=W/2-bw/2,by=H-60;ctx.fillStyle='rgba(10,13,8,0.9)';ctx.strokeStyle='rgba(57,255,20,0.7)';ctx.lineWidth=1.5;ctx.beginPath();ctx.roundRect(bx,by,bw,bh,4);ctx.fill();ctx.stroke();ctx.font=`bold 13px 'Space Grotesk', sans-serif`;ctx.textAlign='center';ctx.fillStyle='#39FF14';ctx.fillText('▶ Replay Scene',W/2,by+26);sceneCvs._replayBtn={bx,by,bw,bh};}
+sceneCvs.addEventListener('click',e=>{if(!sceneCvs._replayBtn)return;const rect=sceneCvs.getBoundingClientRect(),px=e.clientX-rect.left,py=e.clientY-rect.top;const {bx,by,bw,bh}=sceneCvs._replayBtn;if(px>=bx&&px<=bx+bw&&py>=by&&py<=by+bh){sceneState=SCENE.ROBOT_ENTER;stateT=0;sceneT=0;convoIndex=0;convoTimer=0;typedChars=0;typingTimer=0;robot.x=-120;man.x=sceneCvs.width+120;robot.speaking=false;man.speaking=false;man.waving=false;sceneCvs._replayBtn=null;}});
+(function animateScene(){if(!sceneStarted){requestAnimationFrame(animateScene);return;}const W=sceneCvs.width,H=sceneCvs.height,groundY=H*0.78,centerX=W/2;sceneT++;stateT++;sctx.clearRect(0,0,W,H);drawSceneBackground(sctx,W,H);switch(sceneState){case SCENE.ROBOT_ENTER:{const progress=Math.min(1,stateT/80),eased=1-Math.pow(1-progress,3);robot.x=-150+(centerX-60+150)*eased;robot.scale=0.4+0.6*eased;robot.legPhase+=0.12;robot.wobble=Math.sin(robot.legPhase)*3;robot.antennaWave=0;robot.facingRight=true;if(progress<0.7){sctx.save();sctx.globalAlpha=(1-progress/0.7)*0.12;for(let i=0;i<5;i++){const ly=groundY-20-i*30;sctx.beginPath();sctx.moveTo(0,ly);sctx.lineTo(robot.x+W/2,groundY);sctx.strokeStyle='#39FF14';sctx.lineWidth=1;sctx.stroke();}sctx.restore();}drawRobot3D(sctx,centerX+robot.x-centerX,groundY,sceneT,robot.scale,robot);if(stateT>85){sceneState=SCENE.ROBOT_STAND;stateT=0;}break;}case SCENE.ROBOT_STAND:{robot.x=centerX-60-centerX;robot.scale=1.0;robot.legPhase*=0.9;robot.wobble=Math.sin(sceneT*.04)*2;robot.antennaWave=Math.sin(sceneT*.06)*0.5;robot.speaking=false;robot.facingRight=true;drawRobot3D(sctx,centerX-60,groundY,sceneT,1.0,robot);if(stateT<30){sctx.save();for(let i=0;i<4;i++){const pa=sceneT*.3+i*1.57,pr=(stateT/30)*50,px2=centerX-60+Math.cos(pa)*pr,py2=groundY-20+Math.sin(pa)*pr*0.2;sctx.beginPath();sctx.arc(px2,py2,2.5,0,Math.PI*2);sctx.fillStyle=`rgba(57,255,20,${(1-stateT/30)*0.5})`;sctx.fill();}sctx.restore();}if(stateT>60){sceneState=SCENE.ROBOT_INTRO;stateT=0;}break;}case SCENE.ROBOT_INTRO:{robot.speaking=true;robot.antennaWave=1;robot.wobble=Math.sin(sceneT*.04)*2;drawRobot3D(sctx,centerX-60,groundY,sceneT,1.0,robot);const intro="Hello! I am i-Farmate 🤖\nYour autonomous AI farming robot.\nI work 24/7 to protect your crops!";typingTimer++;if(typingTimer%2===0&&typedChars<intro.length)typedChars++;drawSpeechBubble(sctx,centerX-60,groundY-160,intro.substring(0,typedChars),true,W,H);if(stateT>180){sceneState=SCENE.MAN_ENTER;stateT=0;typedChars=0;typingTimer=0;robot.speaking=false;}break;}case SCENE.MAN_ENTER:{robot.speaking=false;robot.wobble=Math.sin(sceneT*.04)*1.5;robot.antennaWave=0.3;drawRobot3D(sctx,centerX-60,groundY,sceneT,1.0,robot);const progress=Math.min(1,stateT/90),eased=1-Math.pow(1-progress,2);man.x=W+120-(W+120-(centerX+80))*eased;man.legPhase+=0.14*progress;man.armSwing=man.legPhase;man.waving=progress>0.8;man.facingLeft=true;drawMan(sctx,man.x,groundY,sceneT,man);drawNameLabel(sctx,centerX-60,groundY,'i-Farmate',true);drawNameLabel(sctx,man.x,groundY,'Farmer',false);if(progress>0.8){robot.armWave=Math.sin(sceneT*.1)*0.5;}if(stateT>100){man.x=centerX+80;man.legPhase=0;man.waving=false;sceneState=SCENE.CONVO;stateT=0;convoIndex=0;convoTimer=0;typedChars=0;typingTimer=0;}break;}case SCENE.CONVO:{robot.wobble=Math.sin(sceneT*.04)*1.5;robot.facingRight=true;man.facingLeft=true;const line=CONVO_SCRIPT[convoIndex];if(!line){sceneState=SCENE.GOODBYE;stateT=0;break;}const isRobot=line.speaker==='robot';robot.speaking=isRobot;man.speaking=!isRobot;robot.antennaWave=isRobot?0.8:0.2;man.waving=false;robot.legPhase+=0.02;man.legPhase*=0.95;typingTimer++;if(typingTimer%2===0&&typedChars<line.text.length)typedChars++;convoTimer++;if(convoTimer>=line.duration){convoIndex++;convoTimer=0;typedChars=0;typingTimer=0;}drawRobot3D(sctx,centerX-60,groundY,sceneT,1.0,robot);drawMan(sctx,man.x,groundY,sceneT,man);drawNameLabel(sctx,centerX-60,groundY,'i-Farmate',true);drawNameLabel(sctx,man.x,groundY,'Farmer',false);if(typedChars>0){if(isRobot)drawSpeechBubble(sctx,centerX-60,groundY-160,line.text.substring(0,typedChars),true,W,H);else drawSpeechBubble(sctx,man.x,groundY-160,line.text.substring(0,typedChars),false,W,H);}sctx.save();const dotW=CONVO_SCRIPT.length*16,dotStartX=W/2-dotW/2;CONVO_SCRIPT.forEach((_,i)=>{sctx.beginPath();sctx.arc(dotStartX+i*16+8,H-20,4,0,Math.PI*2);sctx.fillStyle=i===convoIndex?'#39FF14':i<convoIndex?'rgba(57,255,20,0.5)':'rgba(57,255,20,0.15)';sctx.fill();});sctx.restore();break;}case SCENE.GOODBYE:{robot.speaking=false;man.speaking=false;man.waving=true;robot.wobble=Math.sin(sceneT*.04)*1.5;const progress=Math.min(1,stateT/100),robotExit=centerX-60-progress*300,manExit=centerX+80+progress*350;robot.legPhase+=0.12;man.legPhase+=0.14;robot.armWave=Math.sin(sceneT*.12)*0.5;robot.facingRight=false;man.facingLeft=false;drawRobot3D(sctx,robotExit,groundY,sceneT,1.0-progress*0.3,robot);drawMan(sctx,manExit,groundY,sceneT,man);sctx.save();for(let i=0;i<6;i++){const pa=sceneT*.2+i*1.05,pr=progress*60,px2=W/2+Math.cos(pa)*pr,py2=groundY-40+Math.sin(pa)*pr*0.3;sctx.beginPath();sctx.arc(px2,py2,2,0,Math.PI*2);sctx.fillStyle=`rgba(57,255,20,${Math.max(0,0.6-progress*0.5)})`;sctx.fill();}sctx.restore();if(stateT>110){sceneState=SCENE.DONE;stateT=0;}break;}case SCENE.DONE:{const alpha=Math.min(1,stateT/40);sctx.save();sctx.globalAlpha=alpha;sctx.textAlign='center';sctx.font=`bold 22px 'Space Grotesk', sans-serif`;sctx.fillStyle='rgba(57,255,20,0.9)';sctx.fillText('i-Farmate — Your AI Farm Companion 🌱',W/2,H/2-30);sctx.font=`14px 'Inter', sans-serif`;sctx.fillStyle='rgba(240,244,236,0.6)';sctx.fillText('24/7 Autonomous · AI-Precision · Zero Chemicals',W/2,H/2+5);sctx.restore();drawReplayBtn(sctx,W,H);break;}}requestAnimationFrame(animateScene);})();
+
+/* ══════════════════════════════════════
+   CAPABILITIES CAROUSEL
+══════════════════════════════════════ */
+const capTrack=document.getElementById('cap-track');
+const capDots=document.querySelectorAll('.carousel-dot');
+const capTimerBar=document.getElementById('cap-timer-bar');
+let capPage=0,capPages=2,capInterval=null,capTimerAnim=null;
+function gotoCapPage(n){
+  capPage=(n+capPages)%capPages;
+  capTrack.style.transform=`translateX(-${capPage*100}%)`;
+  capDots.forEach((d,i)=>d.classList.toggle('active',i===capPage));
+  resetCapTimer();
+}
+function resetCapTimer(){
+  capTimerBar.style.transition='none';capTimerBar.style.width='0%';
+  clearTimeout(capTimerAnim);
+  requestAnimationFrame(()=>{
+    requestAnimationFrame(()=>{
+      capTimerBar.style.transition='width 5s linear';
+      capTimerBar.style.width='100%';
+    });
+  });
+  clearInterval(capInterval);
+  capInterval=setInterval(()=>gotoCapPage(capPage+1),5000);
+}
+document.getElementById('cap-prev').addEventListener('click',()=>gotoCapPage(capPage-1));
+document.getElementById('cap-next').addEventListener('click',()=>gotoCapPage(capPage+1));
+capDots.forEach(d=>d.addEventListener('click',()=>gotoCapPage(+d.dataset.idx)));
+resetCapTimer();
+
+/* ══════════════════════════════════════
+   FLIP CARDS
+══════════════════════════════════════ */
+document.querySelectorAll('.flip-card').forEach(card=>{
+  card.addEventListener('click',()=>card.classList.toggle('flipped'));
+});
+
+/* ── SCROLL REVEAL ── */
+const obsRV=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vs');obsRV.unobserve(e.target);}});},{threshold:.08,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.rv,.rl,.rr,.rs').forEach(el=>obsRV.observe(el));
+
+/* ── STEPS ── */
+const sps=document.querySelectorAll('.sp'),vlEl=document.getElementById('vl'),v1=document.getElementById('v1'),v2=document.getElementById('v2');
+const SD=[{l:'Field Patrol',a:'Coverage: 94%',b:'Speed: 0.8 m/s'},{l:'AI Detection',a:'Anomalies: 3 found',b:'Confidence: 97%'},{l:'Intervention',a:'Weeds removed: 12',b:'Precision: ±2mm'},{l:'Data Report',a:'Health index: 8.6/10',b:'Next action: 2h'}];
+let as2=0;
+function setStep(n){sps.forEach((s,i)=>s.classList.toggle('active',i===n));const d=SD[n];if(vlEl)vlEl.textContent=d.l;if(v1)v1.textContent=d.a;if(v2)v2.textContent=d.b;as2=n;}
+sps.forEach((s,i)=>s.addEventListener('click',()=>setStep(i)));
+setInterval(()=>setStep((as2+1)%sps.length),3200);
+
+/* ══════════════════════════════════════
+   MINI 3D ROBOT FOR #HOW SECTION
+   Follows mouse inside the section — 
+   replaces the default cursor there.
+══════════════════════════════════════ */
+const howSection=document.getElementById('how');
+const howRobotCvs=document.getElementById('how-robot');
+const hrCtx=howRobotCvs.getContext('2d');
+let hrX=0,hrY=0,hrTX=0,hrTY=0,hrT=0,hrActive=false,hrLegPhase=0,hrVX=0,hrVY=0;
+
+function drawHowRobot(ctx,t,vx,vy){
+  ctx.clearRect(0,0,60,80);
+  const cx=30,by=72;
+  const speed=Math.sqrt(vx*vx+vy*vy);
+  const legSpeed=speed*.08;
+  hrLegPhase+=legSpeed+0.06;
+  const tilt=Math.max(-.2,Math.min(.2,vx*.008));
+  const fw=vx>0?1:-1;
+
+  ctx.save();ctx.translate(cx,by);ctx.rotate(tilt);
+
+  // Shadow
+  ctx.save();ctx.globalAlpha=.2;const sG=ctx.createRadialGradient(0,3,0,0,3,18);sG.addColorStop(0,'rgba(0,0,0,.7)');sG.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=sG;ctx.scale(1,.28);ctx.beginPath();ctx.arc(0,3/.28,16,0,Math.PI*2);ctx.fill();ctx.restore();
+
+  // Tracks / wheels
+  [-12,12].forEach(ox=>{
+    ctx.fillStyle='#0d1a08';ctx.strokeStyle='rgba(57,255,20,.55)';ctx.lineWidth=1.1;
+    ctx.beginPath();ctx.roundRect(ox-7,-8,14,10,3);ctx.fill();ctx.stroke();
+    // tread lines
+    for(let i=0;i<3;i++){ctx.strokeStyle='rgba(57,255,20,.2)';ctx.lineWidth=.7;ctx.beginPath();ctx.moveTo(ox-4+i*3,-8);ctx.lineTo(ox-4+i*3,2);ctx.stroke();}
+    // hub
+    const hRot=hrLegPhase*(ox>0?1:-1);
+    ctx.save();ctx.translate(ox,-3);ctx.beginPath();ctx.arc(0,0,3.5,0,Math.PI*2);ctx.fillStyle='#0a1208';ctx.strokeStyle='rgba(57,255,20,.5)';ctx.lineWidth=.9;ctx.fill();ctx.stroke();
+    ctx.save();ctx.rotate(hRot);ctx.strokeStyle='rgba(57,255,20,.35)';ctx.lineWidth=.8;ctx.beginPath();ctx.moveTo(-3,0);ctx.lineTo(3,0);ctx.stroke();ctx.beginPath();ctx.moveTo(0,-3);ctx.lineTo(0,3);ctx.stroke();ctx.restore();ctx.restore();
+  });
+
+  // Body
+  const bG=ctx.createLinearGradient(-14,-36,14,-10);bG.addColorStop(0,'#1c2e10');bG.addColorStop(1,'#0e1a06');
+  ctx.fillStyle=bG;ctx.strokeStyle='#39FF14';ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.roundRect(-14,-36,28,32,4);ctx.fill();ctx.stroke();
+  // panel lines
+  ctx.strokeStyle='rgba(57,255,20,.12)';ctx.lineWidth=.6;
+  ctx.beginPath();ctx.moveTo(-10,-26);ctx.lineTo(10,-26);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(-10,-16);ctx.lineTo(10,-16);ctx.stroke();
+  // scan display
+  const sY=-30+(t*.9%(14));
+  ctx.fillStyle='rgba(57,255,20,.06)';ctx.strokeStyle='rgba(57,255,20,.38)';ctx.lineWidth=.8;
+  ctx.beginPath();ctx.roundRect(-10,-32,20,12,2);ctx.fill();ctx.stroke();
+  ctx.fillStyle='rgba(57,255,20,.4)';ctx.fillRect(-9,sY,18,1.2);
+  // LEDs
+  [-5,0,5].forEach((lx,li)=>{ctx.beginPath();ctx.arc(lx,-18,1.8,0,Math.PI*2);const cols=['#39FF14','#E8A020','#39FF14'];ctx.fillStyle=Math.floor(t*.06+li)%3===0?cols[li]:'rgba(57,255,20,.12)';ctx.fill();});
+
+  // Right arm with spinning rotor
+  const armBob=Math.sin(hrLegPhase*.5)*4;
+  ctx.strokeStyle='rgba(57,255,20,.6)';ctx.lineWidth=1.2;ctx.lineCap='round';
+  ctx.beginPath();ctx.moveTo(fw*14,-28);ctx.lineTo(fw*22,-22+armBob);ctx.stroke();
+  ctx.save();ctx.translate(fw*22,-22+armBob);
+  for(let i=0;i<3;i++){const ra=t*.18+i*(Math.PI*2/3);ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(Math.cos(ra)*6,Math.sin(ra)*6);ctx.strokeStyle=`rgba(232,160,32,${.55+Math.abs(Math.cos(ra))*.35})`;ctx.lineWidth=1.5;ctx.stroke();}
+  ctx.beginPath();ctx.arc(0,0,2.2,0,Math.PI*2);ctx.fillStyle='#E8A020';ctx.fill();
+  ctx.restore();
+
+  // Left arm sensor
+  ctx.strokeStyle='rgba(57,255,20,.5)';ctx.lineWidth=1.1;
+  ctx.beginPath();ctx.moveTo(-fw*14,-28);ctx.lineTo(-fw*20,-24-armBob*.4);ctx.stroke();
+  ctx.beginPath();ctx.arc(-fw*21,-23-armBob*.4,3,0,Math.PI*2);
+  ctx.fillStyle='rgba(57,255,20,.1)';ctx.strokeStyle='rgba(57,255,20,.55)';ctx.lineWidth=.9;ctx.fill();ctx.stroke();
+
+  // Head with 3D feel
+  const headBob=Math.sin(t*.04)*1.5;
+  const hG=ctx.createLinearGradient(-13,-58,13,-42);hG.addColorStop(0,'#1e3210');hG.addColorStop(1,'#0e1e06');
+  ctx.fillStyle=hG;ctx.strokeStyle='#39FF14';ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.roundRect(-13,-60+headBob,26,20,5);ctx.fill();ctx.stroke();
+
+  // Eyes with glow
+  [-5,5].forEach(ex=>{
+    ctx.beginPath();ctx.arc(ex,-51+headBob,3.5,0,Math.PI*2);ctx.fillStyle='rgba(57,255,20,.1)';ctx.fill();
+    const eG=ctx.createRadialGradient(ex,-51+headBob,0,ex,-51+headBob,3);eG.addColorStop(0,'rgba(57,255,20,.95)');eG.addColorStop(1,'rgba(57,255,20,.05)');
+    ctx.beginPath();ctx.arc(ex,-51+headBob,3,0,Math.PI*2);ctx.fillStyle=eG;ctx.fill();
+    // pupil
+    ctx.beginPath();ctx.arc(ex+fw*.8,-51+headBob,1.1,0,Math.PI*2);ctx.fillStyle='#0a1208';ctx.fill();
+  });
+
+  // Mouth (speaking animation)
+  const mw=2.5+Math.sin(t*.12)*2;
+  ctx.fillStyle='rgba(57,255,20,.5)';ctx.beginPath();ctx.roundRect(-mw/2,-43+headBob,mw,2.2,1);ctx.fill();
+
+  // Antenna
+  const antBob=Math.sin(t*.1)*2.5;
+  ctx.strokeStyle='rgba(57,255,20,.7)';ctx.lineWidth=1.2;
+  ctx.beginPath();ctx.moveTo(0,-60+headBob);ctx.lineTo(antBob,-68+headBob);ctx.stroke();
+  const antPulse=Math.floor(t*.045)%2===0;
+  ctx.beginPath();ctx.arc(antBob,-70+headBob,2.5,0,Math.PI*2);
+  ctx.fillStyle=antPulse?'#39FF14':'rgba(57,255,20,.25)';ctx.fill();
+
+  // Ground sparks occasionally
+  if(speed>2&&Math.random()<.25){
+    const sx=(Math.random()-.5)*16,sy=0;
+    ctx.beginPath();ctx.arc(sx,sy,1,0,Math.PI*2);
+    ctx.fillStyle=`rgba(57,255,20,${Math.random()*.5+.3})`;ctx.fill();
+  }
+
+  ctx.restore();
+}
+
+// Track mouse inside #how section
+howSection.addEventListener('mouseenter',e=>{hrActive=true;howRobotCvs.style.display='block';});
+howSection.addEventListener('mouseleave',()=>{hrActive=false;howRobotCvs.style.display='none';});
+howSection.addEventListener('mousemove',e=>{
+  hrVX=e.clientX-hrTX;hrVY=e.clientY-hrTY;
+  hrTX=e.clientX;hrTY=e.clientY;
+});
+// Hide default cursor in #how
+const howStyle=document.createElement('style');
+howStyle.textContent='#how{cursor:none}';
+document.head.appendChild(howStyle);
+
+(function animateHowRobot(){
+  hrT++;
+  if(hrActive){
+    hrX+=(hrTX-hrX)*.15;hrY+=(hrTY-hrY)*.15;
+    howRobotCvs.style.left=hrX+'px';
+    howRobotCvs.style.top=hrY+'px';
+    drawHowRobot(hrCtx,hrT,hrVX,hrVY);
+    hrVX*=0.85;hrVY*=0.85;
+  }
+  requestAnimationFrame(animateHowRobot);
+})();
+
+/* ── FIELD CANVAS ── */
+const fc2=document.getElementById('fc');
+if(fc2){
+  const fctx=fc2.getContext('2d');
+  function szFC(){const p=fc2.parentElement;fc2.width=p.offsetWidth;fc2.height=p.offsetHeight;}szFC();window.addEventListener('resize',szFC,{passive:true});
+  let bx2=30,by3=0,bt=0,rows=[],sd=1;
+  function buildR(){rows=[];const h=fc2.height;for(let i=0;i<7;i++)rows.push({y:60+(i/6)*(h-120),sc:0});by3=rows[0].y;}buildR();
+  (function afc(){if(!rows.length){requestAnimationFrame(afc);return;}const w=fc2.width,h=fc2.height;fctx.clearRect(0,0,w,h);rows.forEach(r=>{fctx.beginPath();fctx.moveTo(20,r.y);fctx.lineTo(w-20,r.y);fctx.strokeStyle='rgba(57,255,20,.07)';fctx.lineWidth=1;fctx.stroke();if(r.sc>0){fctx.fillStyle='rgba(57,255,20,.04)';fctx.fillRect(20,r.y-10,(w-40)*r.sc,20);}for(let c=0;c<12;c++){const cx2=30+(c/11)*(w-60);fctx.beginPath();fctx.arc(cx2,r.y,2.8,0,Math.PI*2);fctx.fillStyle=r.sc>c/11?'rgba(57,255,20,.48)':'rgba(57,255,20,.09)';fctx.fill();}});fctx.save();fctx.translate(bx2,by3);fctx.beginPath();fctx.arc(0,0,8,0,Math.PI*2);fctx.fillStyle='rgba(57,255,20,.13)';fctx.fill();fctx.strokeStyle='#39FF14';fctx.lineWidth=1.4;fctx.stroke();fctx.beginPath();fctx.arc(0,0,2.8,0,Math.PI*2);fctx.fillStyle='#39FF14';fctx.fill();fctx.restore();bx2+=1.4*sd;if(bx2>=w-30){sd=-1;if(bt<rows.length-1)bt++;}if(bx2<=30){sd=1;if(bt<rows.length-1)bt++;}by3+=(rows[bt].y-by3)*.08;rows[bt].sc=Math.min(1,rows[bt].sc+.0025);requestAnimationFrame(afc);})();
+}
+
+/* ── HERO PARALLAX ── */
+window.addEventListener('scroll',()=>{const hc=document.querySelector('.hc');if(hc)hc.style.transform=`translateY(${window.scrollY*.28}px)`;},{passive:true});
+
+/* ── MAGNETIC BUTTONS ── */
+document.querySelectorAll('.bp,.bo,.nc').forEach(btn=>{
+  btn.addEventListener('mousemove',e=>{const r=btn.getBoundingClientRect();btn.style.transform=`translate(${(e.clientX-r.left-r.width/2)*.1}px,${(e.clientY-r.top-r.height/2)*.1}px)`;});
+  btn.addEventListener('mouseleave',()=>{btn.style.transform='';});
+});
+
+/* ── SCROLL PARTICLES ── */
+let lpt=0;
+window.addEventListener('scroll',()=>{const now=Date.now();if(now-lpt<400)return;lpt=now;[90,window.innerWidth-90].forEach(x=>{const p=document.createElement('div');p.style.cssText=`position:fixed;left:${x}px;top:${window.innerHeight*.5}px;width:3px;height:3px;background:#39FF14;border-radius:50%;pointer-events:none;z-index:9997;transition:all .9s ease;box-shadow:0 0 5px #39FF14`;document.body.appendChild(p);requestAnimationFrame(()=>{p.style.transform=`translate(${(Math.random()-.5)*70}px,${-35-Math.random()*50}px)`;p.style.opacity='0';});setTimeout(()=>p.remove(),950);});},{passive:true});
+
+/* ── CONTACT FORM ── */
+const rcBox=document.getElementById('recaptcha-box'),rcCheck=document.getElementById('recaptcha-check'),submitBtn=document.getElementById('submit-btn');
+const fnameEl=document.getElementById('f-name'),femailEl=document.getElementById('f-email'),fserviceEl=document.getElementById('f-service'),fmsgEl=document.getElementById('f-msg');
+let rcDone=false;
+function validateForm(){const ok=fnameEl.value.trim()!==''&&femailEl.value.trim().includes('@')&&fserviceEl.value!==''&&fmsgEl.value.trim()!==''&&rcDone;submitBtn.disabled=!ok;}
+[fnameEl,femailEl,fserviceEl,fmsgEl].forEach(el=>el.addEventListener('input',validateForm));
+rcBox.addEventListener('click',()=>{if(rcDone)return;rcCheck.style.animation='rcSpin 0.6s ease';setTimeout(()=>{rcDone=true;rcCheck.classList.add('checked');rcCheck.style.animation='';validateForm();},600);});
+const rcStyle=document.createElement('style');rcStyle.textContent=`@keyframes rcSpin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}`;document.head.appendChild(rcStyle);
+submitBtn.addEventListener('click',()=>{if(submitBtn.disabled)return;submitBtn.textContent='Sending…';submitBtn.disabled=true;setTimeout(()=>{document.getElementById('form-body').style.display='none';const succ=document.getElementById('form-success');succ.style.display='block';},1200);});
+</script>
+</body>
+</html>
