@@ -27,8 +27,8 @@ body{background:var(--soil);color:var(--off-white);font-family:var(--fb);overflo
 @keyframes lf{0%{width:0}100%{width:100%}}
 #cursor{position:fixed;width:10px;height:10px;background:var(--chloro);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .15s,height .15s;mix-blend-mode:screen}
 #cr{position:fixed;width:36px;height:36px;border:1.5px solid rgba(57,255,20,.45);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:transform .16s ease,width .15s,height .15s}
-#sr{position:fixed;right:0;top:0;width:104px;height:100vh;z-index:50;pointer-events:none}
-#sr canvas{display:block;width:104px;height:100vh}
+
+/* ── ROBOT SIDEBAR ── */
 #rbd{position:fixed;left:16px;z-index:51;pointer-events:none;width:54px;height:74px}
 #rbu{position:fixed;left:16px;z-index:51;pointer-events:none;width:54px;height:74px;display:none}
 .robot-tip{
@@ -48,6 +48,8 @@ body{background:var(--soil);color:var(--off-white);font-family:var(--fb);overflo
 .robot-tip .tip-icon{position:absolute;left:.55rem;top:50%;transform:translateY(-50%);width:10px;height:10px;border-radius:50%;background:var(--chloro);box-shadow:0 0 8px var(--chloro);animation:tipDotPulse 1.2s ease-in-out infinite;}
 @keyframes tipDotPulse{0%,100%{transform:translateY(-50%) scale(1)}50%{transform:translateY(-50%) scale(1.5);opacity:.6}}
 .robot-tip.show{opacity:1;transform:translateX(0)}
+
+/* ── DRONE ── */
 #drone-wrap{position:fixed;z-index:200;pointer-events:none;transition:opacity 0.5s ease}
 #drone-canvas{display:block;pointer-events:none}
 #drone-tooltip{
@@ -62,25 +64,76 @@ body{background:var(--soil);color:var(--off-white);font-family:var(--fb);overflo
 #drone-tooltip::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(57,255,20,.06) 50%,transparent 100%);animation:tipScan 2s linear infinite;}
 .drone-tip-bar{position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,transparent,var(--chloro),transparent);animation:tipBarPulse 1.4s ease-in-out infinite;}
 .drone-tip-dot{position:absolute;left:.5rem;top:50%;transform:translateY(-50%);width:8px;height:8px;border-radius:50%;background:var(--chloro);box-shadow:0 0 6px var(--chloro);animation:tipDotPulse 1.2s ease-in-out infinite;}
+
+/* ══ INNOVATIVE NAVBAR ══ */
 nav{
   position:fixed;top:0;left:0;right:0;z-index:100;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:1.2rem 4rem;
-  background:rgba(10,13,8,0.92);
-  backdrop-filter:blur(14px);
-  border-bottom:1px solid var(--border);
+  padding:0;
   transform:translateY(-100%);
-  transition:transform .38s cubic-bezier(.16,1,.3,1), padding .3s ease, background .3s ease;
+  transition:transform .38s cubic-bezier(.16,1,.3,1);
+}
+
+.nav-logo{
+  height:60px;
+  width:auto;
+  display:block;
+  object-fit:contain;
+  border-radius:12px;
+}
+
+.nav-logo:hover{
+  transform:scale(1.08);
 }
 nav.nav-visible{transform:translateY(0)}
-.nl{font-family:var(--fd);font-size:1.35rem;font-weight:700;color:var(--off-white);text-decoration:none;letter-spacing:-.02em}
+.nav-inner{
+  display:flex;align-items:center;justify-content:space-between;
+  margin:1rem 2rem;
+  background:rgba(10,13,8,0.88);
+  backdrop-filter:blur(20px);
+  border:1px solid rgba(57,255,20,0.18);
+  border-radius:50px;
+  padding:.65rem 1.2rem .65rem 1.8rem;
+  box-shadow:0 0 40px rgba(57,255,20,0.06), 0 8px 32px rgba(0,0,0,.4);
+  transition:border-color .3s, box-shadow .3s;
+  position:relative;
+}
+.nav-inner:hover{
+  border-color:rgba(57,255,20,0.35);
+  box-shadow:0 0 60px rgba(57,255,20,0.1), 0 8px 40px rgba(0,0,0,.5);
+}
+.nl{font-family:var(--fd);font-size:1.2rem;font-weight:700;color:var(--off-white);text-decoration:none;letter-spacing:-.02em;display:flex;align-items:center;gap:.5rem}
 .nl span{color:var(--chloro)}
-.nm{display:flex;gap:2rem;list-style:none}
-.nm a{font-size:.82rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s;position:relative}
-.nm a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--chloro);transition:width .3s}
-.nm a:hover{color:var(--off-white)}.nm a:hover::after{width:100%}
-.nc{font-size:.82rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:.55rem 1.4rem;border:1.5px solid var(--chloro);color:var(--chloro);background:transparent;border-radius:2px;cursor:pointer;text-decoration:none;transition:background .2s,color .2s}
-.nc:hover{background:var(--chloro);color:var(--soil)}
+.nl-dot{width:7px;height:7px;border-radius:50%;background:var(--chloro);box-shadow:0 0 8px var(--chloro);animation:tipDotPulse 1.4s ease-in-out infinite;flex-shrink:0}
+.nm{display:flex;gap:.2rem;list-style:none;align-items:center;background:rgba(57,255,20,0.04);border:1px solid rgba(57,255,20,0.1);border-radius:50px;padding:.3rem .4rem;}
+.nm a{font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s,background .2s;padding:.38rem .85rem;border-radius:50px;position:relative;font-weight:500;}
+.nm a:hover{color:var(--off-white);background:rgba(57,255,20,0.1);}
+.nm a.active-link{color:var(--chloro);background:rgba(57,255,20,0.12);}
+.nc{font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.55rem 1.4rem;border:1.5px solid var(--chloro);color:var(--chloro);background:transparent;border-radius:50px;cursor:pointer;text-decoration:none;transition:background .2s,color .2s,box-shadow .2s;white-space:nowrap;}
+.nc:hover{background:var(--chloro);color:var(--soil);box-shadow:0 0 20px rgba(57,255,20,.3);}
+.nav-ham{display:none;width:42px;height:42px;border:1.5px solid rgba(57,255,20,0.3);border-radius:50%;background:transparent;cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:5px;transition:border-color .2s,background .2s;}
+.nav-ham:hover{border-color:var(--chloro);background:rgba(57,255,20,0.08);}
+.nav-ham span{display:block;width:16px;height:1.5px;background:var(--chloro);border-radius:2px;transition:transform .3s,opacity .3s,width .3s;}
+.nav-ham.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
+.nav-ham.open span:nth-child(2){opacity:0;width:0;}
+.nav-ham.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
+.nav-drawer{
+  position:absolute;top:calc(100% + .5rem);left:0;right:0;
+  background:rgba(10,13,8,0.98);border:1px solid rgba(57,255,20,0.2);border-radius:20px;
+  padding:1rem;overflow:hidden;
+  max-height:0;opacity:0;
+  transition:max-height .45s cubic-bezier(.16,1,.3,1), opacity .3s ease;
+  backdrop-filter:blur(20px);
+  box-shadow:0 20px 60px rgba(0,0,0,.6), 0 0 40px rgba(57,255,20,.06);
+  pointer-events:none;
+}
+.nav-drawer.open{max-height:400px;opacity:1;pointer-events:all;}
+.nav-drawer ul{list-style:none;display:flex;flex-direction:column;gap:.3rem;margin-bottom:.8rem;}
+.nav-drawer ul a{display:block;font-size:.85rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s,background .2s,padding-left .2s;padding:.65rem 1rem;border-radius:10px;}
+.nav-drawer ul a:hover{color:var(--off-white);background:rgba(57,255,20,.08);padding-left:1.4rem;}
+.nav-drawer .nc{display:block;text-align:center;margin-top:.5rem;}
+.nav-progress-ring{position:absolute;right:1.1rem;top:50%;transform:translateY(-50%);width:38px;height:38px;pointer-events:none;}
+.nav-progress-ring circle{transition:stroke-dashoffset .1s linear;}
+
 #hero{min-height:100vh;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
 #rc{position:absolute;inset:0;width:100%;height:100%;opacity:.4}
 #gc{position:absolute;bottom:0;left:0;right:0;height:170px;pointer-events:none;z-index:1}
@@ -142,56 +195,11 @@ section{padding:7rem 5rem 7rem 5.5rem;position:relative}
 .scene-header .slb{justify-content:center}
 .scene-header .st{text-align:center}
 .scene-header .sb{text-align:center;margin:0 auto}
+
+/* ══ CAPABILITIES ══ */
 #cap{background:var(--soil-2);padding:7rem 5rem 5rem 5.5rem;}
 .cph{margin-bottom:0}
-.cap-layout{display:grid;grid-template-columns:1fr 1.05fr;gap:3.5rem;align-items:start;margin-top:3rem;}
-.cap-video-panel{position:relative;display:flex;flex-direction:column;gap:0;}
-.cap-video-hud{
-  position:relative;background:#000;border:1px solid rgba(57,255,20,.35);
-  border-radius:4px;overflow:hidden;aspect-ratio:16/9;cursor:pointer;
-  transition:border-color .3s, box-shadow .3s;box-shadow:0 0 0 rgba(57,255,20,0);
-}
-.cap-video-hud:hover{border-color:rgba(57,255,20,.8);box-shadow:0 0 40px rgba(57,255,20,.18), 0 0 80px rgba(57,255,20,.06);}
-.cap-video-hud iframe{position:absolute;inset:0;width:100%;height:100%;border:none;display:none;z-index:2;}
-.cap-video-hud.playing iframe{display:block;}
-.cap-video-hud.playing .cvh-overlay{display:none;}
-.cvh-thumb{position:absolute;inset:0;background:url('https://img.youtube.com/vi/aGDtlo2xHJI/maxresdefault.jpg') center/cover no-repeat;transition:transform .5s ease;z-index:0;}
-.cap-video-hud:hover .cvh-thumb{transform:scale(1.04);}
-.cvh-overlay{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(0,0,0,.18) 0%,rgba(0,0,0,.55) 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.2rem;}
-.cvh-overlay::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.06) 0px,rgba(0,0,0,.06) 1px,transparent 1px,transparent 3px);pointer-events:none;z-index:0;}
-.cvh-overlay::after{content:'';position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(57,255,20,.45),transparent);animation:scanLine 2.8s ease-in-out infinite;z-index:1;}
-@keyframes scanLine{0%{top:0;opacity:.6}100%{top:100%;opacity:0}}
-.cvh-corner{position:absolute;width:18px;height:18px;z-index:3;pointer-events:none;}
-.cvh-corner.tl{top:10px;left:10px;border-top:2px solid var(--chloro);border-left:2px solid var(--chloro);}
-.cvh-corner.tr{top:10px;right:10px;border-top:2px solid var(--chloro);border-right:2px solid var(--chloro);}
-.cvh-corner.bl{bottom:10px;left:10px;border-bottom:2px solid var(--chloro);border-left:2px solid var(--chloro);}
-.cvh-corner.br{bottom:10px;right:10px;border-bottom:2px solid var(--chloro);border-right:2px solid var(--chloro);}
-.cvh-topbar{position:absolute;top:0;left:0;right:0;z-index:4;display:flex;align-items:center;justify-content:space-between;padding:.55rem 1rem;background:linear-gradient(180deg,rgba(0,0,0,.7),transparent);pointer-events:none;}
-.cvh-badge{font-family:var(--fd);font-size:.65rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--soil);background:var(--chloro);padding:.2rem .6rem;border-radius:2px;}
-.cvh-live{display:flex;align-items:center;gap:.45rem;font-family:var(--fd);font-size:.65rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(240,244,236,.75);}
-.cvh-live-dot{width:6px;height:6px;border-radius:50%;background:var(--chloro);animation:livePulse 1.2s ease-in-out infinite;box-shadow:0 0 6px var(--chloro);}
-@keyframes livePulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.4)}}
-.cvh-bottombar{position:absolute;bottom:0;left:0;right:0;z-index:4;padding:.6rem 1rem;background:linear-gradient(0deg,rgba(0,0,0,.8),transparent);pointer-events:none;}
-.cvh-title{font-family:var(--fd);font-size:.82rem;font-weight:600;color:var(--off-white);margin-bottom:.2rem;}
-.cvh-sub{font-family:var(--fd);font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(57,255,20,.65);}
-.cvh-play{position:relative;z-index:5;width:72px;height:72px;border-radius:50%;background:rgba(57,255,20,.15);border:2px solid var(--chloro);display:flex;align-items:center;justify-content:center;transition:background .3s, transform .3s, box-shadow .3s;box-shadow:0 0 0 0 rgba(57,255,20,.3);animation:playRing 2.4s ease-in-out infinite;flex-shrink:0;}
-@keyframes playRing{0%,100%{box-shadow:0 0 0 0 rgba(57,255,20,.3)}50%{box-shadow:0 0 0 14px rgba(57,255,20,0)}}
-.cap-video-hud:hover .cvh-play{background:rgba(57,255,20,.28);transform:scale(1.1);}
-.cvh-play svg{margin-left:5px;}
-.cvh-cta{position:relative;z-index:5;font-family:var(--fd);font-size:.78rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(240,244,236,.85);display:flex;align-items:center;gap:.5rem;}
-.cvh-cta span{color:var(--chloro);}
-.cap-video-meta{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1rem;background:rgba(20,26,16,.9);border:1px solid var(--border);border-top:none;border-radius:0 0 4px 4px;}
-.cvm-left{display:flex;align-items:center;gap:.75rem;}
-.cvm-icon{width:32px;height:32px;border-radius:50%;background:rgba(57,255,20,.1);border:1px solid rgba(57,255,20,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.cvm-label{font-family:var(--fd);font-size:.75rem;font-weight:600;color:var(--off-white);}
-.cvm-sub{font-size:.68rem;color:var(--muted);}
-.cvm-duration{font-family:var(--fd);font-size:.72rem;color:var(--chloro);letter-spacing:.08em;font-weight:600;background:rgba(57,255,20,.07);border:1px solid rgba(57,255,20,.2);padding:.2rem .6rem;border-radius:2px;}
-.cap-stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:1.2rem;border:1px solid var(--border);border-radius:4px;overflow:hidden;}
-.cap-stat{padding:.85rem 1rem;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:.25rem;background:rgba(20,26,16,.6);transition:background .3s;}
-.cap-stat:last-child{border-right:none;}
-.cap-stat:hover{background:rgba(57,255,20,.04);}
-.cs-val{font-family:var(--fd);font-size:1.25rem;font-weight:700;color:var(--chloro);}
-.cs-lbl{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
+.cap-layout{display:grid;grid-template-columns:1.05fr 1fr;gap:3.5rem;align-items:start;margin-top:3rem;}
 .cap-carousel-panel{display:flex;flex-direction:column;}
 .carousel-wrapper{position:relative;overflow:hidden;}
 .carousel-track{display:flex;transition:transform .65s cubic-bezier(.16,1,.3,1);}
@@ -219,23 +227,37 @@ section{padding:7rem 5rem 7rem 5.5rem;position:relative}
 .carousel-page-label span{color:var(--chloro);font-weight:600;}
 .carousel-timer{width:100%;height:2px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:.7rem}
 .carousel-timer-bar{height:100%;background:var(--chloro);border-radius:2px;width:0;transition:width linear}
-#vid-modal{position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.92);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;flex-direction:column;opacity:0;transition:opacity .3s ease;}
-#vid-modal.open{display:flex;opacity:1;}
-.vm-frame{position:relative;width:min(88vw,1200px);border:1px solid rgba(57,255,20,.4);border-radius:6px;overflow:hidden;box-shadow:0 0 80px rgba(57,255,20,.15), 0 0 160px rgba(57,255,20,.05);}
-.vm-frame::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--chloro),var(--amber),var(--chloro),transparent);z-index:5;}
-.vm-iframe-wrap{position:relative;padding-bottom:56.25%;height:0;}
-.vm-iframe-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:none;}
-.vm-close{position:absolute;top:-44px;right:0;width:36px;height:36px;border-radius:50%;background:rgba(57,255,20,.1);border:1px solid rgba(57,255,20,.4);color:var(--chloro);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;transition:background .2s;}
-.vm-close:hover{background:rgba(57,255,20,.25);}
-.vm-hud-row{display:flex;align-items:center;justify-content:space-between;padding:.7rem 1.2rem;background:rgba(10,13,8,.95);border-top:1px solid var(--border);}
-.vm-hud-label{font-family:var(--fd);font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--chloro);}
-.vm-hud-right{display:flex;align-items:center;gap:1rem;}
-.vm-hud-tag{font-family:var(--fd);font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
-.vm-corner{position:absolute;width:20px;height:20px;z-index:6;pointer-events:none;}
-.vm-corner.tl{top:0;left:0;border-top:2px solid var(--chloro);border-left:2px solid var(--chloro);}
-.vm-corner.tr{top:0;right:0;border-top:2px solid var(--chloro);border-right:2px solid var(--chloro);}
-.vm-corner.bl{bottom:38px;left:0;border-bottom:2px solid var(--chloro);border-left:2px solid var(--chloro);}
-.vm-corner.br{bottom:38px;right:0;border-bottom:2px solid var(--chloro);border-right:2px solid var(--chloro);}
+.cap-video-panel{position:relative;display:flex;flex-direction:column;gap:0;}
+.cap-video-hud{
+  position:relative;background:#000;border:1px solid rgba(57,255,20,.35);
+  border-radius:4px;overflow:hidden;aspect-ratio:16/9;
+  transition:border-color .3s, box-shadow .3s;box-shadow:0 0 0 rgba(57,255,20,0);
+}
+.cap-video-hud:hover{border-color:rgba(57,255,20,.8);box-shadow:0 0 40px rgba(57,255,20,.18), 0 0 80px rgba(57,255,20,.06);}
+.cap-video-hud iframe{position:absolute;inset:0;width:100%;height:100%;border:none;z-index:2;}
+.cvh-corner{position:absolute;width:18px;height:18px;z-index:3;pointer-events:none;}
+.cvh-corner.tl{top:10px;left:10px;border-top:2px solid var(--chloro);border-left:2px solid var(--chloro);}
+.cvh-corner.tr{top:10px;right:10px;border-top:2px solid var(--chloro);border-right:2px solid var(--chloro);}
+.cvh-corner.bl{bottom:10px;left:10px;border-bottom:2px solid var(--chloro);border-left:2px solid var(--chloro);}
+.cvh-corner.br{bottom:10px;right:10px;border-bottom:2px solid var(--chloro);border-right:2px solid var(--chloro);}
+.cvh-topbar{position:absolute;top:0;left:0;right:0;z-index:4;display:flex;align-items:center;justify-content:space-between;padding:.55rem 1rem;background:linear-gradient(180deg,rgba(0,0,0,.7),transparent);pointer-events:none;}
+.cvh-badge{font-family:var(--fd);font-size:.65rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--soil);background:var(--chloro);padding:.2rem .6rem;border-radius:2px;}
+.cvh-live{display:flex;align-items:center;gap:.45rem;font-family:var(--fd);font-size:.65rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(240,244,236,.75);}
+.cvh-live-dot{width:6px;height:6px;border-radius:50%;background:var(--chloro);animation:livePulse 1.2s ease-in-out infinite;box-shadow:0 0 6px var(--chloro);}
+@keyframes livePulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.4)}}
+.cap-video-meta{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1rem;background:rgba(20,26,16,.9);border:1px solid var(--border);border-top:none;border-radius:0 0 4px 4px;}
+.cvm-left{display:flex;align-items:center;gap:.75rem;}
+.cvm-icon{width:32px;height:32px;border-radius:50%;background:rgba(57,255,20,.1);border:1px solid rgba(57,255,20,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.cvm-label{font-family:var(--fd);font-size:.75rem;font-weight:600;color:var(--off-white);}
+.cvm-sub{font-size:.68rem;color:var(--muted);}
+.cvm-duration{font-family:var(--fd);font-size:.72rem;color:var(--chloro);letter-spacing:.08em;font-weight:600;background:rgba(57,255,20,.07);border:1px solid rgba(57,255,20,.2);padding:.2rem .6rem;border-radius:2px;}
+.cap-stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:1.2rem;border:1px solid var(--border);border-radius:4px;overflow:hidden;}
+.cap-stat{padding:.85rem 1rem;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:.25rem;background:rgba(20,26,16,.6);transition:background .3s;}
+.cap-stat:last-child{border-right:none;}
+.cap-stat:hover{background:rgba(57,255,20,.04);}
+.cs-val{font-family:var(--fd);font-size:1.25rem;font-weight:700;color:var(--chloro);}
+.cs-lbl{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
+
 #ben{position:relative;background:linear-gradient(rgba(0,0,0,.75),rgba(0,0,0,.75)),url('./images/agri.png') center/cover fixed no-repeat;}
 .bnh{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:end;margin-bottom:4rem}
 .bng{display:grid;grid-template-columns:repeat(5,1fr);gap:1.2rem}
@@ -283,11 +305,151 @@ section{padding:7rem 5rem 7rem 5.5rem;position:relative}
 .pi1{background:#0d2b0d;display:flex;align-items:center;justify-content:center;padding:2rem;aspect-ratio:16/9}
 .pi2{background:#2d6e2d;display:flex;align-items:center;justify-content:center;padding:2rem;aspect-ratio:16/9}
 .pi3{background:#f0f4ec;display:flex;align-items:center;justify-content:center;padding:2rem;aspect-ratio:16/9}
+.partner-img{max-width:80%;max-height:80px; width:auto; height:auto;object-fit:contain;}
 .pn{font-family:var(--fd);font-size:1.4rem;font-weight:700;color:var(--off-white)}
 .ptg{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--chloro);margin-bottom:.3rem}
 .pb{padding:1.5rem}
 .pdc{font-size:.85rem;color:var(--muted);margin-top:.5rem;line-height:1.6}
 .pa{display:inline-flex;align-items:center;gap:.4rem;font-size:.8rem;color:var(--chloro);margin-top:1rem;letter-spacing:.06em;text-transform:uppercase;font-weight:500}
+
+/* ══ EXPLORE SECTION ══ */
+#explore{padding:0;position:relative;overflow:hidden;}
+.explore-carousel{position:relative;width:100%;height:100vh;min-height:600px;overflow:hidden;}
+.explore-slide{
+  position:absolute;inset:0;
+  background-size:cover;background-position:center;background-repeat:no-repeat;
+  opacity:0;transition:opacity .9s cubic-bezier(.16,1,.3,1);
+  pointer-events:none;
+}
+.explore-slide.active{opacity:1;pointer-events:all;}
+.explore-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(
+    100deg,
+    rgba(5,9,4,0.82) 0%,
+    rgba(5,9,4,0.65) 38%,
+    rgba(5,9,4,0.18) 65%,
+    rgba(5,9,4,0.05) 100%
+  );
+}
+.explore-content{
+  position:absolute;top:50%;left:5.5rem;transform:translateY(-50%);
+  max-width:480px;z-index:2;
+}
+.explore-slide-num{
+  font-family:var(--fd);font-size:5rem;font-weight:800;
+  color:rgba(57,255,20,0.08);line-height:1;
+  letter-spacing:-.04em;margin-bottom:-.8rem;
+  user-select:none;
+}
+.explore-content .slb{margin-bottom:.5rem}
+.explore-title{
+  font-family:var(--fd);font-size:clamp(2rem,4.5vw,3.6rem);
+  font-weight:700;line-height:1.05;letter-spacing:-.03em;
+  color:var(--off-white);margin-bottom:1.2rem;
+}
+.explore-desc{
+  font-size:1rem;color:rgba(240,244,236,0.75);line-height:1.75;
+  margin-bottom:2rem;max-width:400px;
+}
+.explore-btn{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-family:var(--fd);font-size:.85rem;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;text-decoration:none;
+  color:var(--soil);background:var(--chloro);
+  padding:.75rem 1.8rem;border-radius:2px;
+  transition:transform .2s, box-shadow .2s, background .2s;
+  position:relative;overflow:hidden;
+}
+.explore-btn::before{
+  content:'';position:absolute;inset:0;
+  background:rgba(255,255,255,.22);
+  transform:translateX(-110%) skewX(-15deg);
+  transition:transform .35s;
+}
+.explore-btn:hover::before{transform:translateX(110%) skewX(-15deg)}
+.explore-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(57,255,20,.35);}
+
+/* Arrow buttons */
+.explore-arrow{
+  position:absolute;top:50%;transform:translateY(-50%);z-index:10;
+  width:52px;height:52px;
+  background:rgba(10,13,8,0.6);
+  border:1.5px solid rgba(57,255,20,0.35);
+  border-radius:50%;
+  color:var(--chloro);font-size:1.3rem;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:background .2s,border-color .2s,box-shadow .2s,transform .2s;
+  backdrop-filter:blur(6px);
+}
+.explore-arrow:hover{
+  background:rgba(57,255,20,0.15);border-color:var(--chloro);
+  box-shadow:0 0 20px rgba(57,255,20,.25);
+  transform:translateY(-50%) scale(1.08);
+}
+.explore-prev{left:2rem;}
+.explore-next{right:2rem;}
+
+/* Dot nav row at bottom */
+.explore-dots{
+  position:absolute;bottom:2.5rem;left:5.5rem;z-index:10;
+  display:flex;align-items:center;gap:.55rem;
+}
+.explore-dot{
+  width:10px;height:10px;border-radius:50%;
+  background:rgba(255,255,255,0.25);
+  border:1.5px solid rgba(57,255,20,0.3);
+  cursor:pointer;transition:background .3s,border-color .3s,transform .2s;
+  padding:0;
+}
+.explore-dot.active{
+  background:var(--chloro);border-color:var(--chloro);
+  transform:scale(1.2);
+  box-shadow:0 0 8px rgba(57,255,20,.5);
+}
+.explore-dot-line{
+  width:48px;height:2px;
+  background:rgba(57,255,20,0.15);
+  border-radius:2px;overflow:hidden;
+  position:relative;
+}
+.explore-dot-progress{
+  height:100%;width:0%;
+  background:var(--chloro);
+  border-radius:2px;
+  transition:width linear;
+}
+
+/* Slide counter */
+.explore-counter{
+  position:absolute;bottom:2.5rem;right:2rem;z-index:10;
+  font-family:var(--fd);font-size:.72rem;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(57,255,20,0.5);
+}
+#explore-current{color:var(--chloro);}
+
+/* Section label top-right */
+.explore-section-label{
+  position:absolute;top:2rem;right:2rem;z-index:10;
+  font-family:var(--fd);font-size:.65rem;font-weight:700;
+  letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(57,255,20,0.4);
+  border:1px solid rgba(57,255,20,0.15);
+  padding:.35rem .85rem;border-radius:50px;
+  backdrop-filter:blur(6px);
+  background:rgba(10,13,8,0.4);
+}
+
+
+@keyframes exploreSlideIn{
+  from{opacity:0;transform:translateY(-50%) translateX(-30px);}
+  to{opacity:1;transform:translateY(-50%) translateX(0);}
+}
+.explore-slide.active .explore-content{
+  animation:exploreSlideIn .7s cubic-bezier(.16,1,.3,1) both;
+}
+
 #cta{position:relative;text-align:center;padding:8rem 5.5rem;overflow:hidden;border-top:1px solid var(--border);background:linear-gradient(rgba(6,12,5,0.87),rgba(8,14,6,0.93)),url('./images/agri.png') center/cover fixed no-repeat;}
 #cta::before{content:'';position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1600&auto=format&fit=crop&q=80') center/cover no-repeat;opacity:0.22;z-index:0;pointer-events:none;}
 #cta > *{position:relative;z-index:1;}
@@ -365,7 +527,10 @@ footer{position:relative;overflow:hidden;background:#000;}
 body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;z-index:9990;opacity:.3}
 @media(max-width:1100px){.cap-layout{grid-template-columns:1fr;}.cap-stats-row{grid-template-columns:repeat(3,1fr);}}
 @media(max-width:900px){
-  nav{padding:1rem 1.5rem}.nm{display:none}
+  .nav-inner{margin:.6rem 1rem;padding:.55rem .8rem .55rem 1.2rem;}
+  .nm{display:none}
+  .nc.desktop-cta{display:none}
+  .nav-ham{display:flex}
   section{padding:4rem 1.5rem 4rem 2rem}
   #cap{padding:4rem 1.5rem;}
   #about{grid-template-columns:1fr}.bng{grid-template-columns:repeat(2,1fr)}
@@ -376,7 +541,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
   .footer-grid{grid-template-columns:1fr 1fr}
   .footer-main{padding:2rem 1.5rem 1.5rem}
   .footer-bottom{padding:1rem 1.5rem}
-  #sr,#rbd,#rbu,#drone-wrap,.robot-tip,#how-robot{display:none!important}
+  #rbd,#rbu,#drone-wrap,.robot-tip,#how-robot{display:none!important}
   .carousel-page{grid-template-columns:1fr 1fr}
   .cube-scene{width:200px;height:200px}
   .cube-face{width:200px;height:200px}
@@ -387,7 +552,15 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
   .cube-face--top    { transform: rotateX( 90deg) translateZ(100px); }
   .cube-face--bottom { transform: rotateX(-90deg) translateZ(100px); }
   .cap-stats-row{grid-template-columns:repeat(3,1fr);}
-  .vm-frame{width:95vw;}
+  
+  .explore-carousel{height:80vh;min-height:500px;}
+  .explore-content{left:1.5rem;right:1.5rem;max-width:100%;}
+  .explore-slide-num{font-size:3rem;}
+  .explore-title{font-size:clamp(1.6rem,6vw,2.4rem);}
+  .explore-dots{left:1.5rem;bottom:2rem;}
+  .explore-counter{right:1.5rem;bottom:2rem;}
+  .explore-prev{left:.8rem;}
+  .explore-next{right:.8rem;}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}}
 </style>
@@ -401,7 +574,6 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 </div>
 <div id="cursor"></div>
 <div id="cr"></div>
-<div id="sr"><canvas id="scr"></canvas></div>
 <div id="rbd"></div>
 <div id="rbu"></div>
 <div class="robot-tip" id="robot-tip">
@@ -419,39 +591,44 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 </div>
 <canvas id="how-robot" width="60" height="80"></canvas>
 
-<div id="vid-modal">
-  <div class="vm-frame">
-    <div class="vm-corner tl"></div>
-    <div class="vm-corner tr"></div>
-    <div class="vm-corner bl"></div>
-    <div class="vm-corner br"></div>
-    <button class="vm-close" id="vm-close" aria-label="Close">✕</button>
-    <div class="vm-iframe-wrap">
-      <iframe id="vm-iframe" src="" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+<nav id="nav">
+  <div class="nav-inner">
+   <a href="#hero" class="nl">
+  <img src="images/ifarmatelogo.png" alt="i-Farmate Logo" class="nav-logo">
+</a>
+    <ul class="nm">
+      <li><a href="#hero">Home</a></li>
+      <li><a href="#cap">Features</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#explore">Explore</a></li>
+      <li><a href="#prod">Others</a></li>
+      <li><a href="#cta">Contact</a></li>
+    </ul>
+    <div style="display:flex;align-items:center;gap:.75rem">
+      <svg class="nav-progress-ring" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="19" cy="19" r="15" stroke="rgba(57,255,20,0.12)" stroke-width="2"/>
+        <circle id="nav-ring-circle" cx="19" cy="19" r="15" stroke="#39FF14" stroke-width="2"
+          stroke-dasharray="94.25" stroke-dashoffset="94.25"
+          stroke-linecap="round" transform="rotate(-90 19 19)"
+          style="transition:stroke-dashoffset .1s linear"/>
+      </svg>
+      <a href="#cta" class="nc desktop-cta">Demo</a>
+      <button class="nav-ham" id="nav-ham" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
     </div>
-    <div class="vm-hud-row">
-      <span class="vm-hud-label">▶ Watch i-Farmate in Action</span>
-      <div class="vm-hud-right">
-        <span class="vm-hud-tag">Autonomous · Intelligent · 24/7</span>
-        <div style="display:flex;align-items:center;gap:.4rem;font-family:var(--fd);font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--chloro);">
-          <div style="width:6px;height:6px;border-radius:50%;background:var(--chloro);animation:livePulse 1.2s ease-in-out infinite;box-shadow:0 0 6px var(--chloro);"></div>
-          Live Demo
-        </div>
-      </div>
+    <div class="nav-drawer" id="nav-drawer">
+      <ul>
+        <li><a href="#hero" class="drawer-link">Home</a></li>
+        <li><a href="#cap" class="drawer-link">Features</a></li>
+        <li><a href="#about" class="drawer-link">About</a></li>
+        <li><a href="#explore" class="drawer-link">Explore</a></li>
+        <li><a href="#prod" class="drawer-link">Others</a></li>
+        <li><a href="#cta" class="drawer-link">Contact</a></li>
+      </ul>
+      <a href="#cta" class="nc drawer-link">Request Demo</a>
     </div>
   </div>
-</div>
-
-<nav id="nav">
-  <a href="#hero" class="nl">i-<span>Farmate</span></a>
-  <ul class="nm">
-    <li><a href="#hero">Home</a></li>
-    <li><a href="#cap">Features</a></li>
-    <li><a href="#about">About Us</a></li>
-    <li><a href="#prod">Others</a></li>
-    <li><a href="#cta">Contact Us</a></li>
-  </ul>
-  <a href="#cta" class="nc">Request Demo</a>
 </nav>
 
 <section id="hero">
@@ -522,51 +699,6 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
     <p class="sb rv" style="transition-delay:.2s;margin-bottom:0">Enormous data capture powers i-Farmate's advanced capabilities.</p>
   </div>
   <div class="cap-layout rv" style="transition-delay:.3s">
-    <div class="cap-video-panel">
-      <div class="cap-video-hud" id="cap-video-hud">
-        <div class="cvh-thumb"></div>
-        <div class="cvh-overlay">
-          <div class="cvh-play">
-            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-              <path d="M10 7L22 14L10 21V7Z" fill="#39FF14"/>
-            </svg>
-          </div>
-          <div class="cvh-cta">Watch i-Farmate <span>in Action</span></div>
-        </div>
-        <div class="cvh-corner tl"></div>
-        <div class="cvh-corner tr"></div>
-        <div class="cvh-corner bl"></div>
-        <div class="cvh-corner br"></div>
-        <div class="cvh-topbar">
-          <span class="cvh-badge">i-Farmate</span>
-          <div class="cvh-live">
-            <div class="cvh-live-dot"></div>
-            Field Demo
-          </div>
-        </div>
-        <div class="cvh-bottombar">
-          <div class="cvh-title">Watch i-Farmate in Action</div>
-          <div class="cvh-sub">Autonomous · Intelligent · 24/7</div>
-        </div>
-      </div>
-      <div class="cap-video-meta">
-        <div class="cvm-left">
-          <div class="cvm-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#39FF14" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          </div>
-          <div>
-            <div class="cvm-label">Official Product Demo</div>
-            <div class="cvm-sub">APSI Technologies · i-Farmate</div>
-          </div>
-        </div>
-        <span class="cvm-duration">▶ Full Video</span>
-      </div>
-      <div class="cap-stats-row rv" style="transition-delay:.45s">
-        <div class="cap-stat"><div class="cs-val">24/7</div><div class="cs-lbl">Autonomous Ops</div></div>
-        <div class="cap-stat"><div class="cs-val">8</div><div class="cs-lbl">AI Capabilities</div></div>
-        <div class="cap-stat"><div class="cs-val">0</div><div class="cs-lbl">Chemicals Used</div></div>
-      </div>
-    </div>
     <div class="cap-carousel-panel">
       <div class="carousel-wrapper">
         <div class="carousel-track" id="cap-track">
@@ -652,6 +784,46 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
         <div class="carousel-page-label">Page <span id="cap-page-num">1</span> of 2</div>
       </div>
       <div class="carousel-timer"><div class="carousel-timer-bar" id="cap-timer-bar"></div></div>
+    </div>
+
+    <div class="cap-video-panel rv" style="transition-delay:.35s">
+      <div class="cap-video-hud">
+        <iframe
+          src="https://www.youtube.com/embed/aGDtlo2xHJI?rel=0&modestbranding=1&color=white&t=52"
+          allow="autoplay; encrypted-media; picture-in-picture"
+          allowfullscreen
+          title="i-Farmate in Action"
+          loading="lazy"
+        ></iframe>
+        <div class="cvh-corner tl"></div>
+        <div class="cvh-corner tr"></div>
+        <div class="cvh-corner bl"></div>
+        <div class="cvh-corner br"></div>
+        <div class="cvh-topbar">
+          <span class="cvh-badge">i-Farmate</span>
+          <div class="cvh-live">
+            <div class="cvh-live-dot"></div>
+            Field Demo
+          </div>
+        </div>
+      </div>
+      <div class="cap-video-meta">
+        <div class="cvm-left">
+          <div class="cvm-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#39FF14" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+          <div>
+            <div class="cvm-label">Official Product Demo</div>
+            <div class="cvm-sub">APSI Technologies · i-Farmate</div>
+          </div>
+        </div>
+        <span class="cvm-duration">▶ Full Video</span>
+      </div>
+      <div class="cap-stats-row rv" style="transition-delay:.5s">
+        <div class="cap-stat"><div class="cs-val">24/7</div><div class="cs-lbl">Autonomous Ops</div></div>
+        <div class="cap-stat"><div class="cs-val">8</div><div class="cs-lbl">AI Capabilities</div></div>
+        <div class="cap-stat"><div class="cs-val">0</div><div class="cs-lbl">Chemicals Used</div></div>
+      </div>
     </div>
   </div>
 </section>
@@ -771,9 +943,114 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
   <h2 class="st rv" style="transition-delay:.1s">Our Other Products</h2>
   <p class="sb rv" style="transition-delay:.2s">Beyond i-Farmate, APSI Technologies builds a full stack for the future of food.</p>
   <div class="pg">
-    <div class="pc rv" style="transition-delay:.1s"><div class="pi1"><div style="text-align:center"><div style="font-family:var(--fd);font-size:2rem;font-weight:700;color:#fff">FAR<span style="color:var(--chloro)">▲</span>FAIR</div><div style="font-size:.8rem;color:rgba(255,255,255,.5);letter-spacing:.1em;text-transform:uppercase;margin-top:.3rem">Farm to Home</div></div></div><div class="pb"><div class="ptg">Direct Commerce</div><div class="pn">FarmFair</div><div class="pdc">Connecting farmers directly to consumers. Fresh produce, fair prices, zero middlemen.</div><div class="pa">Learn More →</div></div></div>
-    <div class="pc rv" style="transition-delay:.2s"><div class="pi2"><div style="text-align:center"><div style="font-family:var(--fd);font-size:2.2rem;font-weight:700;color:#fff">TERRA<span style="color:var(--amber)">MATE</span></div><div style="font-size:.75rem;color:rgba(255,255,255,.6);letter-spacing:.12em;text-transform:uppercase;margin-top:.3rem">Soil Intelligence</div></div></div><div class="pb"><div class="ptg">IoT Platform</div><div class="pn">TerraMate</div><div class="pdc">Smart soil monitoring IoT platform that tracks moisture, nutrients, and microbiome health.</div><div class="pa">Learn More →</div></div></div>
-    <div class="pc rv" style="transition-delay:.3s"><div class="pi3"><div style="text-align:center"><div style="width:56px;height:56px;margin:0 auto .5rem;background:linear-gradient(135deg,#f59e0b,#84cc16);border-radius:50%;display:flex;align-items:center;justify-content:center"><svg width="30" height="30" viewBox="0 0 32 32" fill="none"><path d="M16 4Q22 8 22 16Q22 24 16 28Q10 24 10 16Q10 8 16 4Z" fill="#fff"/></svg></div><div style="font-family:var(--fd);font-size:1.5rem;font-weight:700;color:#2d6e2d">Thaniyas</div></div></div><div class="pb"><div class="ptg">Organic Brand</div><div class="pn">Thaniyas Organic</div><div class="pdc">Certified organic produce grown with i-Farmate's chemical-free precision.</div><div class="pa">Learn More →</div></div></div>
+    <div class="pc rv" style="transition-delay:.1s">
+      <div class="pi1">
+        <img src="images/farmfairlogo.jpg" alt="FarmFair" class="partner-img">
+      </div>
+      <div class="pb">
+        <div class="ptg">Direct Commerce</div>
+        <div class="pn">FarmFair</div>
+        <div class="pdc">Connecting farmers directly to consumers. Fresh produce, fair prices, zero middlemen.</div>
+        <div class="pa">Learn More →</div>
+      </div>
+    </div>
+    <div class="pc rv" style="transition-delay:.2s">
+      <div class="pi2">
+        <img src="images/teramatelogo.png" alt="TerraMate" class="partner-img">
+      </div>
+      <div class="pb">
+        <div class="ptg">IoT Platform</div>
+        <div class="pn">TerraMate</div>
+        <div class="pdc">Smart soil monitoring IoT platform that tracks moisture, nutrients, and microbiome health.</div>
+        <div class="pa">Learn More →</div>
+      </div>
+    </div>
+    <div class="pc rv" style="transition-delay:.3s">
+      <div class="pi3">
+        <img src="images/Thaniyas-Organiclogo.png" alt="Thaniyas Organic" class="partner-img">
+      </div>
+      <div class="pb">
+        <div class="ptg">Organic Brand</div>
+        <div class="pn">Thaniyas Organic</div>
+        <div class="pdc">Certified organic produce grown with i-Farmate's chemical-free precision.</div>
+        <div class="pa">Learn More →</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ EXPLORE SECTION ══ -->
+<section id="explore" style="padding:0;position:relative;">
+  <div class="explore-carousel" id="explore-carousel">
+
+    <!-- Slide 1 -->
+    <div class="explore-slide active" style="background-image:url('./images/vitaxs.jpg')">
+      <div class="explore-overlay"></div>
+      <div class="explore-content">
+        <div class="explore-slide-num">01</div>
+        <p class="slb" style="margin-bottom:.5rem">Explore i-Farmate</p>
+        <h2 class="explore-title">April 16, 2025</h2>
+        <p class="explore-desc">Vellore Institute of Technology & AUXWIT Technologies partner: Unmanned farming vehicle innovation</p>
+        <a href="#cta" class="explore-btn">Read More →</a>
+      </div>
+    </div>
+
+    <!-- Slide 2 -->
+    <div class="explore-slide" style="background-image:url('./images/sa.png')">
+      <div class="explore-overlay"></div>
+      <div class="explore-content">
+        <div class="explore-slide-num">02</div>
+        <p class="slb" style="margin-bottom:.5rem">Explore i-Farmate</p>
+        <h2 class="explore-title">Sept 30, 2025</h2>
+        <p class="explore-desc">Shaping the Future of Smart Farming: i-Farmate at United AgriTech 2025</p>
+        <a href="#cta" class="explore-btn">Read More →</a>
+      </div>
+    </div>
+
+    <!-- Slide 3 -->
+    <div class="explore-slide" style="background-image:url('./images/Naar1.jpg')">
+      <div class="explore-overlay"></div>
+      <div class="explore-content">
+        <div class="explore-slide-num">03</div>
+        <p class="slb" style="margin-bottom:.5rem">Explore i-Farmate</p>
+        <h2 class="explore-title">May 22, 2024</h2>
+        <p class="explore-desc">AUXWIT Technologies Gets Incubated at NAARM’s a-IDEA with i-Farmate and Terramate</p>
+        <a href="#cta" class="explore-btn">Read More →</a>
+      </div>
+    </div>
+
+    <!-- Slide 4 -->
+    <div class="explore-slide" style="background-image:url('./images/NAARM2.jpg')">
+      <div class="explore-overlay"></div>
+      <div class="explore-content">
+        <div class="explore-slide-num">04</div>
+        <p class="slb" style="margin-bottom:.5rem">Explore i-Farmate</p>
+        <h2 class="explore-title">Nov 13, 2024 </h2>
+        <p class="explore-desc">Empowering Farmers with i-Farmate: A Revolutionary Step Towards Smart Agriculture</p>
+        <a href="#cta" class="explore-btn">Read More →</a>
+      </div>
+    </div>
+
+    <!-- Section label -->
+    <div class="explore-section-label">i-Farmate · Explore</div>
+
+    
+    <button class="explore-arrow explore-prev" id="explore-prev" aria-label="Previous slide">&#8592;</button>
+    <button class="explore-arrow explore-next" id="explore-next" aria-label="Next slide">&#8594;</button>
+
+    
+    <div class="explore-dots" id="explore-dots">
+      <button class="explore-dot active" data-slide="0" aria-label="Slide 1"></button>
+      <div class="explore-dot-line"><div class="explore-dot-progress" id="edp0"></div></div>
+      <button class="explore-dot" data-slide="1" aria-label="Slide 2"></button>
+      <div class="explore-dot-line"><div class="explore-dot-progress" id="edp1"></div></div>
+      <button class="explore-dot" data-slide="2" aria-label="Slide 3"></button>
+      <div class="explore-dot-line"><div class="explore-dot-progress" id="edp2"></div></div>
+      <button class="explore-dot" data-slide="3" aria-label="Slide 4"></button>
+    </div>
+
+    <!-- Slide counter -->
+    <div class="explore-counter"><span id="explore-current">01</span> / <span>04</span></div>
   </div>
 </section>
 
@@ -855,8 +1132,8 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 
 <footer id="footer-section">
   <video id="footerVideo" autoplay muted playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
-    <source src="video/footer.mp4" type="video/mp4">
-</video>
+    <source src="video/footerf1.mp4" type="video/mp4">
+  </video>
   <div class="footer-video-overlay"></div>
   <div class="footer-main">
     <div class="footer-grid">
@@ -919,70 +1196,59 @@ document.querySelectorAll('a,button').forEach(el=>{
   el.addEventListener('mouseleave',()=>{cur.style.width='10px';cur.style.height='10px';ring.style.width='36px';ring.style.height='36px'});
 });
 
-/* ══ VIDEO MODAL ══ */
-const vidModal=document.getElementById('vid-modal');
-const vmIframe=document.getElementById('vm-iframe');
-const vmClose=document.getElementById('vm-close');
-const capVideoHud=document.getElementById('cap-video-hud');
-const YT_URL='https://www.youtube.com/embed/aGDtlo2xHJI?autoplay=1&rel=0&modestbranding=1&color=white&t=52';
-function openVideoModal(){vmIframe.src=YT_URL;vidModal.style.display='flex';requestAnimationFrame(()=>requestAnimationFrame(()=>{vidModal.style.opacity='1';}));document.body.style.overflow='hidden';}
-function closeVideoModal(){vidModal.style.opacity='0';setTimeout(()=>{vidModal.style.display='none';vmIframe.src='';document.body.style.overflow='';},320);}
-capVideoHud.addEventListener('click',openVideoModal);
-vmClose.addEventListener('click',closeVideoModal);
-vidModal.addEventListener('click',e=>{if(e.target===vidModal)closeVideoModal();});
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeVideoModal();});
+/* ══ NAVBAR ══ */
+const navEl=document.getElementById('nav');
+const navHam=document.getElementById('nav-ham');
+const navDrawer=document.getElementById('nav-drawer');
+const navRingCircle=document.getElementById('nav-ring-circle');
+const pb=document.getElementById('pb');
+let lastScrollY=0,navShown=false;
+const ringCircumference=2*Math.PI*15;
+
+function updateNav(){
+  const sy=window.scrollY,msy=document.documentElement.scrollHeight-window.innerHeight;
+  const prog=msy>0?sy/msy:0;
+  pb.style.width=(prog*100)+'%';
+  const offset=ringCircumference*(1-prog);
+  navRingCircle.style.strokeDashoffset=offset;
+  const nearTop=sy<80,scrollingUp=sy<lastScrollY;
+  const shouldShow=nearTop||(scrollingUp&&sy>60);
+  if(shouldShow!==navShown){navShown=shouldShow;navEl.classList.toggle('nav-visible',shouldShow);}
+  lastScrollY=sy;
+  const sections=['hero','cap','about','explore','prod','cta'];
+  let current='hero';
+  sections.forEach(id=>{const el=document.getElementById(id);if(el&&el.getBoundingClientRect().top<window.innerHeight*0.5)current=id;});
+  document.querySelectorAll('.nm a').forEach(a=>{
+    const href=a.getAttribute('href').replace('#','');
+    a.classList.toggle('active-link',href===current);
+  });
+}
+window.addEventListener('scroll',updateNav,{passive:true});
+if(window.scrollY<80)navEl.classList.add('nav-visible');
+
+navHam.addEventListener('click',()=>{navHam.classList.toggle('open');navDrawer.classList.toggle('open');});
+document.querySelectorAll('.drawer-link').forEach(a=>{a.addEventListener('click',()=>{navHam.classList.remove('open');navDrawer.classList.remove('open');});});
+document.addEventListener('click',e=>{if(!navEl.contains(e.target)){navHam.classList.remove('open');navDrawer.classList.remove('open');}});
 
 /* Cube drag */
 (function initCubeDrag(){
   const cubeEl=document.getElementById('about-cube');
   if(!cubeEl)return;
   let isDragging=false,startX=0,startY=0,rotX=-15,rotY=0,dragRotX=-15,dragRotY=0;
-  let autoRotating=true,pauseTimer=null;
-  cubeEl.parentElement.addEventListener('mousedown',e=>{
-    isDragging=true;startX=e.clientX;startY=e.clientY;dragRotX=rotX;dragRotY=rotY;
-    autoRotating=false;cubeEl.style.animation='none';e.preventDefault();
-  });
-  window.addEventListener('mousemove',e=>{
-    if(!isDragging)return;
-    rotY=dragRotY+(e.clientX-startX)*0.5;rotX=dragRotX-(e.clientY-startY)*0.5;
-    cubeEl.style.transform=`rotateX(${rotX}deg) rotateY(${rotY}deg)`;
-  });
+  cubeEl.parentElement.addEventListener('mousedown',e=>{isDragging=true;startX=e.clientX;startY=e.clientY;dragRotX=rotX;dragRotY=rotY;cubeEl.style.animation='none';e.preventDefault();});
+  window.addEventListener('mousemove',e=>{if(!isDragging)return;rotY=dragRotY+(e.clientX-startX)*0.5;rotX=dragRotX-(e.clientY-startY)*0.5;cubeEl.style.transform=`rotateX(${rotX}deg) rotateY(${rotY}deg)`;});
   window.addEventListener('mouseup',()=>{
     if(!isDragging)return;isDragging=false;
-    clearTimeout(pauseTimer);
-    pauseTimer=setTimeout(()=>{
-      autoRotating=true;
-      const style=document.createElement('style');
-      const id='cube-anim-'+Date.now();
+    setTimeout(()=>{
+      const style=document.createElement('style');const id='cube-anim-'+Date.now();
       style.textContent=`@keyframes cubeRotateDynamic{0%{transform:rotateX(${rotX}deg) rotateY(${rotY}deg)}100%{transform:rotateX(${rotX}deg) rotateY(${rotY+360}deg)}}`;
-      document.head.appendChild(style);
-      cubeEl.style.animation=`cubeRotateDynamic 12s linear infinite`;
+      document.head.appendChild(style);cubeEl.style.animation=`cubeRotateDynamic 12s linear infinite`;
     },2000);
   });
-  cubeEl.parentElement.addEventListener('touchstart',e=>{
-    const t=e.touches[0];isDragging=true;startX=t.clientX;startY=t.clientY;
-    dragRotX=rotX;dragRotY=rotY;autoRotating=false;cubeEl.style.animation='none';e.preventDefault();
-  },{passive:false});
-  window.addEventListener('touchmove',e=>{
-    if(!isDragging)return;const t=e.touches[0];
-    rotY=dragRotY+(t.clientX-startX)*0.5;rotX=dragRotX-(t.clientY-startY)*0.5;
-    cubeEl.style.transform=`rotateX(${rotX}deg) rotateY(${rotY}deg)`;
-  },{passive:true});
+  cubeEl.parentElement.addEventListener('touchstart',e=>{const t=e.touches[0];isDragging=true;startX=t.clientX;startY=t.clientY;dragRotX=rotX;dragRotY=rotY;cubeEl.style.animation='none';e.preventDefault();},{passive:false});
+  window.addEventListener('touchmove',e=>{if(!isDragging)return;const t=e.touches[0];rotY=dragRotY+(t.clientX-startX)*0.5;rotX=dragRotX-(t.clientY-startY)*0.5;cubeEl.style.transform=`rotateX(${rotX}deg) rotateY(${rotY}deg)`;},{passive:true});
   window.addEventListener('touchend',()=>{isDragging=false;});
 })();
-
-/* ── NAV ── */
-const nav=document.getElementById('nav'),pb=document.getElementById('pb');
-let lastScrollY=0,navShown=false;
-function updateNav(){
-  const sy=window.scrollY,msy=document.documentElement.scrollHeight-window.innerHeight;
-  pb.style.width=(sy/msy*100)+'%';
-  const nearTop=sy<80,scrollingUp=sy<lastScrollY,shouldShow=nearTop||(scrollingUp&&sy<300);
-  if(shouldShow!==navShown){navShown=shouldShow;nav.classList.toggle('nav-visible',shouldShow);}
-  lastScrollY=sy;
-}
-window.addEventListener('scroll',updateNav,{passive:true});
-if(window.scrollY<80)nav.classList.add('nav-visible');
 
 /* ── ROOT CANVAS ── */
 const rcan=document.getElementById('rc'),rctx=rcan.getContext('2d');
@@ -1016,214 +1282,6 @@ function initGrass(){blades=[];cutter=new Cutter();gPhase='growing';gStart=Date.
 initGrass();
 (function ag(){const now=Date.now(),elapsed=now-gStart;gctx.clearRect(0,0,gcan.width,gcan.height);blades.forEach(b=>{b.update(now);b.draw();});if(gPhase==='growing'){if(elapsed>6500&&!cutter.active&&!cutter.done)cutter.activate();if(cutter.done){gPhase='cut';gCutTime=now;}}else if(gPhase==='cut'){if(now-gCutTime>10000){gPhase='growing';gStart=now;blades.forEach(b=>{b.cut=false;b.h=0;b.gs=.45+Math.random()*.8;});cutter=new Cutter();}}cutter.update(blades);cutter.draw();requestAnimationFrame(ag);})();
 
-
-const src2=document.getElementById('scr');
-const srctx=src2.getContext('2d');
-function szSide(){src2.width=104;src2.height=window.innerHeight;src2.style.height='100vh';}
-szSide();window.addEventListener('resize',szSide,{passive:true});
-
-let paddyTime=0,lastScrollYP=-1;
-
-
-function drawPaddyPlant(ctx,prog,w,h){
-  ctx.clearRect(0,0,w,h);
-  if(prog<=0)return;
-
-  const soilY=h-14,cx=w*0.42;
-
-
-  const sg=ctx.createLinearGradient(0,soilY-4,0,h);
-  sg.addColorStop(0,'rgba(40,22,8,0)');
-  sg.addColorStop(.4,'rgba(52,28,8,.92)');
-  sg.addColorStop(1,'rgba(24,12,4,1)');
-  ctx.fillStyle=sg;ctx.fillRect(0,soilY-4,w,h-soilY+4);
-
-  const windSway=Math.sin(paddyTime*.55)*2.5*prog;
-  const maxStemH=soilY*.92,stemH=maxStemH*Math.min(prog,1);
-  const SEGS=28,segH=stemH/SEGS;
-
-
-  const pts=[];
-  for(let i=0;i<=SEGS;i++){
-    const t=i/SEGS;
-    const sw=windSway*t*t + t*4; // gentle lean
-    pts.push({x:cx+sw,y:soilY-i*segH});
-  }
-
-  
-  for(let i=1;i<pts.length;i++){
-    const t=i/pts.length;
-    const thickness=2.2*(1-t*.55);
-    ctx.beginPath();
-    ctx.moveTo(pts[i-1].x,pts[i-1].y);
-    ctx.lineTo(pts[i].x,pts[i].y);
-    const cg=ctx.createLinearGradient(cx,soilY,cx,soilY-stemH);
-    cg.addColorStop(0,'#0e2206');
-    cg.addColorStop(.35,'#1a4010');
-    cg.addColorStop(.75,'#228b18');
-    cg.addColorStop(1,'#2db820');
-    ctx.strokeStyle=cg;
-    ctx.lineWidth=Math.max(.8,thickness);
-    ctx.lineCap='round';
-    ctx.stroke();
-  }
-
-  
-  const leafNodes=[
-    {t:.18,dir:1, len:38,w:2.2,droop:.62},
-    {t:.30,dir:-1,len:42,w:2.4,droop:.58},
-    {t:.42,dir:1, len:46,w:2.6,droop:.55},
-    {t:.53,dir:-1,len:50,w:2.8,droop:.52},
-    {t:.63,dir:1, len:52,w:2.6,droop:.50},
-    {t:.72,dir:-1,len:48,w:2.4,droop:.48},
-    {t:.81,dir:1, len:44,w:2.2,droop:.46},
-    {t:.89,dir:-1,len:38,w:2.0,droop:.44},
-  ];
-
-  leafNodes.forEach(lf=>{
-    const lp=Math.min(1,Math.max(0,(prog-lf.t)/.1));
-    if(lp<=0)return;
-    const si=Math.round(lf.t*SEGS);
-    const bp=pts[Math.min(si,pts.length-1)];
-    if(!bp)return;
-
-    const leafLen=lf.len*lp;
-    const leafSway=windSway*lf.t*lf.t*.4;
-    const dir=lf.dir;
-
-    
-    const cp1x=bp.x+dir*leafLen*.35+leafSway;
-    const cp1y=bp.y-leafLen*.22;
-    const cp2x=bp.x+dir*leafLen*.72+leafSway*1.2;
-    const cp2y=bp.y+leafLen*lf.droop*.4;
-    const ex=bp.x+dir*leafLen*.88+leafSway*1.5;
-    const ey=bp.y+leafLen*lf.droop;
-
-    
-    const lg=ctx.createLinearGradient(bp.x,bp.y,ex,ey);
-    lg.addColorStop(0,'rgba(30,64,12,.9)');
-    lg.addColorStop(.3,'rgba(60,140,20,.95)');
-    lg.addColorStop(.7,'rgba(80,180,28,.9)');
-    lg.addColorStop(1,'rgba(100,200,40,.6)');
-
-    
-    ctx.save();
-    ctx.beginPath();
-    ctx.moveTo(bp.x,bp.y);
-    ctx.bezierCurveTo(cp1x-dir*lf.w*.5,cp1y-lf.w*.3, cp2x-dir*lf.w*.4,cp2y, ex,ey);
-    ctx.bezierCurveTo(cp2x+dir*lf.w*.4,cp2y+lf.w*.5, cp1x+dir*lf.w*.5,cp1y+lf.w*.4, bp.x,bp.y);
-    ctx.fillStyle=lg;
-    ctx.fill();
-
-    
-    ctx.beginPath();
-    ctx.moveTo(bp.x,bp.y);
-    ctx.bezierCurveTo(cp1x,cp1y,cp2x,cp2y,ex,ey);
-    ctx.strokeStyle='rgba(200,255,100,.25)';
-    ctx.lineWidth=.5;
-    ctx.stroke();
-    ctx.restore();
-  });
-
-  
-  if(prog>.82){
-    const fp=Math.min(1,(prog-.82)/.18);
-    const top=pts[pts.length-1];
-    const panicleH=28*fp;
-    const panicSway=windSway*1.3;
-
-    
-    ctx.save();
-    ctx.translate(top.x,top.y);
-
-  
-    const branchCount=9;
-    for(let i=0;i<branchCount;i++){
-      const bt=i/(branchCount-1);
-      const by2=-panicleH*bt;
-      const blen=(14+Math.sin(bt*Math.PI)*8)*fp;
-      const bdir=(i%2===0)?1:-1;
-      const bsway=panicSway*.6;
-
-    
-      ctx.beginPath();
-      ctx.moveTo(panicSway*bt*.5,by2);
-      ctx.bezierCurveTo(
-        panicSway*bt*.5+bdir*blen*.4,by2-3,
-        panicSway*bt*.5+bdir*blen*.8,by2+blen*.3+bsway,
-        panicSway*bt*.5+bdir*blen,by2+blen*.55+bsway
-      );
-      ctx.strokeStyle=`rgba(180,220,60,${.5+bt*.4})`;
-      ctx.lineWidth=.9;
-      ctx.stroke();
-
-    
-      for(let g=0;g<3;g++){
-        const gt=(g+1)/4;
-        const gx=panicSway*bt*.5+bdir*blen*gt;
-        const gy=by2+blen*gt*.55+bsway*gt - gt*3;
-        
-        ctx.save();
-        ctx.translate(gx,gy);
-        ctx.rotate(bdir*.4+bt*.2);
-        const golden=fp>0.5?`rgba(210,180,40,${.7*fp})`:`rgba(140,200,40,${.65*fp})`;
-        ctx.fillStyle=golden;
-        ctx.beginPath();
-        ctx.ellipse(0,0,1.8*fp,3.5*fp,0,0,Math.PI*2);
-        ctx.fill();
-        
-        ctx.fillStyle=`rgba(255,240,120,${.3*fp})`;
-        ctx.beginPath();
-        ctx.ellipse(-0.4,-0.8,0.6,1.2,0,0,Math.PI*2);
-        ctx.fill();
-        ctx.restore();
-      }
-    }
-
-    
-    ctx.beginPath();
-    ctx.moveTo(panicSway*.1,0);
-    ctx.lineTo(panicSway,- panicleH);
-    ctx.strokeStyle=`rgba(160,200,50,${.7*fp})`;
-    ctx.lineWidth=1.2;
-    ctx.stroke();
-    ctx.restore();
-  }
-
-  
-  if(prog>.05){
-    const waterY=soilY-2;
-    ctx.save();
-    ctx.globalAlpha=.45;
-    for(let i=0;i<5;i++){
-      const wx=cx-18+i*9+Math.sin(paddyTime*.4+i)*2;
-      ctx.beginPath();
-      ctx.ellipse(wx,waterY,3,1.2,0,0,Math.PI*2);
-      ctx.fillStyle='rgba(80,160,255,.35)';
-      ctx.fill();
-    }
-  
-    const rw=Math.sin(paddyTime*.3)*2+12;
-    ctx.beginPath();
-    ctx.ellipse(cx,waterY,rw,2,0,0,Math.PI*2);
-    ctx.strokeStyle='rgba(80,180,255,.2)';
-    ctx.lineWidth=.8;
-    ctx.stroke();
-    ctx.restore();
-  }
-}
-
-(function asideLoop(){
-  paddyTime+=.007;
-  const sy=window.scrollY,msy=document.documentElement.scrollHeight-window.innerHeight;
-  const prog=msy>0?Math.min(1,sy/msy):0;
-  if(Math.abs(sy-lastScrollYP)>.4||paddyTime%(0.007*6)<.008){
-    lastScrollYP=sy;
-    drawPaddyPlant(srctx,prog,104,src2.height);
-  }
-  requestAnimationFrame(asideLoop);
-})();
-
 /* ── SCROLL ROBOTS ── */
 const rbdEl=document.getElementById('rbd'),rbuEl=document.getElementById('rbu');
 const robotTipEl=document.getElementById('robot-tip');
@@ -1231,7 +1289,7 @@ const tipTextEl=document.querySelector('.tip-text');
 const rdC=document.createElement('canvas');rdC.width=54;rdC.height=74;rbdEl.appendChild(rdC);
 const ruC=document.createElement('canvas');ruC.width=54;ruC.height=74;rbuEl.appendChild(ruC);
 const rdx=rdC.getContext('2d'),rux=ruC.getContext('2d');
-const SECTION_TIPS=[{id:'hero',msg:"🚜 i-Farmate here! I work 24/7 so farmers don't have to."},{id:'about',msg:"🌱 Zero chemicals. Full autonomy. That's how I farm."},{id:'rcs',msg:"🤖 That scene below? That's me meeting a farmer for the first time!"},{id:'cap',msg:"▶ Click the video to watch me in action — live on the field!"},{id:'ben',msg:"🌾 Click the cards to flip and learn more about each benefit!"},{id:'how',msg:"🔄 Patrol → Detect → Act → Report. Four steps to smarter farming."},{id:'prod',msg:"📦 FarmFair, TerraMate, Thaniyas — the full agri-ecosystem!"},{id:'cta',msg:"🚀 Book a demo! I'd love to visit your farm."},{id:'footer-section',msg:"📞 Reach out anytime. Thank you for exploring i-Farmate! 🌿"}];
+const SECTION_TIPS=[{id:'hero',msg:"🚜 i-Farmate here! I work 24/7 so farmers don't have to."},{id:'about',msg:"🌱 Zero chemicals. Full autonomy. That's how I farm."},{id:'rcs',msg:"🤖 That scene below? That's me meeting a farmer for the first time!"},{id:'cap',msg:"▶ Watch the demo on the right — live on the field!"},{id:'ben',msg:"🌾 Click the cards to flip and learn more about each benefit!"},{id:'how',msg:"🔄 Patrol → Detect → Act → Report. Four steps to smarter farming."},{id:'explore',msg:"🖼 Swipe through to explore everything i-Farmate can do!"},{id:'prod',msg:"📦 FarmFair, TerraMate, Thaniyas — the full agri-ecosystem!"},{id:'cta',msg:"🚀 Book a demo! I'd love to visit your farm."},{id:'footer-section',msg:"📞 Reach out anytime. Thank you for exploring i-Farmate! 🌿"}];
 let robotTipTimer=null,lastShownSection='';
 function showRobotTip(msg){if(robotTipTimer)clearTimeout(robotTipTimer);tipTextEl.textContent=msg;robotTipEl.classList.add('show');robotTipTimer=setTimeout(()=>robotTipEl.classList.remove('show'),4500);}
 function updateRobotTipForScroll(robotVisualY){let closestSection=null,closestDist=Infinity;SECTION_TIPS.forEach(s=>{const el=document.getElementById(s.id);if(!el)return;const rect=el.getBoundingClientRect(),mid=(rect.top+rect.bottom)/2,dist=Math.abs(robotVisualY-mid);if(dist<closestDist){closestDist=dist;closestSection=s;}});if(closestSection&&closestSection.id!==lastShownSection&&closestDist<window.innerHeight*0.45){lastShownSection=closestSection.id;showRobotTip(closestSection.msg);}}
@@ -1362,21 +1420,106 @@ function validateForm(){const ok=fnameEl.value.trim()!==''&&femailEl.value.trim(
 rcBox.addEventListener('click',()=>{if(rcDone)return;rcCheck.style.animation='rcSpin 0.6s ease';setTimeout(()=>{rcDone=true;rcCheck.classList.add('checked');rcCheck.style.animation='';validateForm();},600);});
 const rcStyle=document.createElement('style');rcStyle.textContent=`@keyframes rcSpin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}`;document.head.appendChild(rcStyle);
 submitBtn.addEventListener('click',()=>{if(submitBtn.disabled)return;submitBtn.textContent='Sending…';submitBtn.disabled=true;setTimeout(()=>{document.getElementById('form-body').style.display='none';document.getElementById('form-success').style.display='block';},1200);});
+
 /* FOOTER VIDEO SWITCH */
-const footerVideo = document.getElementById('footerVideo');
+const footerVideo=document.getElementById('footerVideo');
+const videos=['video/footerf1.mp4','video/footerf2.mp4'];
+let current=0;
+footerVideo.addEventListener('ended',()=>{current=(current+1)%videos.length;footerVideo.src=videos[current];footerVideo.play();});
 
-const videos = [
-    'video/.mp4',
-    'video/.mp4'
-];
+/* ══ EXPLORE CAROUSEL ══ */
+(function initExplore(){
+  const slides=document.querySelectorAll('.explore-slide');
+  const dots=document.querySelectorAll('#explore-dots .explore-dot');
+  const prevBtn=document.getElementById('explore-prev');
+  const nextBtn=document.getElementById('explore-next');
+  const currentEl=document.getElementById('explore-current');
+  const TOTAL=slides.length;
+  const AUTO_DURATION=6000; // ms per slide
+  let current=0,exploreInterval=null,timerRAF=null,timerStart=0;
 
-let current = 0;
+  // Progress bar ids per gap (between dot i and dot i+1)
+  const progressBars=[
+    document.getElementById('edp0'),
+    document.getElementById('edp1'),
+    document.getElementById('edp2')
+  ];
 
-footerVideo.addEventListener('ended', () => {
-    current = (current + 1) % videos.length;
-    footerVideo.src = videos[current];
-    footerVideo.play();
-});
+  function padNum(n){return String(n).padStart(2,'0');}
+
+  function resetAllProgressBars(){
+    progressBars.forEach(bar=>{
+      if(!bar)return;
+      bar.style.transition='none';
+      bar.style.width='0%';
+    });
+  }
+
+  function animateProgressBar(idx){
+    // idx = current slide index; bar between slide idx and idx+1
+    if(idx>=progressBars.length)return; // last slide has no bar after it
+    const bar=progressBars[idx];
+    if(!bar)return;
+    bar.style.transition='none';
+    bar.style.width='0%';
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      bar.style.transition=`width ${AUTO_DURATION}ms linear`;
+      bar.style.width='100%';
+    }));
+  }
+
+  function goTo(n,fromUser){
+    const prev=current;
+    current=(n+TOTAL)%TOTAL;
+
+    slides.forEach((s,i)=>s.classList.toggle('active',i===current));
+    dots.forEach((d,i)=>d.classList.toggle('active',i===current));
+    if(currentEl)currentEl.textContent=padNum(current+1);
+
+    // Reset all bars, fill completed ones
+    resetAllProgressBars();
+    for(let i=0;i<current;i++){
+      if(progressBars[i]){
+        progressBars[i].style.transition='none';
+        progressBars[i].style.width='100%';
+      }
+    }
+
+    // Start auto-progress on current bar
+    animateProgressBar(current);
+
+    // Restart auto-advance timer
+    clearInterval(exploreInterval);
+    exploreInterval=setInterval(()=>goTo(current+1),AUTO_DURATION);
+  }
+
+  // Init
+  goTo(0);
+
+  prevBtn.addEventListener('click',()=>goTo(current-1,true));
+  nextBtn.addEventListener('click',()=>goTo(current+1,true));
+  dots.forEach((d,i)=>d.addEventListener('click',()=>goTo(i,true)));
+
+  // Keyboard support when section visible
+  document.addEventListener('keydown',e=>{
+    const sec=document.getElementById('explore');
+    if(!sec)return;
+    const rect=sec.getBoundingClientRect();
+    if(rect.top>window.innerHeight||rect.bottom<0)return;
+    if(e.key==='ArrowRight'||e.key==='ArrowDown')goTo(current+1,true);
+    if(e.key==='ArrowLeft'||e.key==='ArrowUp')goTo(current-1,true);
+  });
+
+  // Touch/swipe support
+  let touchStartX=0;
+  const carousel=document.getElementById('explore-carousel');
+  carousel.addEventListener('touchstart',e=>{touchStartX=e.touches[0].clientX;},{passive:true});
+  carousel.addEventListener('touchend',e=>{
+    const dx=e.changedTouches[0].clientX-touchStartX;
+    if(Math.abs(dx)>50){dx<0?goTo(current+1,true):goTo(current-1,true);}
+  },{passive:true});
+})();
+
 </script>
 </body>
 </html>
