@@ -65,46 +65,180 @@ body{background:var(--soil);color:var(--off-white);font-family:var(--fb);overflo
 .drone-tip-bar{position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,transparent,var(--chloro),transparent);animation:tipBarPulse 1.4s ease-in-out infinite;}
 .drone-tip-dot{position:absolute;left:.5rem;top:50%;transform:translateY(-50%);width:8px;height:8px;border-radius:50%;background:var(--chloro);box-shadow:0 0 6px var(--chloro);animation:tipDotPulse 1.2s ease-in-out infinite;}
 
-/* ══ INNOVATIVE NAVBAR ══ */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0;transform:translateY(-100%);transition:transform .38s cubic-bezier(.16,1,.3,1);}
+/* ══ NEW SLIDE-OUT NAVBAR ══ */
 
-.nav-logo{height:60px;width:auto;display:block;object-fit:contain;border-radius:12px;}
-.nav-logo:hover{ transform:scale(1.08);}
-nav.nav-visible{transform:translateY(0)}
-.nav-inner{display:flex;align-items:center;justify-content:space-between;margin:1rem 2rem;background:rgba(10,13,8,0.88);backdrop-filter:blur(20px);border:1px solid rgba(57,255,20,0.18);border-radius:50px;padding:.65rem 1.2rem .65rem 1.8rem;box-shadow:0 0 40px rgba(57,255,20,0.06), 0 8px 32px rgba(0,0,0,.4);transition:border-color .3s, box-shadow .3s;position:relative;}
-.nav-inner:hover{border-color:rgba(57,255,20,0.35);box-shadow:0 0 60px rgba(57,255,20,0.1), 0 8px 40px rgba(0,0,0,.5);}
-.nl{font-family:var(--fd);font-size:1.2rem;font-weight:700;color:var(--off-white);text-decoration:none;letter-spacing:-.02em;display:flex;align-items:center;gap:.5rem}
-.nl span{color:var(--chloro)}
-.nl-dot{width:7px;height:7px;border-radius:50%;background:var(--chloro);box-shadow:0 0 8px var(--chloro);animation:tipDotPulse 1.4s ease-in-out infinite;flex-shrink:0}
-.nm{display:flex;gap:.2rem;list-style:none;align-items:center;background:rgba(57,255,20,0.04);border:1px solid rgba(57,255,20,0.1);border-radius:50px;padding:.3rem .4rem;}
-.nm a{font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s,background .2s;padding:.38rem .85rem;border-radius:50px;position:relative;font-weight:500;}
-.nm a:hover{color:var(--off-white);background:rgba(57,255,20,0.1);}
-.nm a.active-link{color:var(--chloro);background:rgba(57,255,20,0.12);}
-.nc{font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.55rem 1.4rem;border:1.5px solid var(--chloro);color:var(--chloro);background:transparent;border-radius:50px;cursor:pointer;text-decoration:none;transition:background .2s,color .2s,box-shadow .2s;white-space:nowrap;}
-.nc:hover{background:var(--chloro);color:var(--soil);box-shadow:0 0 20px rgba(57,255,20,.3);}
-.nav-ham{display:none;width:42px;height:42px;border:1.5px solid rgba(57,255,20,0.3);border-radius:50%;background:transparent;cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:5px;transition:border-color .2s,background .2s;}
-.nav-ham:hover{border-color:var(--chloro);background:rgba(57,255,20,0.08);}
-.nav-ham span{display:block;width:16px;height:1.5px;background:var(--chloro);border-radius:2px;transition:transform .3s,opacity .3s,width .3s;}
-.nav-ham.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
-.nav-ham.open span:nth-child(2){opacity:0;width:0;}
-.nav-ham.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
-.nav-drawer{
-  position:absolute;top:calc(100% + .5rem);left:0;right:0;
-  background:rgba(10,13,8,0.98);border:1px solid rgba(57,255,20,0.2);border-radius:20px;
-  padding:1rem;overflow:hidden;
-  max-height:0;opacity:0;
-  transition:max-height .45s cubic-bezier(.16,1,.3,1), opacity .3s ease;
-  backdrop-filter:blur(20px);
-  box-shadow:0 20px 60px rgba(0,0,0,.6), 0 0 40px rgba(57,255,20,.06);
-  pointer-events:none;
+/* The toggle button — always visible, top-left */
+#nav-toggle{
+  position:fixed;top:22px;left:22px;z-index:1002;
+  width:48px;height:48px;
+  background:rgba(10,13,8,0.92);
+  border:1.5px solid rgba(57,255,20,0.45);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+  transition:background .25s, border-color .25s, box-shadow .25s, transform .25s;
+  backdrop-filter:blur(12px);
+  box-shadow:0 0 18px rgba(57,255,20,.1);
 }
-.nav-drawer.open{max-height:400px;opacity:1;pointer-events:all;}
-.nav-drawer ul{list-style:none;display:flex;flex-direction:column;gap:.3rem;margin-bottom:.8rem;}
-.nav-drawer ul a{display:block;font-size:.85rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s,background .2s,padding-left .2s;padding:.65rem 1rem;border-radius:10px;}
-.nav-drawer ul a:hover{color:var(--off-white);background:rgba(57,255,20,.08);padding-left:1.4rem;}
-.nav-drawer .nc{display:block;text-align:center;margin-top:.5rem;}
-.nav-progress-ring{position:absolute;right:1.1rem;top:50%;transform:translateY(-50%);width:38px;height:38px;pointer-events:none;}
-.nav-progress-ring circle{transition:stroke-dashoffset .1s linear;}
+#nav-toggle:hover{
+  background:rgba(57,255,20,0.12);
+  border-color:var(--chloro);
+  box-shadow:0 0 28px rgba(57,255,20,.28);
+  transform:scale(1.08);
+}
+/* Chevron icon inside button */
+#nav-toggle-icon{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:5px;width:22px;
+}
+#nav-toggle-icon span{
+  display:block;height:1.8px;background:var(--chloro);border-radius:2px;
+  transform-origin:center;
+  transition:transform .35s cubic-bezier(.16,1,.3,1), opacity .25s, width .35s;
+}
+#nav-toggle-icon span:nth-child(1){width:22px;}
+#nav-toggle-icon span:nth-child(2){width:14px;}
+#nav-toggle-icon span:nth-child(3){width:22px;}
+
+/* When open — animate to X */
+#nav-toggle.open #nav-toggle-icon span:nth-child(1){
+  transform:translateY(6.8px) rotate(45deg);width:22px;
+}
+#nav-toggle.open #nav-toggle-icon span:nth-child(2){
+  opacity:0;width:0;
+}
+#nav-toggle.open #nav-toggle-icon span:nth-child(3){
+  transform:translateY(-6.8px) rotate(-45deg);width:22px;
+}
+
+/* Progress ring around toggle button */
+#nav-progress-svg{
+  position:fixed;top:14px;left:14px;z-index:1003;
+  width:62px;height:62px;pointer-events:none;
+}
+#nav-progress-svg circle{transition:stroke-dashoffset .1s linear;}
+
+/* The sliding navbar bar */
+#nav-bar{
+  position:fixed;top:16px;left:16px;z-index:1001;
+  height:52px;
+  background:rgba(8,12,7,0.97);
+  border:1.5px solid rgba(57,255,20,0.25);
+  border-radius:50px;
+  display:flex;align-items:center;
+  /* Start hidden — zero width, clipped */
+  width:52px;
+  overflow:hidden;
+  backdrop-filter:blur(20px);
+  box-shadow:0 0 40px rgba(57,255,20,.06), 0 8px 32px rgba(0,0,0,.5);
+  /* Smooth slide-open */
+  transition:
+    width .55s cubic-bezier(.16,1,.3,1),
+    border-color .3s,
+    box-shadow .3s,
+    opacity .3s;
+  pointer-events:none;
+  opacity:0;
+  white-space:nowrap;
+}
+#nav-bar.open{
+  width:min(840px, 92vw);
+  pointer-events:all;
+  opacity:1;
+  border-color:rgba(57,255,20,.45);
+  box-shadow:0 0 60px rgba(57,255,20,.13), 0 8px 40px rgba(0,0,0,.6);
+}
+
+/* Inner content of the bar — staggered fade-in */
+#nav-bar-inner{
+  display:flex;align-items:center;
+  padding:0 1.6rem 0 4.5rem; /* left pad to clear the toggle button */
+  gap:0;
+  opacity:0;
+  transform:translateX(-20px);
+  transition:opacity .3s ease .2s, transform .4s cubic-bezier(.16,1,.3,1) .15s;
+  width:100%;
+}
+#nav-bar.open #nav-bar-inner{
+  opacity:1;
+  transform:translateX(0);
+}
+
+/* Brand in bar */
+.nb-brand{
+  display:flex;align-items:center;gap:.55rem;
+  font-family:var(--fd);font-size:1.05rem;font-weight:700;
+  color:var(--off-white);text-decoration:none;letter-spacing:-.02em;
+  white-space:nowrap;flex-shrink:0;
+  padding-right:1.2rem;
+  border-right:1px solid rgba(57,255,20,.2);
+  margin-right:.6rem;
+}
+.nb-brand-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--chloro);box-shadow:0 0 8px var(--chloro);
+  animation:tipDotPulse 1.4s ease-in-out infinite;flex-shrink:0;
+}
+.nb-brand span{color:var(--chloro);}
+
+/* Nav links */
+.nb-links{
+  display:flex;align-items:center;gap:.1rem;
+  list-style:none;flex:1;
+}
+
+/* Separator between items */
+.nb-sep{
+  color:rgba(57,255,20,.2);font-size:.85rem;
+  padding:0 .2rem;flex-shrink:0;
+  user-select:none;
+}
+
+.nb-links a{
+  display:flex;align-items:center;gap:.4rem;
+  font-family:var(--fd);font-size:.78rem;font-weight:500;
+  letter-spacing:.04em;text-transform:uppercase;
+  color:var(--muted);text-decoration:none;
+  padding:.42rem .9rem;border-radius:50px;
+  white-space:nowrap;
+  transition:color .2s, background .2s;
+  position:relative;
+}
+.nb-links a:hover{color:var(--off-white);background:rgba(57,255,20,.1);}
+.nb-links a.nb-active{color:var(--chloro);background:rgba(57,255,20,.1);}
+.nb-links a .nb-emoji{font-size:.88rem;line-height:1;}
+
+/* CTA button inside bar */
+.nb-cta{
+  flex-shrink:0;margin-left:.8rem;
+  font-family:var(--fd);font-size:.75rem;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;
+  padding:.48rem 1.3rem;
+  border:1.5px solid var(--chloro);color:var(--chloro);
+  background:transparent;border-radius:50px;cursor:pointer;
+  text-decoration:none;white-space:nowrap;
+  transition:background .2s,color .2s,box-shadow .2s;
+}
+.nb-cta:hover{background:var(--chloro);color:var(--soil);box-shadow:0 0 20px rgba(57,255,20,.3);}
+
+/* Scan line inside nav bar */
+#nav-bar::after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(90deg,transparent 0%,rgba(57,255,20,.04) 50%,transparent 100%);
+  animation:tipScan 3s linear infinite;
+  border-radius:50px;
+}
+
+/* Mobile — full width bar drops to top, toggle moves right */
+@media(max-width:700px){
+  #nav-bar.open{width:calc(100vw - 32px);}
+  #nav-bar-inner{padding-left:3.8rem;padding-right:.8rem;gap:0;overflow-x:auto;}
+  .nb-brand{font-size:.88rem;}
+  .nb-links a{font-size:.72rem;padding:.38rem .65rem;}
+  .nb-cta{display:none;}
+}
+
+#pb{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--chloro),var(--amber));z-index:200}
 
 #hero{min-height:100vh;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
 #rc{position:absolute;inset:0;width:100%;height:100%;opacity:.4}
@@ -284,143 +418,33 @@ section{padding:7rem 5rem 7rem 5.5rem;position:relative}
 .pdc{font-size:.85rem;color:var(--muted);margin-top:.5rem;line-height:1.6}
 .pa{display:inline-flex;align-items:center;gap:.4rem;font-size:.8rem;color:var(--chloro);margin-top:1rem;letter-spacing:.06em;text-transform:uppercase;font-weight:500}
 
-
 #explore{padding:0;position:relative;overflow:hidden;}
 .explore-carousel{position:relative;width:100%;height:100vh;min-height:600px;overflow:hidden;}
-.explore-slide{
-  position:absolute;inset:0;
-  background-size:cover;background-position:center;background-repeat:no-repeat;
-  opacity:0;transition:opacity .9s cubic-bezier(.16,1,.3,1);
-  pointer-events:none;
-}
+.explore-slide{position:absolute;inset:0;background-size:cover;background-position:center;background-repeat:no-repeat;opacity:0;transition:opacity .9s cubic-bezier(.16,1,.3,1);pointer-events:none;}
 .explore-slide.active{opacity:1;pointer-events:all;}
-.explore-overlay{
-  position:absolute;inset:0;
-  background:linear-gradient(
-    100deg,
-    rgba(5,9,4,0.82) 0%,
-    rgba(5,9,4,0.65) 38%,
-    rgba(5,9,4,0.18) 65%,
-    rgba(5,9,4,0.05) 100%
-  );
-}
-.explore-content{
-  position:absolute;top:50%;left:5.5rem;transform:translateY(-50%);
-  max-width:480px;z-index:2;
-}
-.explore-slide-num{
-  font-family:var(--fd);font-size:5rem;font-weight:800;
-  color:rgba(57,255,20,0.08);line-height:1;
-  letter-spacing:-.04em;margin-bottom:-.8rem;
-  user-select:none;
-}
+.explore-overlay{position:absolute;inset:0;background:linear-gradient(100deg,rgba(5,9,4,0.82) 0%,rgba(5,9,4,0.65) 38%,rgba(5,9,4,0.18) 65%,rgba(5,9,4,0.05) 100%);}
+.explore-content{position:absolute;top:50%;left:5.5rem;transform:translateY(-50%);max-width:480px;z-index:2;}
+.explore-slide-num{font-family:var(--fd);font-size:5rem;font-weight:800;color:rgba(57,255,20,0.08);line-height:1;letter-spacing:-.04em;margin-bottom:-.8rem;user-select:none;}
 .explore-content .slb{margin-bottom:.5rem}
-.explore-title{
-  font-family:var(--fd);font-size:clamp(2rem,4.5vw,3.6rem);
-  font-weight:700;line-height:1.05;letter-spacing:-.03em;
-  color:var(--off-white);margin-bottom:1.2rem;
-}
-.explore-desc{
-  font-size:1rem;color:rgba(240,244,236,0.75);line-height:1.75;
-  margin-bottom:2rem;max-width:400px;
-}
-.explore-btn{
-  display:inline-flex;align-items:center;gap:.5rem;
-  font-family:var(--fd);font-size:.85rem;font-weight:700;
-  letter-spacing:.06em;text-transform:uppercase;text-decoration:none;
-  color:var(--soil);background:var(--chloro);
-  padding:.75rem 1.8rem;border-radius:2px;
-  transition:transform .2s, box-shadow .2s, background .2s;
-  position:relative;overflow:hidden;
-}
-.explore-btn::before{
-  content:'';position:absolute;inset:0;
-  background:rgba(255,255,255,.22);
-  transform:translateX(-110%) skewX(-15deg);
-  transition:transform .35s;
-}
+.explore-title{font-family:var(--fd);font-size:clamp(2rem,4.5vw,3.6rem);font-weight:700;line-height:1.05;letter-spacing:-.03em;color:var(--off-white);margin-bottom:1.2rem;}
+.explore-desc{font-size:1rem;color:rgba(240,244,236,0.75);line-height:1.75;margin-bottom:2rem;max-width:400px;}
+.explore-btn{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--fd);font-size:.85rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;color:var(--soil);background:var(--chloro);padding:.75rem 1.8rem;border-radius:2px;transition:transform .2s, box-shadow .2s, background .2s;position:relative;overflow:hidden;}
+.explore-btn::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,.22);transform:translateX(-110%) skewX(-15deg);transition:transform .35s;}
 .explore-btn:hover::before{transform:translateX(110%) skewX(-15deg)}
 .explore-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(57,255,20,.35);}
-
-
-.explore-arrow{
-  position:absolute;top:50%;transform:translateY(-50%);z-index:10;
-  width:52px;height:52px;
-  background:rgba(10,13,8,0.6);
-  border:1.5px solid rgba(57,255,20,0.35);
-  border-radius:50%;
-  color:var(--chloro);font-size:1.3rem;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;
-  transition:background .2s,border-color .2s,box-shadow .2s,transform .2s;
-  backdrop-filter:blur(6px);
-}
-.explore-arrow:hover{
-  background:rgba(57,255,20,0.15);border-color:var(--chloro);
-  box-shadow:0 0 20px rgba(57,255,20,.25);
-  transform:translateY(-50%) scale(1.08);
-}
-.explore-prev{left:2rem;}
-.explore-next{right:2rem;}
-
-
-.explore-dots{
-  position:absolute;bottom:2.5rem;left:5.5rem;z-index:10;
-  display:flex;align-items:center;gap:.55rem;
-}
-.explore-dot{
-  width:10px;height:10px;border-radius:50%;
-  background:rgba(255,255,255,0.25);
-  border:1.5px solid rgba(57,255,20,0.3);
-  cursor:pointer;transition:background .3s,border-color .3s,transform .2s;
-  padding:0;
-}
-.explore-dot.active{
-  background:var(--chloro);border-color:var(--chloro);
-  transform:scale(1.2);
-  box-shadow:0 0 8px rgba(57,255,20,.5);
-}
-.explore-dot-line{
-  width:48px;height:2px;
-  background:rgba(57,255,20,0.15);
-  border-radius:2px;overflow:hidden;
-  position:relative;
-}
-.explore-dot-progress{
-  height:100%;width:0%;
-  background:var(--chloro);
-  border-radius:2px;
-  transition:width linear;
-}
-
-
-.explore-counter{
-  position:absolute;bottom:2.5rem;right:2rem;z-index:10;
-  font-family:var(--fd);font-size:.72rem;font-weight:600;
-  letter-spacing:.14em;text-transform:uppercase;
-  color:rgba(57,255,20,0.5);
-}
+.explore-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:10;width:52px;height:52px;background:rgba(10,13,8,0.6);border:1.5px solid rgba(57,255,20,0.35);border-radius:50%;color:var(--chloro);font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s,border-color .2s,box-shadow .2s,transform .2s;backdrop-filter:blur(6px);}
+.explore-arrow:hover{background:rgba(57,255,20,0.15);border-color:var(--chloro);box-shadow:0 0 20px rgba(57,255,20,.25);transform:translateY(-50%) scale(1.08);}
+.explore-prev{left:2rem;}.explore-next{right:2rem;}
+.explore-dots{position:absolute;bottom:2.5rem;left:5.5rem;z-index:10;display:flex;align-items:center;gap:.55rem;}
+.explore-dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.25);border:1.5px solid rgba(57,255,20,0.3);cursor:pointer;transition:background .3s,border-color .3s,transform .2s;padding:0;}
+.explore-dot.active{background:var(--chloro);border-color:var(--chloro);transform:scale(1.2);box-shadow:0 0 8px rgba(57,255,20,.5);}
+.explore-dot-line{width:48px;height:2px;background:rgba(57,255,20,0.15);border-radius:2px;overflow:hidden;position:relative;}
+.explore-dot-progress{height:100%;width:0%;background:var(--chloro);border-radius:2px;transition:width linear;}
+.explore-counter{position:absolute;bottom:2.5rem;right:2rem;z-index:10;font-family:var(--fd);font-size:.72rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:rgba(57,255,20,0.5);}
 #explore-current{color:var(--chloro);}
-
-
-.explore-section-label{
-  position:absolute;top:2rem;right:2rem;z-index:10;
-  font-family:var(--fd);font-size:.65rem;font-weight:700;
-  letter-spacing:.18em;text-transform:uppercase;
-  color:rgba(57,255,20,0.4);
-  border:1px solid rgba(57,255,20,0.15);
-  padding:.35rem .85rem;border-radius:50px;
-  backdrop-filter:blur(6px);
-  background:rgba(10,13,8,0.4);
-}
-
-
-@keyframes exploreSlideIn{
-  from{opacity:0;transform:translateY(-50%) translateX(-30px);}
-  to{opacity:1;transform:translateY(-50%) translateX(0);}
-}
-.explore-slide.active .explore-content{
-  animation:exploreSlideIn .7s cubic-bezier(.16,1,.3,1) both;
-}
+.explore-section-label{position:absolute;top:2rem;right:2rem;z-index:10;font-family:var(--fd);font-size:.65rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(57,255,20,0.4);border:1px solid rgba(57,255,20,0.15);padding:.35rem .85rem;border-radius:50px;backdrop-filter:blur(6px);background:rgba(10,13,8,0.4);}
+@keyframes exploreSlideIn{from{opacity:0;transform:translateY(-50%) translateX(-30px);}to{opacity:1;transform:translateY(-50%) translateX(0);}}
+.explore-slide.active .explore-content{animation:exploreSlideIn .7s cubic-bezier(.16,1,.3,1) both;}
 
 #cta{position:relative;text-align:center;padding:8rem 5.5rem;overflow:hidden;border-top:1px solid var(--border);background:linear-gradient(rgba(6,12,5,0.87),rgba(8,14,6,0.93)),url('./images/agri.png') center/cover fixed no-repeat;}
 #cta::before{content:'';position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1600&auto=format&fit=crop&q=80') center/cover no-repeat;opacity:0.22;z-index:0;pointer-events:none;}
@@ -495,14 +519,10 @@ footer{position:relative;overflow:hidden;background:#000;}
 .rr.vs{opacity:1;transform:translateX(0)}
 .rs{opacity:0;transform:scale(.88);transition:opacity .8s ease,transform .8s cubic-bezier(.16,1,.3,1)}
 .rs.vs{opacity:1;transform:scale(1)}
-#pb{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--chloro),var(--amber));z-index:200}
 body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;z-index:9990;opacity:.3}
+
 @media(max-width:1100px){.cap-layout{grid-template-columns:1fr;}.cap-stats-row{grid-template-columns:repeat(3,1fr);}}
 @media(max-width:900px){
-  .nav-inner{margin:.6rem 1rem;padding:.55rem .8rem .55rem 1.2rem;}
-  .nm{display:none}
-  .nc.desktop-cta{display:none}
-  .nav-ham{display:flex}
   section{padding:4rem 1.5rem 4rem 2rem}
   #cap{padding:4rem 1.5rem;}
   #about{grid-template-columns:1fr}.bng{grid-template-columns:repeat(2,1fr)}
@@ -524,7 +544,6 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
   .cube-face--top    { transform: rotateX( 90deg) translateZ(100px); }
   .cube-face--bottom { transform: rotateX(-90deg) translateZ(100px); }
   .cap-stats-row{grid-template-columns:repeat(3,1fr);}
-  
   .explore-carousel{height:80vh;min-height:500px;}
   .explore-content{left:1.5rem;right:1.5rem;max-width:100%;}
   .explore-slide-num{font-size:3rem;}
@@ -563,45 +582,48 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 </div>
 <canvas id="how-robot" width="60" height="80"></canvas>
 
-<nav id="nav">
-  <div class="nav-inner">
-   <a href="#hero" class="nl">
-  <img src="images/ifarmatelogo.png" alt="i-Farmate Logo" class="nav-logo">
-</a>
-    <ul class="nm">
-      <li><a href="#hero">Home</a></li>
-      <li><a href="#cap">Features</a></li>
-      <li><a href="#about">About</a></li>
-      <li><a href="#explore">Explore</a></li>
-      <li><a href="#prod">Others</a></li>
-      <li><a href="#cta">Contact</a></li>
+<!-- ══ NEW NAVBAR ══ -->
+<!-- Progress ring (sits behind the toggle button visually) -->
+<svg id="nav-progress-svg" viewBox="0 0 62 62" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="31" cy="31" r="26" stroke="rgba(57,255,20,0.1)" stroke-width="2"/>
+  <circle id="nav-ring-circle" cx="31" cy="31" r="26" stroke="#39FF14" stroke-width="2"
+    stroke-dasharray="163.4" stroke-dashoffset="163.4"
+    stroke-linecap="round" transform="rotate(-90 31 31)"/>
+</svg>
+
+<!-- Sliding nav bar -->
+<div id="nav-bar" role="navigation" aria-label="Main navigation">
+  <div id="nav-bar-inner">
+    <a href="#hero" class="nb-brand" id="nb-brand-link">
+      <div class="nb-brand-dot"></div>
+      🌾 i-<span>Farmate</span>
+    </a>
+    <ul class="nb-links" id="nb-links">
+      <li><span class="nb-sep">─</span></li>
+      <li><a href="#hero" class="nb-link"><span class="nb-emoji">🏠</span>Home</a></li>
+      <li><span class="nb-sep">─</span></li>
+      <li><a href="#about" class="nb-link"><span class="nb-emoji">🌱</span>About</a></li>
+      <li><span class="nb-sep">─</span></li>
+      <li><a href="#cap" class="nb-link"><span class="nb-emoji">🚜</span>Features</a></li>
+      <li><span class="nb-sep">─</span></li>
+      <li><a href="#explore" class="nb-link"><span class="nb-emoji">🌍</span>Explore</a></li>
+      <li><span class="nb-sep">─</span></li>
+      <li><a href="#prod" class="nb-link"><span class="nb-emoji">📦</span>Others</a></li>
+      <li><span class="nb-sep">─</span></li>
+      <li><a href="#cta" class="nb-link"><span class="nb-emoji">📞</span>Contact</a></li>
     </ul>
-    <div style="display:flex;align-items:center;gap:.75rem">
-      <svg class="nav-progress-ring" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="19" cy="19" r="15" stroke="rgba(57,255,20,0.12)" stroke-width="2"/>
-        <circle id="nav-ring-circle" cx="19" cy="19" r="15" stroke="#39FF14" stroke-width="2"
-          stroke-dasharray="94.25" stroke-dashoffset="94.25"
-          stroke-linecap="round" transform="rotate(-90 19 19)"
-          style="transition:stroke-dashoffset .1s linear"/>
-      </svg>
-      <a href="#cta" class="nc desktop-cta">Demo</a>
-      <button class="nav-ham" id="nav-ham" aria-label="Menu">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-    <div class="nav-drawer" id="nav-drawer">
-      <ul>
-        <li><a href="#hero" class="drawer-link">Home</a></li>
-        <li><a href="#cap" class="drawer-link">Features</a></li>
-        <li><a href="#about" class="drawer-link">About</a></li>
-        <li><a href="#explore" class="drawer-link">Explore</a></li>
-        <li><a href="#prod" class="drawer-link">Others</a></li>
-        <li><a href="#cta" class="drawer-link">Contact</a></li>
-      </ul>
-      <a href="#cta" class="nc drawer-link">Request Demo</a>
-    </div>
+    <a href="#cta" class="nb-cta">Demo</a>
   </div>
-</nav>
+</div>
+
+<!-- Toggle button (always on top) -->
+<button id="nav-toggle" aria-label="Open navigation" aria-expanded="false">
+  <div id="nav-toggle-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</button>
 
 <section id="hero">
   <canvas id="rc"></canvas>
@@ -760,34 +782,17 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 
     <div class="cap-video-panel rv" style="transition-delay:.35s">
       <div class="cap-video-hud">
-        <iframe
-          src="https://www.youtube.com/embed/aGDtlo2xHJI?rel=0&modestbranding=1&color=white&t=52"
-          allow="autoplay; encrypted-media; picture-in-picture"
-          allowfullscreen
-          title="i-Farmate in Action"
-          loading="lazy"
-        ></iframe>
-        <div class="cvh-corner tl"></div>
-        <div class="cvh-corner tr"></div>
-        <div class="cvh-corner bl"></div>
-        <div class="cvh-corner br"></div>
+        <iframe src="https://www.youtube.com/embed/aGDtlo2xHJI?rel=0&modestbranding=1&color=white&t=52" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen title="i-Farmate in Action" loading="lazy"></iframe>
+        <div class="cvh-corner tl"></div><div class="cvh-corner tr"></div><div class="cvh-corner bl"></div><div class="cvh-corner br"></div>
         <div class="cvh-topbar">
           <span class="cvh-badge">i-Farmate</span>
-          <div class="cvh-live">
-            <div class="cvh-live-dot"></div>
-            Field Demo
-          </div>
+          <div class="cvh-live"><div class="cvh-live-dot"></div>Field Demo</div>
         </div>
       </div>
       <div class="cap-video-meta">
         <div class="cvm-left">
-          <div class="cvm-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#39FF14" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          </div>
-          <div>
-            <div class="cvm-label">Official Product Demo</div>
-            <div class="cvm-sub">APSI Technologies · i-Farmate</div>
-          </div>
+          <div class="cvm-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#39FF14" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+          <div><div class="cvm-label">Official Product Demo</div><div class="cvm-sub">APSI Technologies · i-Farmate</div></div>
         </div>
         <span class="cvm-duration">▶ Full Video</span>
       </div>
@@ -806,86 +811,11 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
     <div class="rr" style="transition-delay:.15s"><p class="sb">i-Farmate's impact extends beyond the field — it reshapes the entire agricultural value chain. Click a card to learn more.</p></div>
   </div>
   <div class="bng rv" style="transition-delay:.2s">
-    <div class="flip-card" id="fc1">
-      <div class="flip-card-inner">
-        <div class="flip-face flip-front">
-          <div class="bnn">01</div>
-          <svg class="bni" viewBox="0 0 48 48" fill="none"><path d="M24 4C24 4 10 14 10 26C10 36 16 44 24 44C32 44 38 36 38 26C38 14 24 4 24 4Z" stroke="currentColor" stroke-width="1.5" fill="currentColor" fill-opacity=".08"/><circle cx="24" cy="20" r="4" stroke="currentColor" stroke-width="1.5"/></svg>
-          <div class="bnt">Agri-Ecosystem</div>
-          <div class="bns">Biodiversity Protection</div>
-          <div class="flip-hint">Click to flip ↩</div>
-        </div>
-        <div class="flip-face flip-back">
-          <div class="flip-back-title">🌿 Ecosystem Guard</div>
-          <div class="flip-back-text">i-Farmate eliminates chemical use entirely, preserving soil microbiomes and protecting local wildlife habitats from pesticide damage.</div>
-          <a href="#cta" class="flip-read-more">Read More</a>
-        </div>
-      </div>
-    </div>
-    <div class="flip-card" id="fc2">
-      <div class="flip-card-inner">
-        <div class="flip-face flip-front">
-          <div class="bnn">02</div>
-          <svg class="bni" viewBox="0 0 48 48" fill="none"><ellipse cx="24" cy="30" rx="16" ry="10" stroke="currentColor" stroke-width="1.5"/><path d="M24 20C24 20 16 12 24 6C32 12 24 20 24 20Z" fill="currentColor" fill-opacity=".15" stroke="currentColor" stroke-width="1.5"/></svg>
-          <div class="bnt">Crops</div>
-          <div class="bns">Yield Enhancement</div>
-          <div class="flip-hint">Click to flip ↩</div>
-        </div>
-        <div class="flip-face flip-back">
-          <div class="flip-back-title">🌾 Crop Optimizer</div>
-          <div class="flip-back-text">Precision seeding, targeted weed control, and early disease detection combine to boost crop yields by up to 40% per season.</div>
-          <a href="#cta" class="flip-read-more">Read More</a>
-        </div>
-      </div>
-    </div>
-    <div class="flip-card" id="fc3">
-      <div class="flip-card-inner">
-        <div class="flip-face flip-front">
-          <div class="bnn">03</div>
-          <svg class="bni" viewBox="0 0 48 48" fill="none"><path d="M24 8L28 20L42 20L32 28L36 40L24 32L12 40L16 28L6 20L20 20Z" stroke="currentColor" stroke-width="1.5" fill="currentColor" fill-opacity=".1"/></svg>
-          <div class="bnt">Consumers</div>
-          <div class="bns">Safe Nutrition</div>
-          <div class="flip-hint">Click to flip ↩</div>
-        </div>
-        <div class="flip-face flip-back">
-          <div class="flip-back-title">🍅 Pure Produce</div>
-          <div class="flip-back-text">Zero-chemical farming ensures every product reaching consumers is pesticide-free, nutritionally richer, and certified safe to eat.</div>
-          <a href="#cta" class="flip-read-more">Read More</a>
-        </div>
-      </div>
-    </div>
-    <div class="flip-card" id="fc4">
-      <div class="flip-card-inner">
-        <div class="flip-face flip-front">
-          <div class="bnn">04</div>
-          <svg class="bni" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="16" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M8 40C8 32 14 26 24 26C34 26 40 32 40 40" stroke="currentColor" stroke-width="1.5"/></svg>
-          <div class="bnt">Farmers</div>
-          <div class="bns">Farming Support</div>
-          <div class="flip-hint">Click to flip ↩</div>
-        </div>
-        <div class="flip-face flip-back">
-          <div class="flip-back-title">👨‍🌾 Farmer's Ally</div>
-          <div class="flip-back-text">Reduces labor costs by 60%, automates repetitive tasks 24/7, and provides a live dashboard so farmers can manage from anywhere.</div>
-          <a href="#cta" class="flip-read-more">Read More</a>
-        </div>
-      </div>
-    </div>
-    <div class="flip-card" id="fc5">
-      <div class="flip-card-inner">
-        <div class="flip-face flip-front">
-          <div class="bnn">05</div>
-          <svg class="bni" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="18" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 2"/><path d="M14 24Q20 14 24 24Q28 34 34 24" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
-          <div class="bnt">Soil &amp; Water</div>
-          <div class="bns">Environmental Care</div>
-          <div class="flip-hint">Click to flip ↩</div>
-        </div>
-        <div class="flip-face flip-back">
-          <div class="flip-back-title">💧 Earth Protector</div>
-          <div class="flip-back-text">Precision irrigation and zero runoff chemicals keep groundwater clean and soil biology thriving for generations to come.</div>
-          <a href="#cta" class="flip-read-more">Read More</a>
-        </div>
-      </div>
-    </div>
+    <div class="flip-card" id="fc1"><div class="flip-card-inner"><div class="flip-face flip-front"><div class="bnn">01</div><svg class="bni" viewBox="0 0 48 48" fill="none"><path d="M24 4C24 4 10 14 10 26C10 36 16 44 24 44C32 44 38 36 38 26C38 14 24 4 24 4Z" stroke="currentColor" stroke-width="1.5" fill="currentColor" fill-opacity=".08"/><circle cx="24" cy="20" r="4" stroke="currentColor" stroke-width="1.5"/></svg><div class="bnt">Agri-Ecosystem</div><div class="bns">Biodiversity Protection</div><div class="flip-hint">Click to flip ↩</div></div><div class="flip-face flip-back"><div class="flip-back-title">🌿 Ecosystem Guard</div><div class="flip-back-text">i-Farmate eliminates chemical use entirely, preserving soil microbiomes and protecting local wildlife habitats from pesticide damage.</div><a href="#cta" class="flip-read-more">Read More</a></div></div></div>
+    <div class="flip-card" id="fc2"><div class="flip-card-inner"><div class="flip-face flip-front"><div class="bnn">02</div><svg class="bni" viewBox="0 0 48 48" fill="none"><ellipse cx="24" cy="30" rx="16" ry="10" stroke="currentColor" stroke-width="1.5"/><path d="M24 20C24 20 16 12 24 6C32 12 24 20 24 20Z" fill="currentColor" fill-opacity=".15" stroke="currentColor" stroke-width="1.5"/></svg><div class="bnt">Crops</div><div class="bns">Yield Enhancement</div><div class="flip-hint">Click to flip ↩</div></div><div class="flip-face flip-back"><div class="flip-back-title">🌾 Crop Optimizer</div><div class="flip-back-text">Precision seeding, targeted weed control, and early disease detection combine to boost crop yields by up to 40% per season.</div><a href="#cta" class="flip-read-more">Read More</a></div></div></div>
+    <div class="flip-card" id="fc3"><div class="flip-card-inner"><div class="flip-face flip-front"><div class="bnn">03</div><svg class="bni" viewBox="0 0 48 48" fill="none"><path d="M24 8L28 20L42 20L32 28L36 40L24 32L12 40L16 28L6 20L20 20Z" stroke="currentColor" stroke-width="1.5" fill="currentColor" fill-opacity=".1"/></svg><div class="bnt">Consumers</div><div class="bns">Safe Nutrition</div><div class="flip-hint">Click to flip ↩</div></div><div class="flip-face flip-back"><div class="flip-back-title">🍅 Pure Produce</div><div class="flip-back-text">Zero-chemical farming ensures every product reaching consumers is pesticide-free, nutritionally richer, and certified safe to eat.</div><a href="#cta" class="flip-read-more">Read More</a></div></div></div>
+    <div class="flip-card" id="fc4"><div class="flip-card-inner"><div class="flip-face flip-front"><div class="bnn">04</div><svg class="bni" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="16" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M8 40C8 32 14 26 24 26C34 26 40 32 40 40" stroke="currentColor" stroke-width="1.5"/></svg><div class="bnt">Farmers</div><div class="bns">Farming Support</div><div class="flip-hint">Click to flip ↩</div></div><div class="flip-face flip-back"><div class="flip-back-title">👨‍🌾 Farmer's Ally</div><div class="flip-back-text">Reduces labor costs by 60%, automates repetitive tasks 24/7, and provides a live dashboard so farmers can manage from anywhere.</div><a href="#cta" class="flip-read-more">Read More</a></div></div></div>
+    <div class="flip-card" id="fc5"><div class="flip-card-inner"><div class="flip-face flip-front"><div class="bnn">05</div><svg class="bni" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="18" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 2"/><path d="M14 24Q20 14 24 24Q28 34 34 24" stroke="currentColor" stroke-width="1.5" fill="none"/></svg><div class="bnt">Soil &amp; Water</div><div class="bns">Environmental Care</div><div class="flip-hint">Click to flip ↩</div></div><div class="flip-face flip-back"><div class="flip-back-title">💧 Earth Protector</div><div class="flip-back-text">Precision irrigation and zero runoff chemicals keep groundwater clean and soil biology thriving for generations to come.</div><a href="#cta" class="flip-read-more">Read More</a></div></div></div>
   </div>
 </section>
 
@@ -915,102 +845,21 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
   <h2 class="st rv" style="transition-delay:.1s">Our Other Products</h2>
   <p class="sb rv" style="transition-delay:.2s">Beyond i-Farmate, APSI Technologies builds a full stack for the future of food.</p>
   <div class="pg">
-    <div class="pc rv" style="transition-delay:.1s">
-      <div class="pi1">
-        <img src="images/farmfairlogo.jpg" alt="FarmFair" class="partner-img">
-      </div>
-      <div class="pb">
-        <div class="ptg">Direct Commerce</div>
-        <div class="pn">FarmFair</div>
-        <div class="pdc">Connecting farmers directly to consumers. Fresh produce, fair prices, zero middlemen.</div>
-        <div class="pa">Learn More →</div>
-      </div>
-    </div>
-    <div class="pc rv" style="transition-delay:.2s">
-      <div class="pi2">
-        <img src="images/teramatelogo.png" alt="TerraMate" class="partner-img">
-      </div>
-      <div class="pb">
-        <div class="ptg">IoT Platform</div>
-        <div class="pn">TerraMate</div>
-        <div class="pdc">Smart soil monitoring IoT platform that tracks moisture, nutrients, and microbiome health.</div>
-        <div class="pa">Learn More →</div>
-      </div>
-    </div>
-    <div class="pc rv" style="transition-delay:.3s">
-      <div class="pi3">
-        <img src="images/Thaniyas-Organiclogo.png" alt="Thaniyas Organic" class="partner-img">
-      </div>
-      <div class="pb">
-        <div class="ptg">Organic Brand</div>
-        <div class="pn">Thaniyas Organic</div>
-        <div class="pdc">Certified organic produce grown with i-Farmate's chemical-free precision.</div>
-        <div class="pa">Learn More →</div>
-      </div>
-    </div>
+    <div class="pc rv" style="transition-delay:.1s"><div class="pi1"><img src="images/farmfairlogo.jpg" alt="FarmFair" class="partner-img"></div><div class="pb"><div class="ptg">Direct Commerce</div><div class="pn">FarmFair</div><div class="pdc">Connecting farmers directly to consumers. Fresh produce, fair prices, zero middlemen.</div><div class="pa">Learn More →</div></div></div>
+    <div class="pc rv" style="transition-delay:.2s"><div class="pi2"><img src="images/teramatelogo.png" alt="TerraMate" class="partner-img"></div><div class="pb"><div class="ptg">IoT Platform</div><div class="pn">TerraMate</div><div class="pdc">Smart soil monitoring IoT platform that tracks moisture, nutrients, and microbiome health.</div><div class="pa">Learn More →</div></div></div>
+    <div class="pc rv" style="transition-delay:.3s"><div class="pi3"><img src="images/Thaniyas-Organiclogo.png" alt="Thaniyas Organic" class="partner-img"></div><div class="pb"><div class="ptg">Organic Brand</div><div class="pn">Thaniyas Organic</div><div class="pdc">Certified organic produce grown with i-Farmate's chemical-free precision.</div><div class="pa">Learn More →</div></div></div>
   </div>
 </section>
 
-<!-- ══ EXPLORE SECTION ══ -->
 <section id="explore" style="padding:0;position:relative;">
   <div class="explore-carousel" id="explore-carousel">
-
-    <!-- Slide 1 -->
-    <div class="explore-slide active" style="background-image:url('./images/vitaxs.jpg')">
-      <div class="explore-overlay"></div>
-      <div class="explore-content">
-        <div class="explore-slide-num">01</div>
-        <p class="slb" style="margin-bottom:.5rem">Explore i-Farmate</p>
-        <h2 class="explore-title">April 16, 2025</h2>
-        <p class="explore-desc">Vellore Institute of Technology & AUXWIT Technologies partner: Unmanned farming vehicle innovation</p>
-        <a href="#cta" class="explore-btn">Read More →</a>
-      </div>
-    </div>
-
-    <!-- Slide 2 -->
-    <div class="explore-slide" style="background-image:url('./images/sa.png')">
-      <div class="explore-overlay"></div>
-      <div class="explore-content">
-        <div class="explore-slide-num">02</div>
-        <p class="slb" style="margin-bottom:.5rem">Explore i-Farmate</p>
-        <h2 class="explore-title">Sept 30, 2025</h2>
-        <p class="explore-desc">Shaping the Future of Smart Farming: i-Farmate at United AgriTech 2025</p>
-        <a href="#cta" class="explore-btn">Read More →</a>
-      </div>
-    </div>
-
-    <!-- Slide 3 -->
-    <div class="explore-slide" style="background-image:url('./images/Naar1.jpg')">
-      <div class="explore-overlay"></div>
-      <div class="explore-content">
-        <div class="explore-slide-num">03</div>
-        <p class="slb" style="margin-bottom:.5rem">Explore i-Farmate</p>
-        <h2 class="explore-title">May 22, 2024</h2>
-        <p class="explore-desc">AUXWIT Technologies Gets Incubated at NAARM’s a-IDEA with i-Farmate and Terramate</p>
-        <a href="#cta" class="explore-btn">Read More →</a>
-      </div>
-    </div>
-
-    <!-- Slide 4 -->
-    <div class="explore-slide" style="background-image:url('./images/NAARM2.jpg')">
-      <div class="explore-overlay"></div>
-      <div class="explore-content">
-        <div class="explore-slide-num">04</div>
-        <p class="slb" style="margin-bottom:.5rem">Explore i-Farmate</p>
-        <h2 class="explore-title">Nov 13, 2024 </h2>
-        <p class="explore-desc">Empowering Farmers with i-Farmate: A Revolutionary Step Towards Smart Agriculture</p>
-        <a href="#cta" class="explore-btn">Read More →</a>
-      </div>
-    </div>
-
-    <!-- Section label -->
+    <div class="explore-slide active" style="background-image:url('./images/vitaxs.jpg')"><div class="explore-overlay"></div><div class="explore-content"><div class="explore-slide-num">01</div><p class="slb" style="margin-bottom:.5rem">Explore i-Farmate</p><h2 class="explore-title">April 16, 2025</h2><p class="explore-desc">Vellore Institute of Technology & AUXWIT Technologies partner: Unmanned farming vehicle innovation</p><a href="#cta" class="explore-btn">Read More →</a></div></div>
+    <div class="explore-slide" style="background-image:url('./images/sa.png')"><div class="explore-overlay"></div><div class="explore-content"><div class="explore-slide-num">02</div><p class="slb" style="margin-bottom:.5rem">Explore i-Farmate</p><h2 class="explore-title">Sept 30, 2025</h2><p class="explore-desc">Shaping the Future of Smart Farming: i-Farmate at United AgriTech 2025</p><a href="#cta" class="explore-btn">Read More →</a></div></div>
+    <div class="explore-slide" style="background-image:url('./images/Naar1.jpg')"><div class="explore-overlay"></div><div class="explore-content"><div class="explore-slide-num">03</div><p class="slb" style="margin-bottom:.5rem">Explore i-Farmate</p><h2 class="explore-title">May 22, 2024</h2><p class="explore-desc">AUXWIT Technologies Gets Incubated at NAARM's a-IDEA with i-Farmate and Terramate</p><a href="#cta" class="explore-btn">Read More →</a></div></div>
+    <div class="explore-slide" style="background-image:url('./images/NAARM2.jpg')"><div class="explore-overlay"></div><div class="explore-content"><div class="explore-slide-num">04</div><p class="slb" style="margin-bottom:.5rem">Explore i-Farmate</p><h2 class="explore-title">Nov 13, 2024</h2><p class="explore-desc">Empowering Farmers with i-Farmate: A Revolutionary Step Towards Smart Agriculture</p><a href="#cta" class="explore-btn">Read More →</a></div></div>
     <div class="explore-section-label">i-Farmate · Explore</div>
-
-    
     <button class="explore-arrow explore-prev" id="explore-prev" aria-label="Previous slide">&#8592;</button>
     <button class="explore-arrow explore-next" id="explore-next" aria-label="Next slide">&#8594;</button>
-
-    
     <div class="explore-dots" id="explore-dots">
       <button class="explore-dot active" data-slide="0" aria-label="Slide 1"></button>
       <div class="explore-dot-line"><div class="explore-dot-progress" id="edp0"></div></div>
@@ -1020,8 +869,6 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
       <div class="explore-dot-line"><div class="explore-dot-progress" id="edp2"></div></div>
       <button class="explore-dot" data-slide="3" aria-label="Slide 4"></button>
     </div>
-
-    <!-- Slide counter -->
     <div class="explore-counter"><span id="explore-current">01</span> / <span>04</span></div>
   </div>
 </section>
@@ -1034,22 +881,10 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
     <div class="contact-info">
       <p class="sb" style="color:var(--muted);margin-bottom:2rem">Our expert team is ready to help you transition to intelligent, autonomous agriculture. Schedule a demo or just ask us anything.</p>
       <div class="contact-detail">
-        <div class="cd-item">
-          <div class="cd-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 014.88 15a19.79 19.79 0 01-3.07-8.67A2 2 0 013.79 4.13h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L7.91 11.81A16 16 0 0013 16.88l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7a2 2 0 011.72 2.01z"/></svg></div>
-          <div><div class="cd-label">Phone</div><div class="cd-text">+91 (44) 2278-1279</div></div>
-        </div>
-        <div class="cd-item">
-          <div class="cd-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
-          <div><div class="cd-label">Email</div><div class="cd-text">contact@farmate.tech</div></div>
-        </div>
-        <div class="cd-item">
-          <div class="cd-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
-          <div><div class="cd-label">Address</div><div class="cd-text">8, Vembuliamman Koil Street,<br>Gowrivakkam, Chennai – 600073,<br>Tamil Nadu, India.</div></div>
-        </div>
-        <div class="cd-item">
-          <div class="cd-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-          <div><div class="cd-label">Working Hours</div><div class="cd-text">Mon – Fri: 9:30 am – 6:30 pm</div></div>
-        </div>
+        <div class="cd-item"><div class="cd-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 014.88 15a19.79 19.79 0 01-3.07-8.67A2 2 0 013.79 4.13h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L7.91 11.81A16 16 0 0013 16.88l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7a2 2 0 011.72 2.01z"/></svg></div><div><div class="cd-label">Phone</div><div class="cd-text">+91 (44) 2278-1279</div></div></div>
+        <div class="cd-item"><div class="cd-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><div><div class="cd-label">Email</div><div class="cd-text">contact@farmate.tech</div></div></div>
+        <div class="cd-item"><div class="cd-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div><div class="cd-label">Address</div><div class="cd-text">8, Vembuliamman Koil Street,<br>Gowrivakkam, Chennai – 600073,<br>Tamil Nadu, India.</div></div></div>
+        <div class="cd-item"><div class="cd-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div><div class="cd-label">Working Hours</div><div class="cd-text">Mon – Fri: 9:30 am – 6:30 pm</div></div></div>
       </div>
       <div class="hb" style="justify-content:flex-start;opacity:1;animation:none">
         <a href="mailto:contact@farmate.tech" class="bp">Email Us Directly</a>
@@ -1064,48 +899,19 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
             <div class="fi"><label for="f-name">Your Name</label><input type="text" id="f-name" placeholder="e.g. Ramesh Kumar" autocomplete="name"></div>
             <div class="fi"><label for="f-email">Your Email</label><input type="email" id="f-email" placeholder="you@example.com" autocomplete="email"></div>
           </div>
-          <div class="fi">
-            <label for="f-service">Select Service</label>
-            <select id="f-service">
-              <option value="" disabled selected>Choose a service…</option>
-              <option value="weeding">24/7 Automated Weeding</option>
-              <option value="seeding">Precision Seeding</option>
-              <option value="disease">Disease Detection & Management</option>
-              <option value="pest">Pest Monitoring & Control</option>
-              <option value="monitoring">Real-Time Crop Monitoring</option>
-              <option value="weather">Weather-Triggered Automation</option>
-              <option value="data">Historical Data Analysis</option>
-              <option value="full">Full i-Farmate Suite</option>
-              <option value="demo">General Demo Request</option>
-            </select>
-          </div>
+          <div class="fi"><label for="f-service">Select Service</label><select id="f-service"><option value="" disabled selected>Choose a service…</option><option value="weeding">24/7 Automated Weeding</option><option value="seeding">Precision Seeding</option><option value="disease">Disease Detection & Management</option><option value="pest">Pest Monitoring & Control</option><option value="monitoring">Real-Time Crop Monitoring</option><option value="weather">Weather-Triggered Automation</option><option value="data">Historical Data Analysis</option><option value="full">Full i-Farmate Suite</option><option value="demo">General Demo Request</option></select></div>
           <div class="fi"><label for="f-msg">Your Message</label><textarea id="f-msg" placeholder="Tell us about your farm, land area, current challenges…"></textarea></div>
-          <div class="recaptcha-box" id="recaptcha-box">
-            <div class="recaptcha-check" id="recaptcha-check">
-              <svg width="13" height="10" viewBox="0 0 13 10" fill="none"><polyline points="1.5,5 5,8.5 11.5,1.5" stroke="#39FF14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </div>
-            <span class="recaptcha-label">I'm not a robot</span>
-            <div class="recaptcha-logo">
-              <svg width="28" height="28" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="30" stroke="rgba(57,255,20,0.4)" stroke-width="2"/><path d="M32 14C22.06 14 14 22.06 14 32s8.06 18 18 18 18-8.06 18-18" stroke="rgba(57,255,20,0.7)" stroke-width="3" stroke-linecap="round"/><path d="M50 32l-6-6m6 6l-6 6" stroke="#39FF14" stroke-width="2.5" stroke-linecap="round"/></svg>
-              <strong>reCAPTCHA</strong><span>Privacy · Terms</span>
-            </div>
-          </div>
+          <div class="recaptcha-box" id="recaptcha-box"><div class="recaptcha-check" id="recaptcha-check"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><polyline points="1.5,5 5,8.5 11.5,1.5" stroke="#39FF14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="recaptcha-label">I'm not a robot</span><div class="recaptcha-logo"><svg width="28" height="28" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="30" stroke="rgba(57,255,20,0.4)" stroke-width="2"/><path d="M32 14C22.06 14 14 22.06 14 32s8.06 18 18 18 18-8.06 18-18" stroke="rgba(57,255,20,0.7)" stroke-width="3" stroke-linecap="round"/><path d="M50 32l-6-6m6 6l-6 6" stroke="#39FF14" stroke-width="2.5" stroke-linecap="round"/></svg><strong>reCAPTCHA</strong><span>Privacy · Terms</span></div></div>
           <button class="submit-btn" id="submit-btn" disabled>📅 Make an Appointment</button>
         </div>
       </div>
-      <div class="form-success" id="form-success">
-        <div class="tick"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <h3>Appointment Requested!</h3>
-        <p>Thank you! Our team will contact you within 24 hours to confirm your demo slot.</p>
-      </div>
+      <div class="form-success" id="form-success"><div class="tick"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><h3>Appointment Requested!</h3><p>Thank you! Our team will contact you within 24 hours to confirm your demo slot.</p></div>
     </div>
   </div>
 </section>
 
 <footer id="footer-section">
-  <video id="footerVideo" autoplay muted playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
-    <source src="video/fv1.mp4" type="video/mp4">
-  </video>
+  <video id="footerVideo" autoplay muted playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"><source src="video/fv1.mp4" type="video/mp4"></video>
   <div class="footer-video-overlay"></div>
   <div class="footer-main">
     <div class="footer-grid">
@@ -1121,36 +927,21 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
       </div>
       <div>
         <div class="footer-col-title">Quick Link</div>
-        <ul class="footer-links">
-          <li><a href="#hero">Home</a></li><li><a href="#cap">Features</a></li>
-          <li><a href="#about">About Us</a></li><li><a href="#cta">Contact Us</a></li>
-        </ul>
+        <ul class="footer-links"><li><a href="#hero">Home</a></li><li><a href="#cap">Features</a></li><li><a href="#about">About Us</a></li><li><a href="#cta">Contact Us</a></li></ul>
       </div>
       <div>
         <div class="footer-col-title">Solutions</div>
-        <ul class="footer-solutions-list">
-          <li>24/7 Weeding</li><li>24/7 Seeding</li><li>Disease Management</li>
-          <li>Pest Management</li><li>Real-time Crop Monitoring</li>
-          <li>Weather-Triggered Actions</li><li>Historical Data Analysis</li><li>Precise Data Capture</li>
-        </ul>
+        <ul class="footer-solutions-list"><li>24/7 Weeding</li><li>24/7 Seeding</li><li>Disease Management</li><li>Pest Management</li><li>Real-time Crop Monitoring</li><li>Weather-Triggered Actions</li><li>Historical Data Analysis</li><li>Precise Data Capture</li></ul>
       </div>
     </div>
   </div>
-  <div class="footer-bottom">
-    <p class="footer-bottom-text">© 2026. All Rights Reserved. <strong>Auxwit Technologies Private Limited</strong>.</p>
-  </div>
+  <div class="footer-bottom"><p class="footer-bottom-text">© 2026. All Rights Reserved. <strong>Auxwit Technologies Private Limited</strong>.</p></div>
 </footer>
 
 <script>
 "use strict";
 if(!CanvasRenderingContext2D.prototype.roundRect){
-  CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){
-    r=Math.min(r,w/2,h/2);
-    this.moveTo(x+r,y);this.lineTo(x+w-r,y);this.arcTo(x+w,y,x+w,y+r,r);
-    this.lineTo(x+w,y+h-r);this.arcTo(x+w,y+h,x+w-r,y+h,r);
-    this.lineTo(x+r,y+h);this.arcTo(x,y+h,x,y+h-r,r);
-    this.lineTo(x,y+r);this.arcTo(x,y,x+r,y,r);this.closePath();return this;
-  };
+  CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){r=Math.min(r,w/2,h/2);this.moveTo(x+r,y);this.lineTo(x+w-r,y);this.arcTo(x+w,y,x+w,y+r,r);this.lineTo(x+w,y+h-r);this.arcTo(x+w,y+h,x+w-r,y+h,r);this.lineTo(x+r,y+h);this.arcTo(x,y+h,x,y+h-r,r);this.lineTo(x,y+r);this.arcTo(x,y,x+r,y,r);this.closePath();return this;};
 }
 
 /* ── LOADER ── */
@@ -1168,55 +959,78 @@ document.querySelectorAll('a,button').forEach(el=>{
   el.addEventListener('mouseleave',()=>{cur.style.width='10px';cur.style.height='10px';ring.style.width='36px';ring.style.height='36px'});
 });
 
-/* ══ NAVBAR ══ */
-const navEl=document.getElementById('nav');
-const navHam=document.getElementById('nav-ham');
-const navDrawer=document.getElementById('nav-drawer');
+/* ══ NEW NAVBAR ══ */
+const navToggle=document.getElementById('nav-toggle');
+const navBar=document.getElementById('nav-bar');
 const navRingCircle=document.getElementById('nav-ring-circle');
 const pb=document.getElementById('pb');
-let lastScrollY=0,navShown=false;
-const ringCircumference=2*Math.PI*15;
+const ringCircumference=2*Math.PI*26; // r=26
 
-function updateNav(){
+let navOpen=false;
+
+function openNav(){
+  navOpen=true;
+  navBar.classList.add('open');
+  navToggle.classList.add('open');
+  navToggle.setAttribute('aria-expanded','true');
+  navToggle.setAttribute('aria-label','Close navigation');
+}
+function closeNav(){
+  navOpen=false;
+  navBar.classList.remove('open');
+  navToggle.classList.remove('open');
+  navToggle.setAttribute('aria-expanded','false');
+  navToggle.setAttribute('aria-label','Open navigation');
+}
+
+navToggle.addEventListener('click',()=>{
+  if(navOpen) closeNav(); else openNav();
+});
+
+// Close when a nav link is clicked
+document.querySelectorAll('.nb-link,.nb-brand,.nb-cta').forEach(a=>{
+  a.addEventListener('click',()=>closeNav());
+});
+
+// Close on outside click
+document.addEventListener('click',e=>{
+  if(navOpen && !navBar.contains(e.target) && !navToggle.contains(e.target)){
+    closeNav();
+  }
+});
+
+// Keyboard: Escape closes
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&navOpen) closeNav();
+});
+
+/* Scroll progress ring */
+function updateScrollProgress(){
   const sy=window.scrollY,msy=document.documentElement.scrollHeight-window.innerHeight;
   const prog=msy>0?sy/msy:0;
   pb.style.width=(prog*100)+'%';
   const offset=ringCircumference*(1-prog);
   navRingCircle.style.strokeDashoffset=offset;
-  const nearTop=sy<80,scrollingUp=sy<lastScrollY;
-  const shouldShow=nearTop||(scrollingUp&&sy>60);
-  if(shouldShow!==navShown){navShown=shouldShow;navEl.classList.toggle('nav-visible',shouldShow);}
-  lastScrollY=sy;
+
+  // Active link highlight
   const sections=['hero','cap','about','explore','prod','cta'];
   let current='hero';
   sections.forEach(id=>{const el=document.getElementById(id);if(el&&el.getBoundingClientRect().top<window.innerHeight*0.5)current=id;});
-  document.querySelectorAll('.nm a').forEach(a=>{
+  document.querySelectorAll('.nb-link').forEach(a=>{
     const href=a.getAttribute('href').replace('#','');
-    a.classList.toggle('active-link',href===current);
+    a.classList.toggle('nb-active',href===current);
   });
 }
-window.addEventListener('scroll',updateNav,{passive:true});
-if(window.scrollY<80)navEl.classList.add('nav-visible');
-
-navHam.addEventListener('click',()=>{navHam.classList.toggle('open');navDrawer.classList.toggle('open');});
-document.querySelectorAll('.drawer-link').forEach(a=>{a.addEventListener('click',()=>{navHam.classList.remove('open');navDrawer.classList.remove('open');});});
-document.addEventListener('click',e=>{if(!navEl.contains(e.target)){navHam.classList.remove('open');navDrawer.classList.remove('open');}});
+window.addEventListener('scroll',updateScrollProgress,{passive:true});
+updateScrollProgress();
 
 /* Cube drag */
 (function initCubeDrag(){
-  const cubeEl=document.getElementById('about-cube');
-  if(!cubeEl)return;
+  const cubeEl=document.getElementById('about-cube');if(!cubeEl)return;
   let isDragging=false,startX=0,startY=0,rotX=-15,rotY=0,dragRotX=-15,dragRotY=0;
   cubeEl.parentElement.addEventListener('mousedown',e=>{isDragging=true;startX=e.clientX;startY=e.clientY;dragRotX=rotX;dragRotY=rotY;cubeEl.style.animation='none';e.preventDefault();});
   window.addEventListener('mousemove',e=>{if(!isDragging)return;rotY=dragRotY+(e.clientX-startX)*0.5;rotX=dragRotX-(e.clientY-startY)*0.5;cubeEl.style.transform=`rotateX(${rotX}deg) rotateY(${rotY}deg)`;});
-  window.addEventListener('mouseup',()=>{
-    if(!isDragging)return;isDragging=false;
-    setTimeout(()=>{
-      const style=document.createElement('style');const id='cube-anim-'+Date.now();
-      style.textContent=`@keyframes cubeRotateDynamic{0%{transform:rotateX(${rotX}deg) rotateY(${rotY}deg)}100%{transform:rotateX(${rotX}deg) rotateY(${rotY+360}deg)}}`;
-      document.head.appendChild(style);cubeEl.style.animation=`cubeRotateDynamic 12s linear infinite`;
-    },2000);
-  });
+  window.addEventListener('mouseup',()=>{if(!isDragging)return;isDragging=false;setTimeout(()=>{const style=document.createElement('style');const id='cube-anim-'+Date.now();style.textContent=`@keyframes cubeRotateDynamic{0%{transform:rotateX(${rotX}deg) rotateY(${rotY}deg)}100%{transform:rotateX(${rotX}deg) rotateY(${rotY+360}deg)}}`;document.head.appendChild(style);cubeEl.style.animation=`cubeRotateDynamic 12s linear infinite`;},2000);});
   cubeEl.parentElement.addEventListener('touchstart',e=>{const t=e.touches[0];isDragging=true;startX=t.clientX;startY=t.clientY;dragRotX=rotX;dragRotY=rotY;cubeEl.style.animation='none';e.preventDefault();},{passive:false});
   window.addEventListener('touchmove',e=>{if(!isDragging)return;const t=e.touches[0];rotY=dragRotY+(t.clientX-startX)*0.5;rotX=dragRotX-(t.clientY-startY)*0.5;cubeEl.style.transform=`rotateX(${rotX}deg) rotateY(${rotY}deg)`;},{passive:true});
   window.addEventListener('touchend',()=>{isDragging=false;});
@@ -1236,18 +1050,8 @@ let rf=0,rf2=0;
 const gcan=document.getElementById('gc'),gctx=gcan.getContext('2d');
 function szGC(){gcan.width=window.innerWidth;gcan.height=170;}
 szGC();window.addEventListener('resize',()=>{szGC();initGrass();},{passive:true});
-class Blade{
-  constructor(x){this.x=x;this.by=gcan.height;this.mh=32+Math.random()*55;this.h=0;this.a=(Math.random()-.5)*.42;this.th=1.6+Math.random()*1.8;this.hue=108+Math.random()*28;this.ph=Math.random()*Math.PI*2;this.amp=.035+Math.random()*.06;this.cut=false;this.gs=.45+Math.random()*.8;this.c1=`hsl(${this.hue},62%,16%)`;this.c2=`hsl(${this.hue+10},82%,36%)`;this.c3=`hsl(${this.hue+22},98%,55%)`;this.c4=`hsla(${this.hue+30},100%,72%,.5)`;this.sw=0;}
-  update(t){if(!this.cut&&this.h<this.mh)this.h=Math.min(this.h+this.gs,this.mh);if(this.cut)this.h=Math.max(this.h-2.2,0);this.sw=Math.sin(t*.00065+this.ph)*this.amp*this.h;}
-  draw(){if(this.h<1)return;const sw=this.sw,h=this.h,bw=this.th;const cp1x=sw*.28,cp1y=-h*.38;const cp2x=sw*.68,cp2y=-h*.72;const tx=sw,ty=-h;const grd=gctx.createLinearGradient(0,0,tx,ty);grd.addColorStop(0,this.c1);grd.addColorStop(.38,this.c2);grd.addColorStop(.78,this.c3);grd.addColorStop(1,this.c4);gctx.save();gctx.translate(this.x,this.by);gctx.rotate(this.a);gctx.beginPath();gctx.moveTo(-bw,0);gctx.bezierCurveTo(-bw+cp1x*.5,cp1y,-bw*.25+cp2x,cp2y,tx-.4,ty);gctx.lineTo(tx,ty-1.5);gctx.lineTo(tx+.4,ty);gctx.bezierCurveTo(bw*.25+cp2x,cp2y,bw+cp1x*.5,cp1y,bw,0);gctx.closePath();gctx.fillStyle=grd;gctx.fill();gctx.restore();}
-}
-class Cutter{
-  constructor(){this.x=-70;this.active=false;this.done=false;this.ba=0;this.lp=0;}
-  activate(){this.x=-70;this.active=true;this.done=false;}
-  update(blades){if(!this.active)return;this.x+=2.8;this.ba+=.32;this.lp+=.16;const lo=this.x-24,hi=this.x+24;for(let i=0;i<blades.length;i++){const b=blades[i];if(b.x<lo)continue;if(b.x>hi)break;if(!b.cut&&b.h>3)b.cut=true;}if(this.x>gcan.width+80){this.active=false;this.done=true;}}
-  draw(){if(!this.active)return;const x=this.x,y=gcan.height-20;gctx.save();const tg=gctx.createLinearGradient(x-55,0,x,0);tg.addColorStop(0,'rgba(57,255,20,0)');tg.addColorStop(1,'rgba(57,255,20,.04)');gctx.fillStyle=tg;gctx.fillRect(x-55,y-32,55,38);gctx.fillStyle='#1c2416';gctx.strokeStyle='#39FF14';gctx.lineWidth=1.4;gctx.beginPath();this._rr(x-17,y-25,34,19,4);gctx.fill();gctx.stroke();gctx.beginPath();this._rr(x-11,y-39,22,15,3);gctx.fill();gctx.stroke();const vg=gctx.createLinearGradient(x-7,0,x+7,0);vg.addColorStop(0,'rgba(57,255,20,.15)');vg.addColorStop(.5,'rgba(57,255,20,.85)');vg.addColorStop(1,'rgba(57,255,20,.15)');gctx.fillStyle=vg;gctx.beginPath();this._rr(x-7,y-36,14,5,1.5);gctx.fill();gctx.strokeStyle='rgba(57,255,20,.75)';gctx.lineWidth=1.1;gctx.beginPath();gctx.moveTo(x,y-39);gctx.lineTo(x,y-46);gctx.stroke();gctx.beginPath();gctx.arc(x,y-48,2.8,0,Math.PI*2);gctx.fillStyle='#39FF14';gctx.fill();gctx.strokeStyle='#E8A020';gctx.lineWidth=1.8;gctx.beginPath();gctx.moveTo(x+17,y-17);gctx.lineTo(x+30,y-17);gctx.stroke();gctx.save();gctx.translate(x+30,y-17);for(let i=0;i<4;i++){const a=this.ba+i*Math.PI/2;gctx.beginPath();gctx.moveTo(0,0);gctx.lineTo(Math.cos(a)*8,Math.sin(a)*8);gctx.strokeStyle='rgba(232,160,32,.75)';gctx.lineWidth=1.8;gctx.lineCap='round';gctx.stroke();}gctx.beginPath();gctx.arc(0,0,3,0,Math.PI*2);gctx.fillStyle='#E8A020';gctx.fill();gctx.restore();gctx.strokeStyle='rgba(57,255,20,.55)';gctx.lineWidth=1.3;gctx.beginPath();gctx.moveTo(x-17,y-17);gctx.lineTo(x-26,y-26);gctx.stroke();gctx.beginPath();gctx.arc(x-28,y-28,3.5,0,Math.PI*2);gctx.fillStyle='rgba(57,255,20,.12)';gctx.strokeStyle='rgba(57,255,20,.7)';gctx.lineWidth=1;gctx.fill();gctx.stroke();gctx.save();gctx.translate(x-28,y-28);gctx.rotate(this.ba*.4);gctx.strokeStyle='rgba(57,255,20,.55)';gctx.lineWidth=.9;gctx.beginPath();gctx.moveTo(-3,0);gctx.lineTo(3,0);gctx.stroke();gctx.beginPath();gctx.moveTo(0,-3);gctx.lineTo(0,3);gctx.stroke();gctx.restore();const lo2=Math.sin(this.lp)*2.5;[-11,11].forEach((ox,i)=>{const wy=y+lo2*(i===0?1:-1);gctx.beginPath();gctx.arc(x+ox,wy,6,0,Math.PI*2);gctx.fillStyle='#0a1208';gctx.strokeStyle='#39FF14';gctx.lineWidth=1;gctx.fill();gctx.stroke();gctx.save();gctx.translate(x+ox,wy);gctx.rotate(this.lp*(ox>0?1:-1));gctx.strokeStyle='rgba(57,255,20,.4)';gctx.lineWidth=.8;gctx.beginPath();gctx.moveTo(-4,0);gctx.lineTo(4,0);gctx.stroke();gctx.beginPath();gctx.moveTo(0,-4);gctx.lineTo(0,4);gctx.stroke();gctx.restore();});const blinkOn=Math.floor(this.ba*1.2)%2===0;gctx.beginPath();gctx.arc(x+6,y-30,2,0,Math.PI*2);gctx.fillStyle=blinkOn?'#39FF14':'rgba(57,255,20,.15)';gctx.fill();if(Math.random()<.4){const sx=x-6+Math.random()*12,sy=y-6;gctx.beginPath();gctx.arc(sx,sy,1,0,Math.PI*2);gctx.fillStyle=`rgba(232,160,32,${Math.random()*.6+.2})`;gctx.fill();}gctx.restore();}
-  _rr(x,y,w,h,r){r=Math.min(r,w/2,h/2);gctx.moveTo(x+r,y);gctx.lineTo(x+w-r,y);gctx.arcTo(x+w,y,x+w,y+r,r);gctx.lineTo(x+w,y+h-r);gctx.arcTo(x+w,y+h,x+w-r,y+h,r);gctx.lineTo(x+r,y+h);gctx.arcTo(x,y+h,x,y+h-r,r);gctx.lineTo(x,y+r);gctx.arcTo(x,y,x+r,y,r);gctx.closePath();}
-}
+class Blade{constructor(x){this.x=x;this.by=gcan.height;this.mh=32+Math.random()*55;this.h=0;this.a=(Math.random()-.5)*.42;this.th=1.6+Math.random()*1.8;this.hue=108+Math.random()*28;this.ph=Math.random()*Math.PI*2;this.amp=.035+Math.random()*.06;this.cut=false;this.gs=.45+Math.random()*.8;this.c1=`hsl(${this.hue},62%,16%)`;this.c2=`hsl(${this.hue+10},82%,36%)`;this.c3=`hsl(${this.hue+22},98%,55%)`;this.c4=`hsla(${this.hue+30},100%,72%,.5)`;this.sw=0;}update(t){if(!this.cut&&this.h<this.mh)this.h=Math.min(this.h+this.gs,this.mh);if(this.cut)this.h=Math.max(this.h-2.2,0);this.sw=Math.sin(t*.00065+this.ph)*this.amp*this.h;}draw(){if(this.h<1)return;const sw=this.sw,h=this.h,bw=this.th;const cp1x=sw*.28,cp1y=-h*.38;const cp2x=sw*.68,cp2y=-h*.72;const tx=sw,ty=-h;const grd=gctx.createLinearGradient(0,0,tx,ty);grd.addColorStop(0,this.c1);grd.addColorStop(.38,this.c2);grd.addColorStop(.78,this.c3);grd.addColorStop(1,this.c4);gctx.save();gctx.translate(this.x,this.by);gctx.rotate(this.a);gctx.beginPath();gctx.moveTo(-bw,0);gctx.bezierCurveTo(-bw+cp1x*.5,cp1y,-bw*.25+cp2x,cp2y,tx-.4,ty);gctx.lineTo(tx,ty-1.5);gctx.lineTo(tx+.4,ty);gctx.bezierCurveTo(bw*.25+cp2x,cp2y,bw+cp1x*.5,cp1y,bw,0);gctx.closePath();gctx.fillStyle=grd;gctx.fill();gctx.restore();}}
+class Cutter{constructor(){this.x=-70;this.active=false;this.done=false;this.ba=0;this.lp=0;}activate(){this.x=-70;this.active=true;this.done=false;}update(blades){if(!this.active)return;this.x+=2.8;this.ba+=.32;this.lp+=.16;const lo=this.x-24,hi=this.x+24;for(let i=0;i<blades.length;i++){const b=blades[i];if(b.x<lo)continue;if(b.x>hi)break;if(!b.cut&&b.h>3)b.cut=true;}if(this.x>gcan.width+80){this.active=false;this.done=true;}}draw(){if(!this.active)return;const x=this.x,y=gcan.height-20;gctx.save();const tg=gctx.createLinearGradient(x-55,0,x,0);tg.addColorStop(0,'rgba(57,255,20,0)');tg.addColorStop(1,'rgba(57,255,20,.04)');gctx.fillStyle=tg;gctx.fillRect(x-55,y-32,55,38);gctx.fillStyle='#1c2416';gctx.strokeStyle='#39FF14';gctx.lineWidth=1.4;gctx.beginPath();this._rr(x-17,y-25,34,19,4);gctx.fill();gctx.stroke();gctx.beginPath();this._rr(x-11,y-39,22,15,3);gctx.fill();gctx.stroke();const vg=gctx.createLinearGradient(x-7,0,x+7,0);vg.addColorStop(0,'rgba(57,255,20,.15)');vg.addColorStop(.5,'rgba(57,255,20,.85)');vg.addColorStop(1,'rgba(57,255,20,.15)');gctx.fillStyle=vg;gctx.beginPath();this._rr(x-7,y-36,14,5,1.5);gctx.fill();gctx.strokeStyle='rgba(57,255,20,.75)';gctx.lineWidth=1.1;gctx.beginPath();gctx.moveTo(x,y-39);gctx.lineTo(x,y-46);gctx.stroke();gctx.beginPath();gctx.arc(x,y-48,2.8,0,Math.PI*2);gctx.fillStyle='#39FF14';gctx.fill();gctx.strokeStyle='#E8A020';gctx.lineWidth=1.8;gctx.beginPath();gctx.moveTo(x+17,y-17);gctx.lineTo(x+30,y-17);gctx.stroke();gctx.save();gctx.translate(x+30,y-17);for(let i=0;i<4;i++){const a=this.ba+i*Math.PI/2;gctx.beginPath();gctx.moveTo(0,0);gctx.lineTo(Math.cos(a)*8,Math.sin(a)*8);gctx.strokeStyle='rgba(232,160,32,.75)';gctx.lineWidth=1.8;gctx.lineCap='round';gctx.stroke();}gctx.beginPath();gctx.arc(0,0,3,0,Math.PI*2);gctx.fillStyle='#E8A020';gctx.fill();gctx.restore();gctx.strokeStyle='rgba(57,255,20,.55)';gctx.lineWidth=1.3;gctx.beginPath();gctx.moveTo(x-17,y-17);gctx.lineTo(x-26,y-26);gctx.stroke();gctx.beginPath();gctx.arc(x-28,y-28,3.5,0,Math.PI*2);gctx.fillStyle='rgba(57,255,20,.12)';gctx.strokeStyle='rgba(57,255,20,.7)';gctx.lineWidth=1;gctx.fill();gctx.stroke();gctx.save();gctx.translate(x-28,y-28);gctx.rotate(this.ba*.4);gctx.strokeStyle='rgba(57,255,20,.55)';gctx.lineWidth=.9;gctx.beginPath();gctx.moveTo(-3,0);gctx.lineTo(3,0);gctx.stroke();gctx.beginPath();gctx.moveTo(0,-3);gctx.lineTo(0,3);gctx.stroke();gctx.restore();const lo2=Math.sin(this.lp)*2.5;[-11,11].forEach((ox,i)=>{const wy=y+lo2*(i===0?1:-1);gctx.beginPath();gctx.arc(x+ox,wy,6,0,Math.PI*2);gctx.fillStyle='#0a1208';gctx.strokeStyle='#39FF14';gctx.lineWidth=1;gctx.fill();gctx.stroke();gctx.save();gctx.translate(x+ox,wy);gctx.rotate(this.lp*(ox>0?1:-1));gctx.strokeStyle='rgba(57,255,20,.4)';gctx.lineWidth=.8;gctx.beginPath();gctx.moveTo(-4,0);gctx.lineTo(4,0);gctx.stroke();gctx.beginPath();gctx.moveTo(0,-4);gctx.lineTo(0,4);gctx.stroke();gctx.restore();});const blinkOn=Math.floor(this.ba*1.2)%2===0;gctx.beginPath();gctx.arc(x+6,y-30,2,0,Math.PI*2);gctx.fillStyle=blinkOn?'#39FF14':'rgba(57,255,20,.15)';gctx.fill();if(Math.random()<.4){const sx=x-6+Math.random()*12,sy=y-6;gctx.beginPath();gctx.arc(sx,sy,1,0,Math.PI*2);gctx.fillStyle=`rgba(232,160,32,${Math.random()*.6+.2})`;gctx.fill();}gctx.restore();}_rr(x,y,w,h,r){r=Math.min(r,w/2,h/2);gctx.moveTo(x+r,y);gctx.lineTo(x+w-r,y);gctx.arcTo(x+w,y,x+w,y+r,r);gctx.lineTo(x+w,y+h-r);gctx.arcTo(x+w,y+h,x+w-r,y+h,r);gctx.lineTo(x+r,y+h);gctx.arcTo(x,y+h,x,y+h-r,r);gctx.lineTo(x,y+r);gctx.arcTo(x,y,x+r,y,r);gctx.closePath();}}
 let blades=[],cutter=new Cutter();
 let gPhase='growing',gStart=Date.now(),gCutTime=0;
 function initGrass(){blades=[];cutter=new Cutter();gPhase='growing';gStart=Date.now();const sp=4.2,cnt=Math.floor(gcan.width/sp);for(let i=0;i<cnt;i++)blades.push(new Blade(sp/2+i*sp+Math.random()*1.2));blades.sort((a,b)=>a.x-b.x);}
@@ -1314,29 +1118,14 @@ const capDots=document.querySelectorAll('.carousel-dot');
 const capTimerBar=document.getElementById('cap-timer-bar');
 const capPageNum=document.getElementById('cap-page-num');
 let capPage=0,capPages=2,capInterval=null;
-function gotoCapPage(n){
-  capPage=(n+capPages)%capPages;
-  capTrack.style.transform=`translateX(-${capPage*100}%)`;
-  capDots.forEach((d,i)=>d.classList.toggle('active',i===capPage));
-  if(capPageNum)capPageNum.textContent=capPage+1;
-  resetCapTimer();
-}
-function resetCapTimer(){
-  capTimerBar.style.transition='none';capTimerBar.style.width='0%';
-  clearInterval(capInterval);
-  requestAnimationFrame(()=>requestAnimationFrame(()=>{
-    capTimerBar.style.transition='width 5s linear';capTimerBar.style.width='100%';
-  }));
-  capInterval=setInterval(()=>gotoCapPage(capPage+1),5000);
-}
+function gotoCapPage(n){capPage=(n+capPages)%capPages;capTrack.style.transform=`translateX(-${capPage*100}%)`;capDots.forEach((d,i)=>d.classList.toggle('active',i===capPage));if(capPageNum)capPageNum.textContent=capPage+1;resetCapTimer();}
+function resetCapTimer(){capTimerBar.style.transition='none';capTimerBar.style.width='0%';clearInterval(capInterval);requestAnimationFrame(()=>requestAnimationFrame(()=>{capTimerBar.style.transition='width 5s linear';capTimerBar.style.width='100%';}));capInterval=setInterval(()=>gotoCapPage(capPage+1),5000);}
 document.getElementById('cap-prev').addEventListener('click',()=>gotoCapPage(capPage-1));
 document.getElementById('cap-next').addEventListener('click',()=>gotoCapPage(capPage+1));
 capDots.forEach(d=>d.addEventListener('click',()=>gotoCapPage(+d.dataset.idx)));
 resetCapTimer();
 
-document.querySelectorAll('.flip-card').forEach(card=>{
-  card.addEventListener('click',()=>card.classList.toggle('flipped'));
-});
+document.querySelectorAll('.flip-card').forEach(card=>{card.addEventListener('click',()=>card.classList.toggle('flipped'));});
 
 const obsRV=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vs');obsRV.unobserve(e.target);}});},{threshold:.08,rootMargin:'0px 0px -40px 0px'});
 document.querySelectorAll('.rv,.rl,.rr,.rs').forEach(el=>obsRV.observe(el));
@@ -1362,19 +1151,13 @@ const howStyle=document.createElement('style');howStyle.textContent='#how{cursor
 
 /* FIELD CANVAS */
 const fc2=document.getElementById('fc');
-if(fc2){
-  const fctx=fc2.getContext('2d');
-  function szFC(){const p=fc2.parentElement;fc2.width=p.offsetWidth;fc2.height=p.offsetHeight;}szFC();window.addEventListener('resize',szFC,{passive:true});
-  let bx2=30,by3=0,bt=0,rows=[],sd=1;
-  function buildR(){rows=[];const h=fc2.height;for(let i=0;i<7;i++)rows.push({y:60+(i/6)*(h-120),sc:0});by3=rows[0]?rows[0].y:0;}buildR();
-  (function afc(){if(!rows.length){requestAnimationFrame(afc);return;}const w=fc2.width,h=fc2.height;fctx.clearRect(0,0,w,h);rows.forEach(r=>{fctx.beginPath();fctx.moveTo(20,r.y);fctx.lineTo(w-20,r.y);fctx.strokeStyle='rgba(57,255,20,.07)';fctx.lineWidth=1;fctx.stroke();if(r.sc>0){fctx.fillStyle='rgba(57,255,20,.04)';fctx.fillRect(20,r.y-10,(w-40)*r.sc,20);}for(let c=0;c<12;c++){const cx2=30+(c/11)*(w-60);fctx.beginPath();fctx.arc(cx2,r.y,2.8,0,Math.PI*2);fctx.fillStyle=r.sc>c/11?'rgba(57,255,20,.48)':'rgba(57,255,20,.09)';fctx.fill();}});fctx.save();fctx.translate(bx2,by3);fctx.beginPath();fctx.arc(0,0,8,0,Math.PI*2);fctx.fillStyle='rgba(57,255,20,.13)';fctx.fill();fctx.strokeStyle='#39FF14';fctx.lineWidth=1.4;fctx.stroke();fctx.beginPath();fctx.arc(0,0,2.8,0,Math.PI*2);fctx.fillStyle='#39FF14';fctx.fill();fctx.restore();bx2+=1.4*sd;if(bx2>=w-30){sd=-1;if(bt<rows.length-1)bt++;}if(bx2<=30){sd=1;if(bt<rows.length-1)bt++;}by3+=(rows[bt].y-by3)*.08;rows[bt].sc=Math.min(1,rows[bt].sc+.0025);requestAnimationFrame(afc);})();
-}
+if(fc2){const fctx=fc2.getContext('2d');function szFC(){const p=fc2.parentElement;fc2.width=p.offsetWidth;fc2.height=p.offsetHeight;}szFC();window.addEventListener('resize',szFC,{passive:true});let bx2=30,by3=0,bt=0,rows=[],sd=1;function buildR(){rows=[];const h=fc2.height;for(let i=0;i<7;i++)rows.push({y:60+(i/6)*(h-120),sc:0});by3=rows[0]?rows[0].y:0;}buildR();(function afc(){if(!rows.length){requestAnimationFrame(afc);return;}const w=fc2.width,h=fc2.height;fctx.clearRect(0,0,w,h);rows.forEach(r=>{fctx.beginPath();fctx.moveTo(20,r.y);fctx.lineTo(w-20,r.y);fctx.strokeStyle='rgba(57,255,20,.07)';fctx.lineWidth=1;fctx.stroke();if(r.sc>0){fctx.fillStyle='rgba(57,255,20,.04)';fctx.fillRect(20,r.y-10,(w-40)*r.sc,20);}for(let c=0;c<12;c++){const cx2=30+(c/11)*(w-60);fctx.beginPath();fctx.arc(cx2,r.y,2.8,0,Math.PI*2);fctx.fillStyle=r.sc>c/11?'rgba(57,255,20,.48)':'rgba(57,255,20,.09)';fctx.fill();}});fctx.save();fctx.translate(bx2,by3);fctx.beginPath();fctx.arc(0,0,8,0,Math.PI*2);fctx.fillStyle='rgba(57,255,20,.13)';fctx.fill();fctx.strokeStyle='#39FF14';fctx.lineWidth=1.4;fctx.stroke();fctx.beginPath();fctx.arc(0,0,2.8,0,Math.PI*2);fctx.fillStyle='#39FF14';fctx.fill();fctx.restore();bx2+=1.4*sd;if(bx2>=w-30){sd=-1;if(bt<rows.length-1)bt++;}if(bx2<=30){sd=1;if(bt<rows.length-1)bt++;}by3+=(rows[bt].y-by3)*.08;rows[bt].sc=Math.min(1,rows[bt].sc+.0025);requestAnimationFrame(afc);})();}
 
 /* PARALLAX */
 window.addEventListener('scroll',()=>{const hc=document.querySelector('.hc');if(hc)hc.style.transform=`translateY(${window.scrollY*.28}px)`;},{passive:true});
 
 /* BUTTON MAGNET */
-document.querySelectorAll('.bp,.bo,.nc').forEach(btn=>{
+document.querySelectorAll('.bp,.bo').forEach(btn=>{
   btn.addEventListener('mousemove',e=>{const r=btn.getBoundingClientRect();btn.style.transform=`translate(${(e.clientX-r.left-r.width/2)*.1}px,${(e.clientY-r.top-r.height/2)*.1}px)`;});
   btn.addEventListener('mouseleave',()=>{btn.style.transform='';});
 });
@@ -1407,91 +1190,23 @@ footerVideo.addEventListener('ended',()=>{current=(current+1)%videos.length;foot
   const nextBtn=document.getElementById('explore-next');
   const currentEl=document.getElementById('explore-current');
   const TOTAL=slides.length;
-  const AUTO_DURATION=6000; // ms per slide
-  let current=0,exploreInterval=null,timerRAF=null,timerStart=0;
-
-  
-  const progressBars=[
-    document.getElementById('edp0'),
-    document.getElementById('edp1'),
-    document.getElementById('edp2')
-  ];
-
+  const AUTO_DURATION=6000;
+  let current=0,exploreInterval=null;
+  const progressBars=[document.getElementById('edp0'),document.getElementById('edp1'),document.getElementById('edp2')];
   function padNum(n){return String(n).padStart(2,'0');}
-
-  function resetAllProgressBars(){
-    progressBars.forEach(bar=>{
-      if(!bar)return;
-      bar.style.transition='none';
-      bar.style.width='0%';
-    });
-  }
-
-  function animateProgressBar(idx){
-
-    if(idx>=progressBars.length)return; 
-    const bar=progressBars[idx];
-    if(!bar)return;
-    bar.style.transition='none';
-    bar.style.width='0%';
-    requestAnimationFrame(()=>requestAnimationFrame(()=>{
-      bar.style.transition=`width ${AUTO_DURATION}ms linear`;
-      bar.style.width='100%';
-    }));
-  }
-
-  function goTo(n,fromUser){
-    const prev=current;
-    current=(n+TOTAL)%TOTAL;
-
-    slides.forEach((s,i)=>s.classList.toggle('active',i===current));
-    dots.forEach((d,i)=>d.classList.toggle('active',i===current));
-    if(currentEl)currentEl.textContent=padNum(current+1);
-
-    
-    resetAllProgressBars();
-    for(let i=0;i<current;i++){
-      if(progressBars[i]){
-        progressBars[i].style.transition='none';
-        progressBars[i].style.width='100%';
-      }
-    }
-
-    
-    animateProgressBar(current);
-
-    
-    clearInterval(exploreInterval);
-    exploreInterval=setInterval(()=>goTo(current+1),AUTO_DURATION);
-  }
-
-  // Init
+  function resetAllProgressBars(){progressBars.forEach(bar=>{if(!bar)return;bar.style.transition='none';bar.style.width='0%';});}
+  function animateProgressBar(idx){if(idx>=progressBars.length)return;const bar=progressBars[idx];if(!bar)return;bar.style.transition='none';bar.style.width='0%';requestAnimationFrame(()=>requestAnimationFrame(()=>{bar.style.transition=`width ${AUTO_DURATION}ms linear`;bar.style.width='100%';}));}
+  function goTo(n){const prev=current;current=(n+TOTAL)%TOTAL;slides.forEach((s,i)=>s.classList.toggle('active',i===current));dots.forEach((d,i)=>d.classList.toggle('active',i===current));if(currentEl)currentEl.textContent=padNum(current+1);resetAllProgressBars();for(let i=0;i<current;i++){if(progressBars[i]){progressBars[i].style.transition='none';progressBars[i].style.width='100%';}}animateProgressBar(current);clearInterval(exploreInterval);exploreInterval=setInterval(()=>goTo(current+1),AUTO_DURATION);}
   goTo(0);
-
-  prevBtn.addEventListener('click',()=>goTo(current-1,true));
-  nextBtn.addEventListener('click',()=>goTo(current+1,true));
-  dots.forEach((d,i)=>d.addEventListener('click',()=>goTo(i,true)));
-
-  
-  document.addEventListener('keydown',e=>{
-    const sec=document.getElementById('explore');
-    if(!sec)return;
-    const rect=sec.getBoundingClientRect();
-    if(rect.top>window.innerHeight||rect.bottom<0)return;
-    if(e.key==='ArrowRight'||e.key==='ArrowDown')goTo(current+1,true);
-    if(e.key==='ArrowLeft'||e.key==='ArrowUp')goTo(current-1,true);
-  });
-
-  
+  prevBtn.addEventListener('click',()=>goTo(current-1));
+  nextBtn.addEventListener('click',()=>goTo(current+1));
+  dots.forEach((d,i)=>d.addEventListener('click',()=>goTo(i)));
+  document.addEventListener('keydown',e=>{const sec=document.getElementById('explore');if(!sec)return;const rect=sec.getBoundingClientRect();if(rect.top>window.innerHeight||rect.bottom<0)return;if(e.key==='ArrowRight'||e.key==='ArrowDown')goTo(current+1);if(e.key==='ArrowLeft'||e.key==='ArrowUp')goTo(current-1);});
   let touchStartX=0;
   const carousel=document.getElementById('explore-carousel');
   carousel.addEventListener('touchstart',e=>{touchStartX=e.touches[0].clientX;},{passive:true});
-  carousel.addEventListener('touchend',e=>{
-    const dx=e.changedTouches[0].clientX-touchStartX;
-    if(Math.abs(dx)>50){dx<0?goTo(current+1,true):goTo(current-1,true);}
-  },{passive:true});
+  carousel.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-touchStartX;if(Math.abs(dx)>50){dx<0?goTo(current+1):goTo(current-1);}},{passive:true});
 })();
-
 </script>
 </body>
 </html>
