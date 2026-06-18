@@ -50,7 +50,7 @@ body{background:var(--soil);color:var(--off-white);font-family:var(--fb);overflo
 .drone-tip-bar{position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,transparent,var(--chloro),transparent);animation:tipBarPulse 1.4s ease-in-out infinite;}
 .drone-tip-dot{position:absolute;left:.5rem;top:50%;transform:translateY(-50%);width:8px;height:8px;border-radius:50%;background:var(--chloro);box-shadow:0 0 6px var(--chloro);animation:tipDotPulse 1.2s ease-in-out infinite;}
 
-/* ══  SLIDE-OUT NAVBAR ══ */
+/* ══ SLIDE-OUT NAVBAR ══ */
 #nav-toggle{position:fixed;top:22px;left:22px;z-index:1002;width:48px;height:48px;background:rgba(10,13,8,0.92);border:1.5px solid rgba(57,255,20,0.45);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .25s, border-color .25s, box-shadow .25s, transform .25s;backdrop-filter:blur(12px);box-shadow:0 0 18px rgba(57,255,20,.1);}
 #nav-toggle:hover{background:rgba(57,255,20,0.12);border-color:var(--chloro);box-shadow:0 0 28px rgba(57,255,20,.28);transform:scale(1.08);}
 #nav-toggle-icon{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;width:22px;}
@@ -79,7 +79,6 @@ body{background:var(--soil);color:var(--off-white);font-family:var(--fb);overflo
 .nb-cta{flex-shrink:0;margin-left:.8rem;font-family:var(--fd);font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.48rem 1.3rem;border:1.5px solid var(--chloro);color:var(--chloro);background:transparent;border-radius:50px;cursor:pointer;text-decoration:none;white-space:nowrap;transition:background .2s,color .2s,box-shadow .2s;}
 .nb-cta:hover{background:var(--chloro);color:var(--soil);box-shadow:0 0 20px rgba(57,255,20,.3);}
 #nav-bar::after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,transparent 0%,rgba(57,255,20,.04) 50%,transparent 100%);animation:tipScan 3s linear infinite;border-radius:50px;}
-@media(max-width:700px){#nav-bar.open{width:calc(100vw - 32px);}#nav-bar-inner{padding-left:3.8rem;padding-right:.8rem;gap:0;overflow-x:auto;}.nb-brand{font-size:.88rem;}.nb-links a{font-size:.72rem;padding:.38rem .65rem;}.nb-cta{display:none;}}
 
 #pb{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--chloro),var(--amber));z-index:200}
 
@@ -129,18 +128,18 @@ section{padding:7rem 5rem 7rem 5.5rem;position:relative}
 .cube-face{position:absolute;width:260px;height:260px;border:2px solid rgba(57,255,20,.55);overflow:hidden;backface-visibility:visible;}
 .cube-face img{width:100%;height:100%;object-fit:cover;display:block;}
 .cube-face::after{content:'';position:absolute;inset:0;background:rgba(57,255,20,.06);pointer-events:none;}
-.cube-face--front  { transform: translateZ(130px); }
-.cube-face--back   { transform: rotateY(180deg) translateZ(130px); }
-.cube-face--right  { transform: rotateY( 90deg) translateZ(130px); }
-.cube-face--left   { transform: rotateY(-90deg) translateZ(130px); }
-.cube-face--top    { transform: rotateX( 90deg) translateZ(130px); }
-.cube-face--bottom { transform: rotateX(-90deg) translateZ(130px); }
+.cube-face--front{transform:translateZ(130px);}
+.cube-face--back{transform:rotateY(180deg) translateZ(130px);}
+.cube-face--right{transform:rotateY(90deg) translateZ(130px);}
+.cube-face--left{transform:rotateY(-90deg) translateZ(130px);}
+.cube-face--top{transform:rotateX(90deg) translateZ(130px);}
+.cube-face--bottom{transform:rotateX(-90deg) translateZ(130px);}
 .cube-face::before{content:'';position:absolute;inset:0;box-shadow:inset 0 0 20px rgba(57,255,20,.15);pointer-events:none;z-index:2;}
 .cube-label{text-align:center;margin-top:28px;font-family:var(--fd);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(57,255,20,.5);}
 .cube-label span{color:var(--chloro);font-weight:600}
 #rcs{background:var(--soil-2);padding:0;text-align:center;overflow:hidden;position:relative;background-image:url('https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1400&auto=format&fit=crop&q=80');background-size:cover;background-position:center;background-attachment:fixed;}
 #scene-canvas{display:block;width:100%;height:600px;max-height:none}
-.scene-header{position:absolute; top:2rem; left:2%; transform:translateX(-50%); z-index:2; width:100%;text-align:center;}
+.scene-header{position:absolute;top:2rem;left:2%;transform:translateX(-50%);z-index:2;width:100%;text-align:center;}
 .scene-header .slb{justify-content:center}
 .scene-header .st{text-align:center}
 .scene-header .sb{text-align:center;margin:0 auto}
@@ -177,8 +176,8 @@ section{padding:7rem 5rem 7rem 5.5rem;position:relative}
 .carousel-timer{width:100%;height:2px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:.7rem}
 .carousel-timer-bar{height:100%;background:var(--chloro);border-radius:2px;width:0;transition:width linear}
 .cap-video-panel{position:relative;display:flex;flex-direction:column;gap:0;}
-.cap-video-hud{position:relative;background:#000;border:1px solid rgba(57,255,20,.35);border-radius:4px;overflow:hidden;aspect-ratio:16/9;transition:border-color .3s, box-shadow .3s;box-shadow:0 0 0 rgba(57,255,20,0);}
-.cap-video-hud:hover{border-color:rgba(57,255,20,.8);box-shadow:0 0 40px rgba(57,255,20,.18), 0 0 80px rgba(57,255,20,.06);}
+.cap-video-hud{position:relative;background:#000;border:1px solid rgba(57,255,20,.35);border-radius:4px;overflow:hidden;aspect-ratio:16/9;transition:border-color .3s,box-shadow .3s;box-shadow:0 0 0 rgba(57,255,20,0);}
+.cap-video-hud:hover{border-color:rgba(57,255,20,.8);box-shadow:0 0 40px rgba(57,255,20,.18),0 0 80px rgba(57,255,20,.06);}
 .cap-video-hud iframe{position:absolute;inset:0;width:100%;height:100%;border:none;z-index:2;}
 .cvh-corner{position:absolute;width:18px;height:18px;z-index:3;pointer-events:none;}
 .cvh-corner.tl{top:10px;left:10px;border-top:2px solid var(--chloro);border-left:2px solid var(--chloro);}
@@ -203,26 +202,68 @@ section{padding:7rem 5rem 7rem 5.5rem;position:relative}
 .cs-val{font-family:var(--fd);font-size:1.25rem;font-weight:700;color:var(--chloro);}
 .cs-lbl{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
 
-#ben{position:relative;background:linear-gradient(rgba(0,0,0,.75),rgba(0,0,0,.75)),url('./images/agri.png') center/cover fixed no-repeat;}
-.bnh{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:end;margin-bottom:4rem}
-.bng{display:grid;grid-template-columns:repeat(5,1fr);gap:1.2rem}
-.flip-card{height:240px;perspective:1000px;cursor:pointer;}
-.flip-card-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.4,0,.2,1);}
-.flip-card.flipped .flip-card-inner{transform:rotateY(180deg)}
-.flip-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:6px;}
-.flip-front{border:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:1.5rem 1rem;transition:border-color .3s,box-shadow .3s;position:relative;overflow:hidden;}
-.flip-front::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--chloro);transform:scaleX(0);transition:transform .3s}
-.flip-card:hover .flip-front::after{transform:scaleX(1)}
-.flip-back{background:linear-gradient(135deg,rgba(20,35,10,0.98),rgba(10,20,5,0.98));border:1px solid rgba(57,255,20,.5);transform:rotateY(180deg);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:1.4rem 1rem;gap:.8rem;border-radius:6px;}
-.bni{width:48px;height:48px;margin:0 auto .9rem;color:var(--chloro)}
-.bnt{font-family:var(--fd);font-size:.92rem;font-weight:600;color:var(--off-white);margin-bottom:.3rem}
-.bns{font-size:.72rem;color:var(--muted)}
-.bnn{font-family:var(--fd);font-size:.78rem;font-weight:800;color:var(--soil);background:var(--chloro);position:absolute;top:.6rem;right:.6rem;width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:50%}
-.flip-back-title{font-family:var(--fd);font-size:.88rem;font-weight:700;color:var(--chloro);}
-.flip-back-text{font-size:.78rem;color:rgba(240,244,236,.8);line-height:1.6;}
-.flip-read-more{font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--soil);background:var(--chloro);padding:.3rem .9rem;border-radius:2px;border:none;cursor:pointer;margin-top:.2rem;text-decoration:none;display:inline-block;transition:opacity .2s}
-.flip-read-more:hover{opacity:.85}
-.flip-hint{font-size:.68rem;color:rgba(57,255,20,.5);position:absolute;bottom:.5rem;left:50%;transform:translateX(-50%);white-space:nowrap;}
+/* WHO BENEFITS */
+#ben{position:relative;background:var(--soil);padding:7rem 0 7rem;overflow:hidden;}
+#ben::before{content:'';position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1600&auto=format&fit=crop&q=80') center/cover fixed no-repeat;opacity:0.07;z-index:0;}
+.ben-header{text-align:center;padding:0 5.5rem 5rem;position:relative;z-index:2;}
+.ben-header .slb{justify-content:center;}
+.ben-header .st{text-align:center;max-width:700px;margin:0 auto 1rem;}
+.ben-header .sb{margin:0 auto;text-align:center;max-width:560px;}
+.ben-rail-wrap{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;}
+#ben-rail-svg{position:absolute;top:0;left:50%;transform:translateX(-50%);width:4px;pointer-events:none;z-index:3;}
+#ben-rail-robot{position:absolute;left:50%;top:0;transform:translate(-50%,-50%);z-index:10;pointer-events:none;width:52px;height:68px;}
+.ben-row{display:grid;grid-template-columns:1fr 120px 1fr;align-items:center;width:100%;max-width:1200px;padding:0 5.5rem;position:relative;z-index:2;margin-bottom:0;}
+.ben-row.row-reverse{direction:rtl;}
+.ben-row.row-reverse > *{direction:ltr;}
+.ben-node{display:flex;align-items:center;justify-content:center;position:relative;}
+.ben-node-dot{width:20px;height:20px;border-radius:50%;background:var(--soil);border:2px solid var(--chloro);box-shadow:0 0 16px rgba(57,255,20,.5),0 0 40px rgba(57,255,20,.15);position:relative;z-index:4;transition:transform .3s,box-shadow .3s;}
+.ben-node-dot::after{content:'';position:absolute;inset:-5px;border-radius:50%;border:1px solid rgba(57,255,20,.25);animation:nodePulse 2s ease-in-out infinite;}
+@keyframes nodePulse{0%,100%{transform:scale(1);opacity:.6}50%{transform:scale(1.4);opacity:0}}
+
+.ben-spacer{height:60px;width:100%;position:relative;z-index:2;}
+.ben-card-wrap{position:relative;}
+.ben-flip-card{width:100%;max-width:460px;height:340px;perspective:1200px;cursor:pointer;margin:0 auto;}
+.ben-row.row-reverse .ben-flip-card{margin-right:0;margin-left:auto;}
+.ben-flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .75s cubic-bezier(.23,1,.32,1);border-radius:12px;}
+.ben-flip-card.flipped .ben-flip-inner{transform:rotateY(180deg);}
+.ben-flip-front{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:12px;overflow:hidden;border:1px solid rgba(57,255,20,.2);}
+.ben-front-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .6s ease;}
+.ben-flip-card:hover .ben-front-bg{transform:scale(1.04);}
+.ben-front-overlay{position:absolute;inset:0;background:linear-gradient(160deg,rgba(5,10,4,0.45) 0%,rgba(5,10,4,0.82) 100%);}
+.ben-front-content{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:2rem;}
+.ben-front-num{position:absolute;top:1.2rem;right:1.2rem; font-family:var(--fd);font-size:.78rem;font-weight:800; color:var(--soil);background:var(--chloro);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 12px rgba(57,255,20,.4);}
+.ben-front-icon{width:52px;height:52px;background:rgba(57,255,20,.12);border:1px solid rgba(57,255,20,.35);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;color:var(--chloro);backdrop-filter:blur(4px);flex-shrink:0;}
+.ben-front-title{font-family:var(--fd);font-size:1.3rem;font-weight:700;color:var(--off-white);margin-bottom:.3rem;}
+.ben-front-sub{font-size:.82rem;color:rgba(240,244,236,.65);margin-bottom:.9rem;}
+.ben-flip-hint{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(57,255,20,.55);display:flex;align-items:center;gap:.4rem;}
+.ben-flip-hint::before{content:'';display:block;width:16px;height:1px;background:rgba(57,255,20,.4);}
+.ben-flip-back{position:absolute;inset:0; backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:rotateY(180deg);border-radius:12px;overflow:hidden;background:linear-gradient(145deg,#0e1e08,#141f0c);border:1px solid rgba(57,255,20,.4);display:flex;flex-direction:column;padding:2rem;gap:1rem;}
+.ben-back-emoji{font-size:2rem;line-height:1;}
+.ben-back-title{font-family:var(--fd);font-size:1.1rem;font-weight:700;color:var(--chloro);}
+.ben-back-summary{font-size:.9rem;color:rgba(240,244,236,.8);line-height:1.7;flex:1;}
+.ben-read-more-btn{font-family:var(--fd);font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--soil);background:var(--chloro); padding:.55rem 1.4rem;border:none;border-radius:4px;cursor:pointer;align-self:flex-start;transition:box-shadow .2s,transform .2s; position:relative;overflow:hidden;}
+.ben-read-more-btn::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,.2);transform:translateX(-110%) skewX(-15deg);transition:transform .35s;}
+.ben-read-more-btn:hover::before{transform:translateX(110%) skewX(-15deg);}
+.ben-read-more-btn:hover{box-shadow:0 0 20px rgba(57,255,20,.35);transform:translateY(-2px);}
+
+
+.ben-shutter{position:absolute;top:0;left:0;right:0;z-index:20;border-radius:12px;overflow:hidden;clip-path:inset(0 0 100% 0);transition:clip-path .6s cubic-bezier(.16,1,.3,1); pointer-events:none;background:linear-gradient(145deg,#081208,#0e1c0a);border:1px solid rgba(57,255,20,.55);box-shadow:0 0 60px rgba(57,255,20,.2),0 30px 80px rgba(0,0,0,.7);}
+.ben-shutter.open{clip-path:inset(0 0 0% 0);pointer-events:all;}
+.ben-shutter-inner{padding:2rem 2rem 1.5rem;display:flex;flex-direction:column;gap:.9rem;min-height:340px;justify-content:space-between;}
+.ben-shutter-top{display:flex;align-items:center;gap:.75rem;padding-bottom:.8rem;border-bottom:1px solid rgba(57,255,20,.15);}
+.ben-shutter-emoji{font-size:1.6rem;}
+.ben-shutter-title{font-family:var(--fd);font-size:1rem;font-weight:700;color:var(--chloro);}
+.ben-shutter-sub{font-size:.72rem;color:var(--muted);margin-top:.1rem;}
+.ben-shutter-bar{position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--chloro),transparent);}
+.ben-shutter-text{font-size:.88rem;color:rgba(240,244,236,.82);line-height:1.85;flex:1;overflow-y:auto;max-height:220px;scrollbar-width:thin;scrollbar-color:rgba(57,255,20,.3) transparent;}
+.ben-shutter-close{align-self:flex-start;font-family:var(--fd);font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);background:transparent;border:1px solid rgba(57,255,20,.2);padding:.38rem 1rem;border-radius:4px;cursor:pointer;transition:border-color .2s,color .2s;}
+.ben-shutter-close:hover{border-color:var(--chloro);color:var(--off-white);}
+.ben-empty{display:flex;align-items:center;justify-content:center;}
+.ben-empty-stat{text-align:center;padding:1.5rem 2rem;border:1px solid var(--border);border-radius:8px;background:rgba(20,26,16,.4);backdrop-filter:blur(6px);max-width:240px;}
+.ben-empty-val{font-family:var(--fd);font-size:2.8rem;font-weight:800;color:var(--chloro);line-height:1;text-shadow:0 0 24px rgba(57,255,20,.4);}
+.ben-empty-lbl{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:.4rem;}
+
+
 #how{position:relative;border-top:1px solid var(--border);background:linear-gradient(rgba(8,14,6,0.88),rgba(8,14,6,0.92)),url('https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=1400&auto=format&fit=crop&q=80') center/cover fixed no-repeat;}
 #how::before{content:'';position:absolute;inset:0;background:url('./images/agri.png') center/cover no-repeat;opacity:0.08;z-index:0;pointer-events:none;}
 #how > *{position:relative;z-index:1;}
@@ -250,7 +291,7 @@ section{padding:7rem 5rem 7rem 5.5rem;position:relative}
 .pi1{background:#0d2b0d;display:flex;align-items:center;justify-content:center;padding:2rem;aspect-ratio:16/9}
 .pi2{background:#2d6e2d;display:flex;align-items:center;justify-content:center;padding:2rem;aspect-ratio:16/9}
 .pi3{background:#f0f4ec;display:flex;align-items:center;justify-content:center;padding:2rem;aspect-ratio:16/9}
-.partner-img{max-width:80%;max-height:80px; width:auto; height:auto;object-fit:contain;}
+.partner-img{max-width:80%;max-height:80px;width:auto;height:auto;object-fit:contain;}
 .pn{font-family:var(--fd);font-size:1.4rem;font-weight:700;color:var(--off-white)}
 .ptg{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--chloro);margin-bottom:.3rem}
 .pb{padding:1.5rem}
@@ -267,7 +308,7 @@ section{padding:7rem 5rem 7rem 5.5rem;position:relative}
 .explore-content .slb{margin-bottom:.5rem}
 .explore-title{font-family:var(--fd);font-size:clamp(2rem,4.5vw,3.6rem);font-weight:700;line-height:1.05;letter-spacing:-.03em;color:var(--off-white);margin-bottom:1.2rem;}
 .explore-desc{font-size:1rem;color:rgba(240,244,236,0.75);line-height:1.75;margin-bottom:2rem;max-width:400px;}
-.explore-btn{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--fd);font-size:.85rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;color:var(--soil);background:var(--chloro);padding:.75rem 1.8rem;border-radius:2px;transition:transform .2s, box-shadow .2s, background .2s;position:relative;overflow:hidden;}
+.explore-btn{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--fd);font-size:.85rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;color:var(--soil);background:var(--chloro);padding:.75rem 1.8rem;border-radius:2px;transition:transform .2s,box-shadow .2s,background .2s;position:relative;overflow:hidden;}
 .explore-btn::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,.22);transform:translateX(-110%) skewX(-15deg);transition:transform .35s;}
 .explore-btn:hover::before{transform:translateX(110%) skewX(-15deg)}
 .explore-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(57,255,20,.35);}
@@ -284,7 +325,6 @@ section{padding:7rem 5rem 7rem 5.5rem;position:relative}
 .explore-section-label{position:absolute;top:2rem;right:2rem;z-index:10;font-family:var(--fd);font-size:.65rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(57,255,20,0.4);border:1px solid rgba(57,255,20,0.15);padding:.35rem .85rem;border-radius:50px;backdrop-filter:blur(6px);background:rgba(10,13,8,0.4);}
 @keyframes exploreSlideIn{from{opacity:0;transform:translateY(-50%) translateX(-30px);}to{opacity:1;transform:translateY(-50%) translateX(0);}}
 .explore-slide.active .explore-content{animation:exploreSlideIn .7s cubic-bezier(.16,1,.3,1) both;}
-
 #cta{position:relative;text-align:center;padding:8rem 5.5rem;overflow:hidden;border-top:1px solid var(--border);background:linear-gradient(rgba(6,12,5,0.87),rgba(8,14,6,0.93)),url('./images/agri.png') center/cover fixed no-repeat;}
 #cta::before{content:'';position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1600&auto=format&fit=crop&q=80') center/cover no-repeat;opacity:0.22;z-index:0;pointer-events:none;}
 #cta > *{position:relative;z-index:1;}
@@ -360,13 +400,16 @@ footer{position:relative;overflow:hidden;background:#000;}
 .rs.vs{opacity:1;transform:scale(1)}
 body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;z-index:9990;opacity:.3}
 
-@media(max-width:1100px){.cap-layout{grid-template-columns:1fr;}.cap-stats-row{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:1100px){
+  .cap-layout{grid-template-columns:1fr;}
+  .cap-stats-row{grid-template-columns:repeat(3,1fr);}
+  .ben-row{grid-template-columns:1fr 60px 1fr;padding:0 2rem;}
+}
 @media(max-width:900px){
   section{padding:4rem 1.5rem 4rem 2rem}
   #cap{padding:4rem 1.5rem;}
-  #about{grid-template-columns:1fr}.bng{grid-template-columns:repeat(2,1fr)}
-  .hi{grid-template-columns:1fr}.bnh{grid-template-columns:1fr}
-  .pg{grid-template-columns:1fr}
+  #about{grid-template-columns:1fr}
+  .hi{grid-template-columns:1fr}.pg{grid-template-columns:1fr}
   .contact-grid{grid-template-columns:1fr}
   .frow{grid-template-columns:1fr}
   .footer-grid{grid-template-columns:1fr 1fr}
@@ -376,12 +419,12 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
   .carousel-page{grid-template-columns:1fr 1fr}
   .cube-scene{width:200px;height:200px}
   .cube-face{width:200px;height:200px}
-  .cube-face--front  { transform: translateZ(100px); }
-  .cube-face--back   { transform: rotateY(180deg) translateZ(100px); }
-  .cube-face--right  { transform: rotateY( 90deg) translateZ(100px); }
-  .cube-face--left   { transform: rotateY(-90deg) translateZ(100px); }
-  .cube-face--top    { transform: rotateX( 90deg) translateZ(100px); }
-  .cube-face--bottom { transform: rotateX(-90deg) translateZ(100px); }
+  .cube-face--front{transform:translateZ(100px);}
+  .cube-face--back{transform:rotateY(180deg) translateZ(100px);}
+  .cube-face--right{transform:rotateY(90deg) translateZ(100px);}
+  .cube-face--left{transform:rotateY(-90deg) translateZ(100px);}
+  .cube-face--top{transform:rotateX(90deg) translateZ(100px);}
+  .cube-face--bottom{transform:rotateX(-90deg) translateZ(100px);}
   .cap-stats-row{grid-template-columns:repeat(3,1fr);}
   .explore-carousel{height:80vh;min-height:500px;}
   .explore-content{left:1.5rem;right:1.5rem;max-width:100%;}
@@ -391,6 +434,13 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
   .explore-counter{right:1.5rem;bottom:2rem;}
   .explore-prev{left:.8rem;}
   .explore-next{right:.8rem;}
+  .ben-row{grid-template-columns:1fr;gap:1.5rem;padding:0 1.5rem;}
+  .ben-row.row-reverse{direction:ltr;}
+  .ben-node{display:none;}
+  #ben-rail-robot{display:none;}
+  #ben-rail-svg{display:none;}
+  .ben-flip-card{max-width:100%;height:300px;}
+  .ben-empty{display:none;}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}}
 </style>
@@ -421,14 +471,12 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 </div>
 <canvas id="how-robot" width="60" height="80"></canvas>
 
-<!-- ══ NEW NAVBAR ══ -->
 <svg id="nav-progress-svg" viewBox="0 0 62 62" fill="none" xmlns="http://www.w3.org/2000/svg">
   <circle cx="31" cy="31" r="26" stroke="rgba(57,255,20,0.1)" stroke-width="2"/>
   <circle id="nav-ring-circle" cx="31" cy="31" r="26" stroke="#39FF14" stroke-width="2"
     stroke-dasharray="163.4" stroke-dashoffset="163.4"
     stroke-linecap="round" transform="rotate(-90 31 31)"/>
 </svg>
-
 
 <div id="nav-bar" role="navigation" aria-label="Main navigation">
   <div id="nav-bar-inner">
@@ -456,12 +504,11 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 
 <button id="nav-toggle" aria-label="Open navigation" aria-expanded="false">
   <div id="nav-toggle-icon">
-    <span></span>
-    <span></span>
-    <span></span>
+    <span></span><span></span><span></span>
   </div>
 </button>
 
+<!-- HERO -->
 <section id="hero">
   <canvas id="rc"></canvas>
   <canvas id="gc"></canvas>
@@ -488,6 +535,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
   </div>
 </section>
 
+<!-- ABOUT -->
 <section id="about">
   <div class="rl">
     <p class="slb">About i-Farmate</p>
@@ -514,6 +562,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
   </div>
 </section>
 
+<!-- MEET THE MACHINE -->
 <section id="rcs" style="padding:0;">
   <div class="scene-header rv">
     <p class="slb" style="justify-content:center">The Machine</p>
@@ -523,6 +572,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
   <canvas id="scene-canvas" height="600"></canvas>
 </section>
 
+<!-- CAPABILITIES -->
 <section id="cap">
   <div class="cph">
     <p class="slb rv">Capabilities</p>
@@ -616,7 +666,6 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
       </div>
       <div class="carousel-timer"><div class="carousel-timer-bar" id="cap-timer-bar"></div></div>
     </div>
-
     <div class="cap-video-panel rv" style="transition-delay:.35s">
       <div class="cap-video-hud">
         <iframe src="https://www.youtube.com/embed/aGDtlo2xHJI?rel=0&modestbranding=1&color=white&t=52" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen title="i-Farmate in Action" loading="lazy"></iframe>
@@ -642,20 +691,284 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
   </div>
 </section>
 
+<!-- ══ WHO BENEFITS -->
 <section id="ben">
-  <div class="bnh">
-    <div class="rl"><p class="slb">Who Benefits</p><h2 class="st">Harvest Benefits<br>with i-Farmate</h2></div>
-    <div class="rr" style="transition-delay:.15s"><p class="sb">i-Farmate's impact extends beyond the field — it reshapes the entire agricultural value chain. Click a card to learn more.</p></div>
+  <div class="ben-header rv">
+    <p class="slb">Who Benefits</p>
+    <h2 class="st">Harvest Benefits<br>with <span style="color:var(--chloro)">i-Farmate</span></h2>
+    <p class="sb">From roots to retail, i-Farmate reshapes the entire agricultural value chain. Flip each card for a quick summary — then go deeper with Read More.</p>
   </div>
-  <div class="bng rv" style="transition-delay:.2s">
-    <div class="flip-card" id="fc1"><div class="flip-card-inner"><div class="flip-face flip-front"><div class="bnn">01</div><svg class="bni" viewBox="0 0 48 48" fill="none"><path d="M24 4C24 4 10 14 10 26C10 36 16 44 24 44C32 44 38 36 38 26C38 14 24 4 24 4Z" stroke="currentColor" stroke-width="1.5" fill="currentColor" fill-opacity=".08"/><circle cx="24" cy="20" r="4" stroke="currentColor" stroke-width="1.5"/></svg><div class="bnt">Agri-Ecosystem</div><div class="bns">Biodiversity Protection</div><div class="flip-hint">Click to flip ↩</div></div><div class="flip-face flip-back"><div class="flip-back-title">🌿 Ecosystem Guard</div><div class="flip-back-text">i-Farmate eliminates chemical use entirely, preserving soil microbiomes and protecting local wildlife habitats from pesticide damage.</div><a href="#cta" class="flip-read-more">Read More</a></div></div></div>
-    <div class="flip-card" id="fc2"><div class="flip-card-inner"><div class="flip-face flip-front"><div class="bnn">02</div><svg class="bni" viewBox="0 0 48 48" fill="none"><ellipse cx="24" cy="30" rx="16" ry="10" stroke="currentColor" stroke-width="1.5"/><path d="M24 20C24 20 16 12 24 6C32 12 24 20 24 20Z" fill="currentColor" fill-opacity=".15" stroke="currentColor" stroke-width="1.5"/></svg><div class="bnt">Crops</div><div class="bns">Yield Enhancement</div><div class="flip-hint">Click to flip ↩</div></div><div class="flip-face flip-back"><div class="flip-back-title">🌾 Crop Optimizer</div><div class="flip-back-text">Precision seeding, targeted weed control, and early disease detection combine to boost crop yields by up to 40% per season.</div><a href="#cta" class="flip-read-more">Read More</a></div></div></div>
-    <div class="flip-card" id="fc3"><div class="flip-card-inner"><div class="flip-face flip-front"><div class="bnn">03</div><svg class="bni" viewBox="0 0 48 48" fill="none"><path d="M24 8L28 20L42 20L32 28L36 40L24 32L12 40L16 28L6 20L20 20Z" stroke="currentColor" stroke-width="1.5" fill="currentColor" fill-opacity=".1"/></svg><div class="bnt">Consumers</div><div class="bns">Safe Nutrition</div><div class="flip-hint">Click to flip ↩</div></div><div class="flip-face flip-back"><div class="flip-back-title">🍅 Pure Produce</div><div class="flip-back-text">Zero-chemical farming ensures every product reaching consumers is pesticide-free, nutritionally richer, and certified safe to eat.</div><a href="#cta" class="flip-read-more">Read More</a></div></div></div>
-    <div class="flip-card" id="fc4"><div class="flip-card-inner"><div class="flip-face flip-front"><div class="bnn">04</div><svg class="bni" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="16" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M8 40C8 32 14 26 24 26C34 26 40 32 40 40" stroke="currentColor" stroke-width="1.5"/></svg><div class="bnt">Farmers</div><div class="bns">Farming Support</div><div class="flip-hint">Click to flip ↩</div></div><div class="flip-face flip-back"><div class="flip-back-title">👨‍🌾 Farmer's Ally</div><div class="flip-back-text">Reduces labor costs by 60%, automates repetitive tasks 24/7, and provides a live dashboard so farmers can manage from anywhere.</div><a href="#cta" class="flip-read-more">Read More</a></div></div></div>
-    <div class="flip-card" id="fc5"><div class="flip-card-inner"><div class="flip-face flip-front"><div class="bnn">05</div><svg class="bni" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="18" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 2"/><path d="M14 24Q20 14 24 24Q28 34 34 24" stroke="currentColor" stroke-width="1.5" fill="none"/></svg><div class="bnt">Soil &amp; Water</div><div class="bns">Environmental Care</div><div class="flip-hint">Click to flip ↩</div></div><div class="flip-face flip-back"><div class="flip-back-title">💧 Earth Protector</div><div class="flip-back-text">Precision irrigation and zero runoff chemicals keep groundwater clean and soil biology thriving for generations to come.</div><a href="#cta" class="flip-read-more">Read More</a></div></div></div>
-  </div>
+
+  <div class="ben-rail-wrap" id="ben-rail-wrap">
+    <canvas id="ben-rail-canvas" style="position:absolute;top:0;left:50%;transform:translateX(-50%);pointer-events:none;z-index:3;"></canvas>
+
+    <div class="ben-row rv" style="transition-delay:.1s">
+      <div class="ben-card-wrap" id="bcw-1">
+        <div class="ben-flip-card" id="bfc-1">
+          <div class="ben-flip-inner">
+            <div class="ben-flip-front">
+              <div class="ben-front-bg" style="background-image:url('./images/agrieco.jpeg')"></div>
+              <div class="ben-front-overlay"></div>
+              <div class="ben-front-content">
+                <div class="ben-front-num">01</div>
+                <div class="ben-front-icon">
+                  <svg width="26" height="26" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M24 4C24 4 10 14 10 26C10 36 16 44 24 44C32 44 38 36 38 26C38 14 24 4 24 4Z" fill="currentColor" fill-opacity=".08"/><circle cx="24" cy="20" r="4"/></svg>
+                </div>
+                <div class="ben-front-title">Agri-Ecosystem</div>
+                <div class="ben-front-sub">Biodiversity Protection</div>
+                <div class="ben-flip-hint">Flip for summary</div>
+              </div>
+            </div>
+            <div class="ben-flip-back">
+              <div class="ben-back-emoji">🌿</div>
+              <div class="ben-back-title">Ecosystem Guardian</div>
+              <div class="ben-back-summary">i-Farmate eliminates chemical use entirely, preserving soil microbiomes and protecting local wildlife habitats from pesticide damage — creating a thriving, balanced agri-ecosystem.</div>
+              <button class="ben-read-more-btn" data-card="1">Read More ↓</button>
+            </div>
+          </div>
+        </div>
+        <div class="ben-shutter" id="bsh-1">
+          <div class="ben-shutter-bar"></div>
+          <div class="ben-shutter-inner">
+            <div class="ben-shutter-top">
+              <span class="ben-shutter-emoji">🌿</span>
+              <div>
+                <div class="ben-shutter-title">Agri-Ecosystem Protection</div>
+                <div class="ben-shutter-sub">Biodiversity · Soil Health · Wildlife</div>
+              </div>
+            </div>
+            <div class="ben-shutter-text">
+             i-Farmate's adoption of eco-friendly and chemical-free farming practices has positive implications for pests, bees, and other creatures in the agricultural ecosystem. By avoiding the use of chemical pesticides, i-Farmate protects beneficial insects such as bees, which play a crucial role in pollination and maintaining ecosystem balance. Furthermore, i-Farmate's sustainable farming practices promote biodiversity and create a more hospitable environment for various organisms within the agricultural ecosystem, contributing to the overall health and resilience of the ecosystem.
+            </div>
+            <button class="ben-shutter-close" data-card="1">✕ Close</button>
+          </div>
+        </div>
+      </div>
+      <div class="ben-node"><div class="ben-node-dot"></div></div>
+      <div class="ben-empty">
+        <div class="ben-empty-stat">
+          <div class="ben-empty-val">100%</div>
+          <div class="ben-empty-lbl">Chemical-Free Operation</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ben-spacer"></div>
+
+    <div class="ben-row row-reverse rv" style="transition-delay:.15s">
+      <div class="ben-card-wrap" id="bcw-2">
+        <div class="ben-flip-card" id="bfc-2">
+          <div class="ben-flip-inner">
+            <div class="ben-flip-front">
+              <div class="ben-front-bg" style="background-image:url('./images/crop.jpg')"></div>
+              <div class="ben-front-overlay"></div>
+              <div class="ben-front-content">
+                <div class="ben-front-num">02</div>
+                <div class="ben-front-icon">
+                  <svg width="26" height="26" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5"><ellipse cx="24" cy="30" rx="16" ry="10"/><path d="M24 20C24 20 16 12 24 6C32 12 24 20 24 20Z" fill="currentColor" fill-opacity=".15"/></svg>
+                </div>
+                <div class="ben-front-title">Crops</div>
+                <div class="ben-front-sub">Yield Enhancement</div>
+                <div class="ben-flip-hint">Flip for summary</div>
+              </div>
+            </div>
+            <div class="ben-flip-back">
+              <div class="ben-back-emoji">🌾</div>
+              <div class="ben-back-title">Crop Optimizer</div>
+              <div class="ben-back-summary">Precision seeding, targeted weed control, and early disease detection combine to boost crop yields by up to 40% per season — while dramatically cutting input costs and post-harvest losses.</div>
+              <button class="ben-read-more-btn" data-card="2">Read More ↓</button>
+            </div>
+          </div>
+        </div>
+        <div class="ben-shutter" id="bsh-2">
+          <div class="ben-shutter-bar"></div>
+          <div class="ben-shutter-inner">
+            <div class="ben-shutter-top">
+              <span class="ben-shutter-emoji">🌾</span>
+              <div>
+                <div class="ben-shutter-title">Crop Yield Enhancement</div>
+                <div class="ben-shutter-sub">Precision Seeding · Disease Detection · Weed Control</div>
+              </div>
+            </div>
+            <div class="ben-shutter-text">
+           i-Farmate's chemical-free approach to farming directly benefits crops, leading to healthier plants and improved yields. By avoiding the use of chemical pesticides and herbicides, i-Farmate ensures that crops are not exposed to harmful chemicals, resulting in higher quality produce that is safe for consumption. Additionally, i-Farmate's efficient weeding practices help reduce competition from weeds, allowing crops to thrive and reach their full potential. The increased productivity resulting from i-Farmate's interventions translates into higher yields for farmers, thereby enhancing agricultural productivity and food security.
+            </div>
+            <button class="ben-shutter-close" data-card="2">✕ Close</button>
+          </div>
+        </div>
+      </div>
+      <div class="ben-node"><div class="ben-node-dot"></div></div>
+      <div class="ben-empty">
+        <div class="ben-empty-stat">
+          <div class="ben-empty-val">+40%</div>
+          <div class="ben-empty-lbl">Average Yield Increase</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ben-spacer"></div>
+
+    <div class="ben-row rv" style="transition-delay:.2s">
+      <div class="ben-card-wrap" id="bcw-3">
+        <div class="ben-flip-card" id="bfc-3">
+          <div class="ben-flip-inner">
+            <div class="ben-flip-front">
+              <div class="ben-front-bg" style="background-image:url('./images/consumer.jpg')"></div>
+              <div class="ben-front-overlay"></div>
+              <div class="ben-front-content">
+                <div class="ben-front-num">03</div>
+                <div class="ben-front-icon">
+                  <svg width="26" height="26" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M24 8L28 20L42 20L32 28L36 40L24 32L12 40L16 28L6 20L20 20Z" fill="currentColor" fill-opacity=".1"/></svg>
+                </div>
+                <div class="ben-front-title">Consumers</div>
+                <div class="ben-front-sub">Safe Nutrition</div>
+                <div class="ben-flip-hint">Flip for summary</div>
+              </div>
+            </div>
+            <div class="ben-flip-back">
+              <div class="ben-back-emoji">🍅</div>
+              <div class="ben-back-title">Pure Produce</div>
+              <div class="ben-back-summary">Zero-chemical farming ensures every product reaching consumers is pesticide-free, nutritionally richer, and certified safe — meeting the growing global demand for verified clean food.</div>
+              <button class="ben-read-more-btn" data-card="3">Read More ↓</button>
+            </div>
+          </div>
+        </div>
+        <div class="ben-shutter" id="bsh-3">
+          <div class="ben-shutter-bar"></div>
+          <div class="ben-shutter-inner">
+            <div class="ben-shutter-top">
+              <span class="ben-shutter-emoji">🍅</span>
+              <div>
+                <div class="ben-shutter-title">Safe Nutrition for Consumers</div>
+                <div class="ben-shutter-sub">Zero Pesticides · Certified Clean · Nutritionally Rich</div>
+              </div>
+            </div>
+            <div class="ben-shutter-text">
+             i-Farmate's focus on sustainable and organic farming practices has significant benefits for consumers. By producing organic food that is free from chemical residues and pesticides, i-Farmate ensures that consumers have access to safer and healthier food options. This contributes to a greener and more sustainable food system, promoting consumer health and environmental well-being. Additionally, by supporting eco-friendly farming practices, i-Farmate helps reduce the carbon footprint of food production and consumption, contributing to global efforts to mitigate climate change and promote environmental sustainability.
+            </div>
+            <button class="ben-shutter-close" data-card="3">✕ Close</button>
+          </div>
+        </div>
+      </div>
+      <div class="ben-node"><div class="ben-node-dot"></div></div>
+      <div class="ben-empty">
+        <div class="ben-empty-stat">
+          <div class="ben-empty-val">0ppm</div>
+          <div class="ben-empty-lbl">Pesticide Residues</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ben-spacer"></div>
+
+    <div class="ben-row row-reverse rv" style="transition-delay:.25s">
+      <div class="ben-card-wrap" id="bcw-4">
+        <div class="ben-flip-card" id="bfc-4">
+          <div class="ben-flip-inner">
+            <div class="ben-flip-front">
+              <div class="ben-front-bg" style="background-image:url('./images/farmer.jpg')"></div>
+              <div class="ben-front-overlay"></div>
+              <div class="ben-front-content">
+                <div class="ben-front-num">04</div>
+                <div class="ben-front-icon">
+                  <svg width="26" height="26" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="24" cy="16" r="8"/><path d="M8 40C8 32 14 26 24 26C34 26 40 32 40 40"/></svg>
+                </div>
+                <div class="ben-front-title">Farmers</div>
+                <div class="ben-front-sub">Farming Support</div>
+                <div class="ben-flip-hint">Flip for summary</div>
+              </div>
+            </div>
+            <div class="ben-flip-back">
+              <div class="ben-back-emoji">👨‍🌾</div>
+              <div class="ben-back-title">Farmer's Ally</div>
+              <div class="ben-back-summary">Reduces labor costs by 60%, automates repetitive tasks 24/7, and provides a live dashboard so farmers manage from anywhere — giving back time, reducing stress, and increasing profitability.</div>
+              <button class="ben-read-more-btn" data-card="4">Read More ↓</button>
+            </div>
+          </div>
+        </div>
+        <div class="ben-shutter" id="bsh-4">
+          <div class="ben-shutter-bar"></div>
+          <div class="ben-shutter-inner">
+            <div class="ben-shutter-top">
+              <span class="ben-shutter-emoji">👨‍🌾</span>
+              <div>
+                <div class="ben-shutter-title">Comprehensive Farmer Support</div>
+                <div class="ben-shutter-sub">Labor Savings · Live Dashboard · 24/7 Automation</div>
+              </div>
+            </div>
+            <div class="ben-shutter-text">
+             i-FARMATE brings a multitude of benefits to farmers, enhancing their farming practices and overall efficiency. By automating and streamlining farming processes, i-FARMATE significantly reduces labor requirements, allowing farmers to allocate their time and resources more effectively. The data capture and interpretation capabilities of i-FARMATE provide farmers with valuable insights into their crops, soil health, and farming practices, enabling informed decision-making and optimization of agricultural activities. Moreover, i-FARMATE's precise weeding technology, powered by image tech, ensures targeted and effective weed control without the need for harmful chemicals, thereby promoting sustainable farming practices. This reduction in manual labor dependency not only saves costs but also leads to potential long-term savings for farmers, making agriculture more economically viable and sustainable in the long run.
+            </div>
+            <button class="ben-shutter-close" data-card="4">✕ Close</button>
+          </div>
+        </div>
+      </div>
+      <div class="ben-node"><div class="ben-node-dot"></div></div>
+      <div class="ben-empty">
+        <div class="ben-empty-stat">
+          <div class="ben-empty-val">-60%</div>
+          <div class="ben-empty-lbl">Labor Cost Reduction</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ben-spacer"></div>
+
+    <div class="ben-row rv" style="transition-delay:.3s">
+      <div class="ben-card-wrap" id="bcw-5">
+        <div class="ben-flip-card" id="bfc-5">
+          <div class="ben-flip-inner">
+            <div class="ben-flip-front">
+              <div class="ben-front-bg" style="background-image:url('./images/sowa.jpg')"></div>
+              <div class="ben-front-overlay"></div>
+              <div class="ben-front-content">
+                <div class="ben-front-num">05</div>
+                <div class="ben-front-icon">
+                  <svg width="26" height="26" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="24" cy="24" r="18" stroke-dasharray="3 2"/><path d="M14 24Q20 14 24 24Q28 34 34 24" fill="none"/></svg>
+                </div>
+                <div class="ben-front-title">Soil &amp; Water</div>
+                <div class="ben-front-sub">Environmental Care</div>
+                <div class="ben-flip-hint">Flip for summary</div>
+              </div>
+            </div>
+            <div class="ben-flip-back">
+              <div class="ben-back-emoji">💧</div>
+              <div class="ben-back-title">Earth Protector</div>
+              <div class="ben-back-summary">Precision irrigation and zero runoff chemicals keep groundwater clean and soil biology thriving — building the long-term health of farmland for generations still to come.</div>
+              <button class="ben-read-more-btn" data-card="5">Read More ↓</button>
+            </div>
+          </div>
+        </div>
+        <div class="ben-shutter" id="bsh-5">
+          <div class="ben-shutter-bar"></div>
+          <div class="ben-shutter-inner">
+            <div class="ben-shutter-top">
+              <span class="ben-shutter-emoji">💧</span>
+              <div>
+                <div class="ben-shutter-title">Soil & Water Conservation</div>
+                <div class="ben-shutter-sub">Groundwater · Soil Biology · Precision Irrigation</div>
+              </div>
+            </div>
+            <div class="ben-shutter-text">
+             i-Farmate's eco-friendly approach to farming has significant positive impacts on soil, water, and the overall ecosystem. By supporting organic farming and adopting chemical-free practices, i-Farmate helps preserve soil health and fertility, minimizing soil degradation and erosion. Additionally, by eliminating the use of harmful chemicals, i-Farmate contributes to cleaner water sources and reduces contamination of groundwater, thereby safeguarding water quality and availability. Furthermore, i-Farmate's sustainable farming practices promote biodiversity and ecosystem health, fostering a balanced and resilient agricultural environment that benefits both farmers and surrounding ecosystems.
+            </div>
+            <button class="ben-shutter-close" data-card="5">✕ Close</button>
+          </div>
+        </div>
+      </div>
+      <div class="ben-node"><div class="ben-node-dot"></div></div>
+      <div class="ben-empty">
+        <div class="ben-empty-stat">
+          <div class="ben-empty-val">-35%</div>
+          <div class="ben-empty-lbl">Water Usage Reduction</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end ben-rail-wrap -->
 </section>
 
+<!-- HOW IT WORKS -->
 <section id="how">
   <p class="slb rv">Process</p>
   <h2 class="st rv" style="margin-bottom:3rem;transition-delay:.1s">How i-Farmate Works</h2>
@@ -677,6 +990,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
   </div>
 </section>
 
+<!-- OUR OTHER PRODUCTS -->
 <section id="prod">
   <p class="slb rv">Ecosystem</p>
   <h2 class="st rv" style="transition-delay:.1s">Our Other Products</h2>
@@ -688,6 +1002,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
   </div>
 </section>
 
+<!-- EXPLORE -->
 <section id="explore" style="padding:0;position:relative;">
   <div class="explore-carousel" id="explore-carousel">
     <div class="explore-slide active" style="background-image:url('./images/vitaxs.jpg')"><div class="explore-overlay"></div><div class="explore-content"><div class="explore-slide-num">01</div><p class="slb" style="margin-bottom:.5rem">Explore i-Farmate</p><h2 class="explore-title">April 16, 2025</h2><p class="explore-desc">Vellore Institute of Technology & AUXWIT Technologies partner: Unmanned farming vehicle innovation</p><a href="#cta" class="explore-btn">Read More →</a></div></div>
@@ -710,6 +1025,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
   </div>
 </section>
 
+<!-- CONTACT -->
 <section id="cta">
   <p class="slb rv" style="justify-content:center">Get Started</p>
   <h2 class="st rv" style="transition-delay:.1s;text-align:center">Ready to Transform<br>Your Farm?</h2>
@@ -747,6 +1063,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
   </div>
 </section>
 
+<!-- FOOTER -->
 <footer id="footer-section">
   <video id="footerVideo" autoplay muted playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"><source src="video/fv1.mp4" type="video/mp4"></video>
   <div class="footer-video-overlay"></div>
@@ -802,38 +1119,20 @@ const navBar=document.getElementById('nav-bar');
 const navRingCircle=document.getElementById('nav-ring-circle');
 const pb=document.getElementById('pb');
 const ringCircumference=2*Math.PI*26;
-
 let navOpen=false;
-
-function openNav(){
-  navOpen=true;
-  navBar.classList.add('open');
-  navToggle.classList.add('open');
-  navToggle.setAttribute('aria-expanded','true');
-  navToggle.setAttribute('aria-label','Close navigation');
-}
-function closeNav(){
-  navOpen=false;
-  navBar.classList.remove('open');
-  navToggle.classList.remove('open');
-  navToggle.setAttribute('aria-expanded','false');
-navToggle.setAttribute('aria-label','Open navigation');}
+function openNav(){navOpen=true;navBar.classList.add('open');navToggle.classList.add('open');navToggle.setAttribute('aria-expanded','true');navToggle.setAttribute('aria-label','Close navigation');}
+function closeNav(){navOpen=false;navBar.classList.remove('open');navToggle.classList.remove('open');navToggle.setAttribute('aria-expanded','false');navToggle.setAttribute('aria-label','Open navigation');}
 navToggle.addEventListener('click',()=>{if(navOpen) closeNav(); else openNav();});
-
 document.querySelectorAll('.nb-link,.nb-brand,.nb-cta').forEach(a=>{a.addEventListener('click',()=>closeNav());});
-
-document.addEventListener('click',e=>{if(navOpen && !navBar.contains(e.target) && !navToggle.contains(e.target)){closeNav();}});
-
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&navOpen) closeNav();});
-
+document.addEventListener('click',e=>{if(navOpen&&!navBar.contains(e.target)&&!navToggle.contains(e.target)){closeNav();}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&navOpen)closeNav();});
 function updateScrollProgress(){
   const sy=window.scrollY,msy=document.documentElement.scrollHeight-window.innerHeight;
   const prog=msy>0?sy/msy:0;
   pb.style.width=(prog*100)+'%';
   const offset=ringCircumference*(1-prog);
   navRingCircle.style.strokeDashoffset=offset;
-
-  const sections=['hero','cap','about','explore','prod','cta'];
+  const sections=['hero','cap','about','ben','explore','prod','cta'];
   let current='hero';
   sections.forEach(id=>{const el=document.getElementById(id);if(el&&el.getBoundingClientRect().top<window.innerHeight*0.5)current=id;});
   document.querySelectorAll('.nb-link').forEach(a=>{const href=a.getAttribute('href').replace('#','');a.classList.toggle('nb-active',href===current);});
@@ -841,6 +1140,7 @@ function updateScrollProgress(){
 window.addEventListener('scroll',updateScrollProgress,{passive:true});
 updateScrollProgress();
 
+/* ── CUBE DRAG ── */
 (function initCubeDrag(){
   const cubeEl=document.getElementById('about-cube');if(!cubeEl)return;
   let isDragging=false,startX=0,startY=0,rotX=-15,rotY=0,dragRotX=-15,dragRotY=0;
@@ -881,7 +1181,7 @@ const tipTextEl=document.querySelector('.tip-text');
 const rdC=document.createElement('canvas');rdC.width=54;rdC.height=74;rbdEl.appendChild(rdC);
 const ruC=document.createElement('canvas');ruC.width=54;ruC.height=74;rbuEl.appendChild(ruC);
 const rdx=rdC.getContext('2d'),rux=ruC.getContext('2d');
-const SECTION_TIPS=[{id:'hero',msg:"🚜 i-Farmate here! I work 24/7 so farmers don't have to."},{id:'about',msg:"🌱 Zero chemicals. Full autonomy. That's how I farm."},{id:'rcs',msg:"🤖 That scene below? That's me meeting a farmer for the first time!"},{id:'cap',msg:"▶ Watch the demo on the right — live on the field!"},{id:'ben',msg:"🌾 Click the cards to flip and learn more about each benefit!"},{id:'how',msg:"🔄 Patrol → Detect → Act → Report. Four steps to smarter farming."},{id:'explore',msg:"🖼 Swipe through to explore everything i-Farmate can do!"},{id:'prod',msg:"📦 FarmFair, TerraMate, Thaniyas — the full agri-ecosystem!"},{id:'cta',msg:"🚀 Book a demo! I'd love to visit your farm."},{id:'footer-section',msg:"📞 Reach out anytime. Thank you for exploring i-Farmate! 🌿"}];
+const SECTION_TIPS=[{id:'hero',msg:"🚜 i-Farmate here! I work 24/7 so farmers don't have to."},{id:'about',msg:"🌱 Zero chemicals. Full autonomy. That's how I farm."},{id:'rcs',msg:"🤖 That scene below? That's me meeting a farmer for the first time!"},{id:'cap',msg:"▶ Watch the demo on the right — live on the field!"},{id:'ben',msg:"🌾 Flip the cards to explore who benefits from i-Farmate!"},{id:'how',msg:"🔄 Patrol → Detect → Act → Report. Four steps to smarter farming."},{id:'explore',msg:"🖼 Swipe through to explore everything i-Farmate can do!"},{id:'prod',msg:"📦 FarmFair, TerraMate, Thaniyas — the full agri-ecosystem!"},{id:'cta',msg:"🚀 Book a demo! I'd love to visit your farm."},{id:'footer-section',msg:"📞 Reach out anytime. Thank you for exploring i-Farmate! 🌿"}];
 let robotTipTimer=null,lastShownSection='';
 function showRobotTip(msg){if(robotTipTimer)clearTimeout(robotTipTimer);tipTextEl.textContent=msg;robotTipEl.classList.add('show');robotTipTimer=setTimeout(()=>robotTipEl.classList.remove('show'),4500);}
 function updateRobotTipForScroll(robotVisualY){let closestSection=null,closestDist=Infinity;SECTION_TIPS.forEach(s=>{const el=document.getElementById(s.id);if(!el)return;const rect=el.getBoundingClientRect(),mid=(rect.top+rect.bottom)/2,dist=Math.abs(robotVisualY-mid);if(dist<closestDist){closestDist=dist;closestSection=s;}});if(closestSection&&closestSection.id!==lastShownSection&&closestDist<window.innerHeight*0.45){lastShownSection=closestSection.id;showRobotTip(closestSection.msg);}}
@@ -904,6 +1204,116 @@ window.addEventListener('scroll',checkDroneVisibility,{passive:true});checkDrone
 setTimeout(()=>{if(!droneVisible)return;droneTipText.textContent='🌱 i-Farmate — AI-powered farming, 24/7.';droneTip.style.opacity='1';droneTip.style.transform='translateX(-50%) translateY(0)';droneTipShown=true;setTimeout(()=>{droneTip.style.opacity='0';droneTip.style.transform='translateX(-50%) translateY(-8px)';droneTipShown=false;},3500);},3000);
 function drawDrone(t){dctx.clearRect(0,0,90,90);const cx=45,cy=48;const glow=dctx.createRadialGradient(cx,cy,4,cx,cy,32);glow.addColorStop(0,'rgba(57,255,20,.18)');glow.addColorStop(1,'rgba(57,255,20,0)');dctx.beginPath();dctx.arc(cx,cy,32,0,Math.PI*2);dctx.fillStyle=glow;dctx.fill();[[-1,-1],[1,-1],[1,1],[-1,1]].forEach(([sx,sy2],i)=>{dctx.save();dctx.translate(cx,cy);dctx.rotate(Math.PI/4+i*Math.PI/2);dctx.fillStyle=i%2===0?'rgba(57,255,20,.7)':'rgba(232,160,32,.55)';dctx.fillRect(-1,0,2,24);dctx.beginPath();dctx.arc(0,24,4,0,Math.PI*2);dctx.fillStyle='#1c2416';dctx.fill();dctx.strokeStyle=i%2===0?'#39FF14':'#E8A020';dctx.lineWidth=1;dctx.stroke();dctx.save();dctx.translate(0,24);dctx.rotate(dronePropRot*(i%2===0?1:-1));dctx.strokeStyle=i%2===0?'rgba(57,255,20,.8)':'rgba(232,160,32,.7)';dctx.lineWidth=1.5;dctx.lineCap='round';dctx.beginPath();dctx.moveTo(-11,0);dctx.lineTo(11,0);dctx.stroke();dctx.beginPath();dctx.moveTo(0,-5);dctx.lineTo(0,5);dctx.stroke();dctx.restore();dctx.restore();});dctx.save();dctx.translate(cx,cy);dctx.beginPath();dctx.roundRect(-10,-4,20,8,3);dctx.fillStyle='#0a1208';dctx.strokeStyle='rgba(57,255,20,.6)';dctx.lineWidth=1.2;dctx.fill();dctx.stroke();dctx.beginPath();dctx.roundRect(-11,-12,22,14,4);dctx.fillStyle='#1c2416';dctx.strokeStyle='#39FF14';dctx.lineWidth=1.4;dctx.fill();dctx.stroke();dctx.beginPath();dctx.ellipse(0,-12,9,5,0,Math.PI,0);dctx.fillStyle='#141a10';dctx.strokeStyle='rgba(57,255,20,.5)';dctx.lineWidth=1;dctx.fill();dctx.stroke();dctx.beginPath();dctx.arc(0,-6,3.5,0,Math.PI*2);dctx.fillStyle='rgba(57,255,20,.1)';dctx.strokeStyle='#39FF14';dctx.lineWidth=1;dctx.fill();dctx.stroke();dctx.beginPath();dctx.arc(0,-6,1.8,0,Math.PI*2);dctx.fillStyle='#39FF14';dctx.fill();const blinkOn=Math.floor(t*.04)%2===0;dctx.beginPath();dctx.arc(-7,-2,1.5,0,Math.PI*2);dctx.fillStyle=blinkOn?'#39FF14':'rgba(57,255,20,.2)';dctx.fill();dctx.beginPath();dctx.arc(7,-2,1.5,0,Math.PI*2);dctx.fillStyle=blinkOn?'#E8A020':'rgba(232,160,32,.2)';dctx.fill();dctx.restore();}
 (function animateDrone(){droneT++;dronePropRot+=0.28;const hoverBob=Math.sin(droneT*.022)*4;droneX+=(droneTX-droneX)*0.018;droneY+=(droneTY+hoverBob-droneY)*0.018;const vx=droneTX-droneX;droneAngle=Math.max(-0.22,Math.min(0.22,vx*0.004));droneWrap.style.left=(droneX-45)+'px';droneWrap.style.top=(droneY-45)+'px';dctx.save();dctx.translate(45,45);dctx.rotate(droneAngle);dctx.translate(-45,-45);drawDrone(droneT);dctx.restore();checkDroneNearTarget();requestAnimationFrame(animateDrone);})();
+
+/* ══ WHO BENEFITS */
+(function initBenSection(){
+document.querySelectorAll('.ben-flip-card').forEach(card=>{card.addEventListener('click',function(e){if(e.target.classList.contains('ben-read-more-btn'))return;this.classList.toggle('flipped');});});
+document.querySelectorAll('.ben-read-more-btn').forEach(btn=>{btn.addEventListener('click',function(e){e.stopPropagation();const id=this.dataset.card;const shutter=document.getElementById('bsh-'+id);const card=document.getElementById('bfc-'+id);if(!shutter)return;const cardH=card.offsetHeight;shutter.style.height=Math.max(cardH,360)+'px';shutter.classList.add('open');card.classList.remove('flipped');});});
+document.querySelectorAll('.ben-shutter-close').forEach(btn=>{btn.addEventListener('click',function(e){e.stopPropagation();const id=this.dataset.card;const shutter=document.getElementById('bsh-'+id);if(shutter)shutter.classList.remove('open');});});
+
+  const railCvs=document.getElementById('ben-rail-canvas');
+  if(!railCvs)return;
+  const rctx2=railCvs.getContext('2d');
+  const railWrap=document.getElementById('ben-rail-wrap');
+  let railT=0;
+
+  function resizeRailCanvas(){const h=railWrap.offsetHeight||2000;railCvs.width=6;railCvs.height=h;railCvs.style.width='6px';railCvs.style.height=h+'px';}
+  resizeRailCanvas();
+  window.addEventListener('resize',resizeRailCanvas,{passive:true});
+
+  function drawRailLine(ctx,H,progress){ctx.clearRect(0,0,6,H);const grad=ctx.createLinearGradient(0,0,0,H); grad.addColorStop(0,'rgba(57,255,20,0)');grad.addColorStop(0.1,'rgba(57,255,20,0.15)');grad.addColorStop(0.9,'rgba(57,255,20,0.15)');grad.addColorStop(1,'rgba(57,255,20,0)');
+    ctx.strokeStyle=grad;ctx.lineWidth=2;ctx.setLineDash([8,10]);ctx.beginPath();ctx.moveTo(3,0);ctx.lineTo(3,H);ctx.stroke();ctx.setLineDash([]);
+    
+    const progH=H*progress;
+    const progGrad=ctx.createLinearGradient(0,0,0,progH);
+    progGrad.addColorStop(0,'rgba(57,255,20,0.8)');
+    progGrad.addColorStop(1,'rgba(57,255,20,0.2)');
+    ctx.strokeStyle=progGrad;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(3,0);ctx.lineTo(3,progH);ctx.stroke();}
+
+  function drawRailRobot(ctx,cx,cy,t,scale){
+    const S=scale||1;
+    ctx.save();
+    ctx.translate(cx,cy);
+    ctx.save();ctx.globalAlpha=.2;
+    ctx.beginPath();ctx.ellipse(0,28*S,11*S,3*S,0,0,Math.PI*2);
+    ctx.fillStyle='#000';ctx.fill();
+    ctx.restore();
+
+    [[-11*S,0],[11*S,0]].forEach(([tx2,ty2])=>{
+      ctx.fillStyle='#0d1a08';ctx.strokeStyle='rgba(57,255,20,.55)';ctx.lineWidth=1.1*S;
+      ctx.beginPath();ctx.roundRect(tx2-6*S,ty2+18*S,12*S,8*S,2.5*S);ctx.fill();ctx.stroke();
+      [tx2-3*S,tx2+3*S].forEach(wx=>{
+        ctx.beginPath();ctx.arc(wx,ty2+22*S,3*S,0,Math.PI*2);
+        ctx.fillStyle='#0a1208';ctx.strokeStyle='rgba(57,255,20,.5)';ctx.lineWidth=.9*S;
+        ctx.fill();ctx.stroke();
+        ctx.save();ctx.translate(wx,ty2+22*S);ctx.rotate(t*.18);
+        ctx.strokeStyle='rgba(57,255,20,.35)';ctx.lineWidth=.7*S;
+        ctx.beginPath();ctx.moveTo(-2.5*S,0);ctx.lineTo(2.5*S,0);ctx.stroke();
+        ctx.restore();});
+    });
+
+    const bG=ctx.createLinearGradient(-13*S,-8*S,13*S,18*S);
+    bG.addColorStop(0,'#1c2e10');bG.addColorStop(1,'#0e1a06');
+    ctx.fillStyle=bG;ctx.strokeStyle='#39FF14';ctx.lineWidth=1.4*S;
+    ctx.beginPath();ctx.roundRect(-13*S,0*S,26*S,19*S,3.5*S);ctx.fill();ctx.stroke();
+    const scanY=(t*0.8%(18*S));
+    ctx.fillStyle='rgba(57,255,20,.3)';ctx.fillRect(-10*S,scanY,20*S,1.2*S);
+    [-4*S,4*S].forEach((lx,li)=>{
+      ctx.beginPath();ctx.arc(lx,9*S,1.6*S,0,Math.PI*2);
+      ctx.fillStyle=Math.floor(t*.06+li)%3===0?'#39FF14':'rgba(57,255,20,.15)';ctx.fill();});
+    const armSwing=Math.sin(t*.05)*0.2;
+    [[-14*S,2*S,armSwing],[14*S,2*S,-armSwing]].forEach(([ax,ay,aa])=>{
+      ctx.save();ctx.translate(ax,ay);ctx.rotate(aa);
+      ctx.fillStyle='#1c2e10';ctx.strokeStyle='rgba(57,255,20,.4)';ctx.lineWidth=1*S;
+      ctx.beginPath();ctx.roundRect(-3*S,0,6*S,12*S,2*S);ctx.fill();ctx.stroke();
+      ctx.save();ctx.translate(0,12*S);ctx.rotate(aa*.5);
+      ctx.beginPath();ctx.arc(0,0,3.2*S,0,Math.PI*2);
+      ctx.fillStyle='#0a1208';ctx.strokeStyle='rgba(57,255,20,.55)';ctx.lineWidth=.9*S;ctx.fill();ctx.stroke();
+      ctx.restore();ctx.restore();});
+    const headBob=Math.sin(t*.04)*1.5*S;
+    const hG=ctx.createLinearGradient(-11*S,-26*S+headBob,11*S,-8*S+headBob);
+    hG.addColorStop(0,'#1e3010');hG.addColorStop(1,'#0e1e06');
+    ctx.fillStyle=hG;ctx.strokeStyle='#39FF14';ctx.lineWidth=1.5*S;
+    ctx.beginPath();ctx.roundRect(-11*S,-26*S+headBob,22*S,18*S,4.5*S);ctx.fill();ctx.stroke();
+    const blinkH=Math.sin(t*.015)>0.98?0.3:1.0;
+    [-4.5*S,4.5*S].forEach(ex=>{const eG=ctx.createRadialGradient(ex,-18*S+headBob,0,ex,-18*S+headBob,3.5*S);eG.addColorStop(0,'rgba(57,255,20,.95)');eG.addColorStop(1,'rgba(57,255,20,.05)');
+      ctx.save();
+      ctx.beginPath();ctx.ellipse(ex,-18*S+headBob,3.2*S,3.2*S*blinkH,0,0,Math.PI*2);
+      ctx.fillStyle=eG;ctx.fill();
+      ctx.restore();});
+    const antW=Math.sin(t*.07)*2.5*S;
+    ctx.strokeStyle='rgba(57,255,20,.65)';ctx.lineWidth=1.2*S;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(0,-26*S+headBob);ctx.lineTo(antW,-38*S+headBob);ctx.stroke();
+    const antGlow=ctx.createRadialGradient(antW,-38*S+headBob,0,antW,-38*S+headBob,3*S);
+    antGlow.addColorStop(0,'rgba(57,255,20,1)');antGlow.addColorStop(1,'rgba(57,255,20,0)');
+    ctx.beginPath();ctx.arc(antW,-38*S+headBob,2.8*S,0,Math.PI*2);ctx.fillStyle=antGlow;ctx.fill();
+    ctx.save();ctx.globalAlpha=0.35;
+    ctx.fillStyle='rgba(57,255,20,.08)';ctx.strokeStyle='rgba(57,255,20,.25)';ctx.lineWidth=.8*S;
+    ctx.beginPath();
+    ctx.moveTo(13*S,0);ctx.lineTo(17*S,-4*S);ctx.lineTo(17*S,14*S);ctx.lineTo(13*S,19*S);ctx.closePath();
+    ctx.fill();ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(11*S,-26*S+headBob);ctx.lineTo(15*S,-30*S+headBob);ctx.lineTo(15*S,-12*S+headBob);ctx.lineTo(11*S,-8*S+headBob);ctx.closePath();
+    ctx.fill();ctx.stroke();
+    ctx.restore();
+
+    const glowR=ctx.createRadialGradient(0,0,0,0,0,22*S);glowR.addColorStop(0,'rgba(57,255,20,0.04)');glowR.addColorStop(1,'rgba(57,255,20,0)');ctx.beginPath();ctx.arc(0,0,22*S,0,Math.PI*2);ctx.fillStyle=glowR;ctx.fill();ctx.restore();}
+
+  let benRailRobotY=0,benRailT=0;
+  function updateBenRailRobot(){
+    const benEl=document.getElementById('ben');
+    if(!benEl)return;
+    const rect=benEl.getBoundingClientRect();
+    const H=railCvs.height||railWrap.offsetHeight||2000;
+  
+    const visibleTop=Math.max(0,-rect.top);
+    const sectionH=benEl.offsetHeight;
+    const progress=Math.min(1,Math.max(0,visibleTop/sectionH));
+    benRailRobotY=progress*H;drawRailLine(rctx2,H,progress);rctx2.clearRect(0,Math.max(0,benRailRobotY-50),6,100);drawRailLine(rctx2,H,progress);
+
+    if(railCvs.width<80){railCvs.width=80;railCvs.style.width='80px';railCvs.style.left='50%';railCvs.style.transform='translateX(-50%)';}
+    rctx2.clearRect(0,0,80,H);drawRailLine(rctx2,H,progress);drawRailRobot(rctx2,40,benRailRobotY,benRailT,1.0);}
+benRailT=0;(function animateBenRail(){benRailT++;updateBenRailRobot();requestAnimationFrame(animateBenRail);})();})();
 
 /* ══ MEET THE MACHINE ══ */
 const sceneCvs=document.getElementById('scene-canvas');
@@ -940,8 +1350,6 @@ document.getElementById('cap-prev').addEventListener('click',()=>gotoCapPage(cap
 document.getElementById('cap-next').addEventListener('click',()=>gotoCapPage(capPage+1));
 capDots.forEach(d=>d.addEventListener('click',()=>gotoCapPage(+d.dataset.idx)));
 resetCapTimer();
-
-document.querySelectorAll('.flip-card').forEach(card=>{card.addEventListener('click',()=>card.classList.toggle('flipped'));});
 
 const obsRV=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vs');obsRV.unobserve(e.target);}});},{threshold:.08,rootMargin:'0px 0px -40px 0px'});
 document.querySelectorAll('.rv,.rl,.rr,.rs').forEach(el=>obsRV.observe(el));
