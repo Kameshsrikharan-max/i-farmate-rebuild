@@ -345,3 +345,165 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
   document.getElementById('explore-next').addEventListener('click',()=>goTo(cur+1));
   dots.forEach((d,i)=>d.addEventListener('click',()=>goTo(i)));
   setInterval(()=>goTo(cur+1),6000);})();
+
+/* ══════════════════════════════════════════
+   TEAM ORBIT — auto-rotating, tap-to-center
+   ══════════════════════════════════════════ */
+(function initTeamOrbit(){
+
+  const TEAM = [
+    { name:"Seenuvasan Balakrishnan",   role:"CTO",                         img:"./images/cto.jpg"    },
+    { name:"Sundhararajan Devaprakash", role:"CEO",                         img:"./images/ceo.jpg"    },
+    { name:"Rani Ponmathi .P",          role:"Head – Indian Operations",    img:"./images/HIO.jpg"    },
+    { name:"John Bosco",                role:"React JS & .Net Developer",   img:"./images/john.jpg"   },
+    { name:"Mohammed Bashil",           role:"Senior iOS Developer",        img:"./images/Bashil.jpg" },
+    { name:"Rashmi MD",                 role:"Market Research Manager",     img:"./images/Rashmi.jpg" }
+  ];
+
+  const stage       = document.getElementById('orbitStage');
+  if(!stage) return;
+
+  const track        = document.getElementById('orbitTrack');
+  const centerWrap    = document.getElementById('orbitCenter');
+  const centerVideo   = document.getElementById('orbitCenterVideo');
+  const centerImg     = document.getElementById('centerImg');
+  const tagEl          = document.getElementById('orbitTag');
+  const nameEl         = document.getElementById('orbitName');
+  const hintEl         = document.getElementById('orbitHint');
+  const backBtn        = document.getElementById('orbitBackBtn');
+  const frame           = document.getElementById('orbitCenterFrame');
+
+  let angle = 0;
+  let paused = false;
+  let resumeTimer = null;
+  let activeIndex = null;
+  let nodes = [];
+  const SPEED = 0.080;
+  const AUTO_RETURN_MS = 6000;
+
+  /* ── Build orbiting node photos ── */
+  function buildNodes(){
+    track.innerHTML = '';
+    nodes = TEAM.map((member, i) => {
+      const el = document.createElement('div');
+      el.className = 'orbit-node';
+      el.setAttribute('role','button');
+      el.setAttribute('tabindex','0');
+      el.setAttribute('aria-label', `${member.name}, ${member.role}`);
+      el.innerHTML =
+        `<div class="orbit-node-photo">
+           <img src="${member.img}" alt="${member.name}" loading="lazy">
+         </div>
+         <div class="orbit-node-label">
+           <div class="orbit-node-name">${member.name}</div>
+           <div class="orbit-node-role">${member.role}</div>
+         </div>`;
+      el.addEventListener('click', () => selectMember(i));
+      el.addEventListener('keydown', e => {
+        if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); selectMember(i); }
+      });
+      track.appendChild(el);
+      return el;
+    });
+  }
+
+  function radius(){
+    return (stage.offsetWidth / 2) * 0.8;
+  }
+
+  function layout(){
+    const R = radius();
+    const step = 360 / TEAM.length;
+    nodes.forEach((el, i) => {
+      const a = (angle + i * step) * Math.PI / 180;
+      const x = Math.cos(a) * R;
+      const y = Math.sin(a) * R;
+      el.style.transform = `translate(${x}px, ${y}px)`;
+    });
+  }
+
+  function tick(){
+    if(!paused) angle = (angle + SPEED) % 360;
+    layout();
+    requestAnimationFrame(tick);
+  }
+
+  /* ── Show a team member's photo + name/role in the center ── */
+  function selectMember(i){
+    activeIndex = i;
+    const member = TEAM[i];
+
+    nodes.forEach((n, idx) => n.classList.toggle('active', idx === i));
+
+    centerImg.onload = () => {};
+    centerImg.src = member.img;
+    centerImg.alt = member.name;
+    tagEl.textContent  = member.role;
+    nameEl.textContent = member.name;
+
+    centerWrap.classList.add('show-photo');
+    if(hintEl) hintEl.classList.add('hidden');
+
+    paused = true;
+    clearTimeout(resumeTimer);
+    resumeTimer = setTimeout(returnToVideo, AUTO_RETURN_MS);
+  }
+
+  /* ── Return center to the live looping video ── */
+  function returnToVideo(){
+    centerWrap.classList.remove('show-photo');
+    nodes.forEach(n => n.classList.remove('active'));
+    activeIndex = null;
+    clearTimeout(resumeTimer);
+    paused = false;
+    if(centerVideo){
+      centerVideo.currentTime = centerVideo.currentTime; // keep playing smoothly
+      centerVideo.play().catch(()=>{});
+    }
+  }
+
+  /* Tap the center itself (while showing a photo) to snap back to video */
+  frame.addEventListener('click', () => {
+    if(centerWrap.classList.contains('show-photo')) returnToVideo();
+  });
+  if(backBtn){
+    backBtn.addEventListener('click', e => { e.stopPropagation(); returnToVideo(); });
+  }
+
+  /* Init */
+  buildNodes();
+  layout();
+  requestAnimationFrame(tick);
+
+  window.addEventListener('resize', layout, { passive:true });
+
+  /* Pause rotation while hovering the stage so users can click comfortably */
+  stage.addEventListener('mouseenter', () => { paused = true; });
+  stage.addEventListener('mouseleave', () => {
+    if(activeIndex === null) paused = false;
+    else {
+      clearTimeout(resumeTimer);
+      resumeTimer = setTimeout(returnToVideo, AUTO_RETURN_MS);
+    }
+  });
+
+
+  // Init
+  buildNodes();
+  layout();
+  requestAnimationFrame(tick);
+
+  window.addEventListener('resize', layout, { passive:true });
+
+  // Pause orbit rotation while a finger/cursor hovers the stage too,
+  // so users can comfortably tap a moving photo.
+  stage.addEventListener('mouseenter', () => { paused = true; });
+  stage.addEventListener('mouseleave', () => {
+    if(activeIndex === null) paused = false;
+    else {
+      clearTimeout(resumeTimer);
+      resumeTimer = setTimeout(() => { paused = false; }, 5000);
+    }
+  })
+
+})();

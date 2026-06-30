@@ -98,7 +98,6 @@
     </div>
   </div>
 </section>
-
 <!-- ABOUT  -->
 <section id="about">
   <div class="about-carousel-wrap">
@@ -136,224 +135,127 @@
       </div>
 
       <!-- SLIDE 2: i-Farmate Emblem + Video -->
-<div class="about-slide" data-slide="1">
-  <div class="about-slide-inner slide2-layout-new">
+      <div class="about-slide" data-slide="1">
+        <div class="about-slide-inner slide2-layout-new">
 
-    <h1 class="emblem-h1 rv">
-      <span class="emblem-line1">
-        Harnessing Nature with Technology.
-      </span>
-    </h1>
+          <h1 class="emblem-h1 rv">
+            <span class="emblem-line1">
+              Harnessing Nature with Technology.
+            </span>
+          </h1>
 
-    <div class="slide2-video-hud rv" style="transition-delay:.2s">
-      <video id="about-video" autoplay muted loop playsinline>
-        <source src="video/iFarmateintro.mp4" type="video/mp4">
-      </video>
+          <div class="slide2-video-hud rv" style="transition-delay:.2s">
+            <video id="about-video" autoplay muted loop playsinline>
+              <source src="video/intro.mp4" type="video/mp4">
+            </video>
 
-      <div class="svh-corner tl"></div>
-      <div class="svh-corner tr"></div>
-      <div class="svh-corner bl"></div>
-      <div class="svh-corner br"></div>
+            <div class="svh-corner tl"></div>
+            <div class="svh-corner tr"></div>
+            <div class="svh-corner bl"></div>
+            <div class="svh-corner br"></div>
 
-      <div class="svh-topbar">
-        <span class="svh-badge">i-Farmate</span>
-        <div class="svh-live">
-          <div class="svh-live-dot"></div>
-          Intro
+            <div class="svh-topbar">
+              <span class="svh-badge">i-Farmate</span>
+              <div class="svh-live">
+                <div class="svh-live-dot"></div>
+                Intro
+              </div>
+            </div>
+
+            <div class="svh-scanline"></div>
+          </div>
+
+          <p class="emblem-para rv">
+            <strong>Unveiling the i-Farmate emblem:</strong>
+            A dynamic symbol of technology’s synergy with nature in agriculture.
+            <br><br>
+
+            <strong>Color Palette:</strong>
+            Various shades of green, from light to dark, capturing the essence of agriculture and eco-consciousness.
+            <br><br>
+
+            <strong>Logo Concept:</strong>
+            “i-Farmate” merges “Farm” and “Mate,” embodying its role as a companion to the farm and its ecosystem.
+
+            <br><br>
+
+            At the emblem’s core lies the letter “M,” symbolizing i-Farmate’s mission heart. Within it, two hands unite—one human and one robotic.
+
+            <br><br>
+
+            i-Farmate advocates for organic farming while enhancing efficiency and reducing pesticide reliance.
+          </p>
+
         </div>
       </div>
 
-      <div class="svh-scanline"></div>
-    </div>
+      <!-- SLIDE 3: Our Team (ROTATING ORBIT + LIVE VIDEO CENTER) -->
+      <div class="about-slide" data-slide="2">
+        <div class="about-slide-inner slide3-layout">
 
-    <p class="emblem-para rv">
-      <strong>Unveiling the i-Farmate emblem:</strong>
-      A dynamic symbol of technology’s synergy with nature in agriculture.
-      <br><br>
+          <section class="team-orbit-section rv">
+            <div class="team-orbit-header">
+              <p class="slb" style="justify-content:center">The People</p>
+              <h2 class="st" style="text-align:center">
+                Our <span style="color:var(--chloro)">Team</span>
+              </h2>
+              <p class="sb" style="text-align:center;margin:0 auto 1rem;max-width:520px">
+                The minds behind i-Farmate — innovators, engineers, and visionaries building the future of food. Tap any photo to meet them.
+              </p>
+            </div>
 
-      <strong>Color Palette:</strong>
-      Various shades of green, from light to dark, capturing the essence of agriculture and eco-consciousness.
-      <br><br>
+            <div class="orbit-stage orbit-stage--xl" id="orbitStage">
 
-      <strong>Logo Concept:</strong>
-      “i-Farmate” merges “Farm” and “Mate,” embodying its role as a companion to the farm and its ecosystem.
+              <!-- decorative orbit rings -->
+              <svg class="orbit-rings-svg" viewBox="0 0 620 620">
+                <circle cx="310" cy="310" r="270" fill="none" stroke="rgba(57,255,20,.16)" stroke-width="1" stroke-dasharray="2 10"/>
+                <circle cx="310" cy="310" r="150" fill="none" stroke="rgba(57,255,20,.10)" stroke-width="1" stroke-dasharray="2 7"/>
+                <circle cx="310" cy="310" r="150" fill="none" stroke="rgba(57,255,20,.25)" stroke-width="1" stroke-dasharray="1 1" id="orbitSpinRing"/>
+              </svg>
 
-      <br><br>
+              <!-- orbiting team node track -->
+              <div class="orbit-track" id="orbitTrack"></div>
 
-      At the emblem’s core lies the letter “M,” symbolizing i-Farmate’s mission heart. Within it, two hands unite—one human and one robotic.
+              <!-- CENTER: video by default, photo on tap -->
+              <div class="orbit-center orbit-center--xl" id="orbitCenter">
+                <div class="orbit-center-glow"></div>
+                <div class="orbit-center-ring"></div>
+                <div class="orbit-center-ring orbit-center-ring--outer"></div>
 
-      <br><br>
+                <div class="orbit-center-frame" id="orbitCenterFrame">
+                  <!-- live looping product video (default state) -->
+                  <video
+                    id="orbitCenterVideo"
+                    class="orbit-center-video"
+                    autoplay muted loop playsinline>
+                    <source src="video/intro.mp4" type="video/mp4">
+                  </video>
 
-      i-Farmate advocates for organic farming while enhancing efficiency and reducing pesticide reliance.
-    </p>
+                  <!-- selected member photo (shown on tap) -->
+                  <div class="orbit-center-photo" id="orbitCenterPhoto">
+                    <img id="centerImg" src="" alt="">
+                    <div class="orbit-center-photo-shade"></div>
+                    <div class="orbit-center-photo-info">
+                      <div class="orbit-center-photo-tag" id="orbitTag">Role</div>
+                      <div class="orbit-center-photo-name" id="orbitName">Name</div>
+                    </div>
+                  </div>
 
-  </div>
-</div>
-   <!-- SLIDE 3: Our Team -->
-<div class="about-slide" data-slide="2">
-  <div class="about-slide-inner slide3-layout">
+                  <!-- HUD scanline + corner ticks, shown over whichever layer is active -->
+                  <div class="orbit-center-scan"></div>
+                  <div class="orbit-center-corner tl"></div>
+                  <div class="orbit-center-corner tr"></div>
+                  <div class="orbit-center-corner bl"></div>
+                  <div class="orbit-center-corner br"></div>
+                </div>
 
-    <div class="slide3-header rv">
-      <p class="slb" style="justify-content:center">The People</p>
 
-      <h2 class="st" style="text-align:center">
-        Our <span style="color:var(--chloro)">Team</span>
-      </h2>
+              <div class="orbit-hint" id="orbitHint">Tap a photo to meet the <span>team</span></div>
+            </div>
+          </section>
 
-      <p class="sb" style="text-align:center;margin:0 auto 3rem">
-        The minds behind i-Farmate — innovators, engineers,
-        and visionaries building the future of food.
-      </p>
-    </div>
-
-    <div class="team-leadership rv" style="transition-delay:.15s">
-
-      <!-- CTO LEFT -->
-      <div class="team-lead-card" id="tc-cto">
-
-        <div class="tlc-img-wrap">
-
-          <div class="tlc-img-placeholder tlc-left">
-            <img src="images/seenu.jpg" alt="CTO">
-          </div>
-
-          <div class="tlc-hud-corners">
-            <div class="tlc-corner tl"></div>
-            <div class="tlc-corner tr"></div>
-            <div class="tlc-corner bl"></div>
-            <div class="tlc-corner br"></div>
-          </div>
-
-          <div class="tlc-scan"></div>
-
-        </div>
-
-        <div class="tlc-info">
-          <div class="tlc-role-tag">
-            Chief Technology Officer
-          </div>
-
-          <div class="tlc-name">
-            CTO & CO-Founder
-          </div>
-
-          <div class="name">
-            Seenuvasan Balakrishnan
-          </div>
-        </div>
-
-      </div>
-
-      <div class="team-lead-divider">
-        <div class="tld-line"></div>
-        <div class="tld-dot"></div>
-        <div class="tld-line"></div>
-      </div>
-
-      <!-- CEO RIGHT -->
-      <div class="team-lead-card reverse" id="tc-ceo">
-
-        <div class="tlc-info">
-          <div class="tlc-role-tag"
-               style="color:var(--amber);
-               border-color:rgba(232,160,32,.3);
-               background:rgba(232,160,32,.06)">
-            Chief Executive Officer
-          </div>
-
-          <div class="tlc-name" style="color:var(--amber)">
-            CEO & CO-Founder
-          </div>
-
-          <div class="name">
-           Sundhararajan Devaprakash
-          </div>
-        </div>
-
-        <div class="tlc-img-wrap">
-
-          <div class="tlc-img-placeholder tlc-right">
-            <img src="images/Sundhar.jpg" alt="CEO">
-          </div>
-
-          <div class="tlc-hud-corners ceo-corners">
-            <div class="tlc-corner tl"></div>
-            <div class="tlc-corner tr"></div>
-            <div class="tlc-corner bl"></div>
-            <div class="tlc-corner br"></div>
-          </div>
-
-          <div class="tlc-scan ceo-scan"></div>
-
-        </div>
-
-      </div>
-
-    </div>
-
-    <!-- TEAM MEMBERS -->
-    <div class="team-members-row rv" style="transition-delay:.3s">
-
-      <div class="team-member-card">
-        <div class="tmc-avatar">
-          <img src="images/HIO.jpg" alt="Member 1">
-        </div>
-
-        <div class="tmc-name">
-          Rani Ponmathi .P
-        </div>
-
-        <div class="tmc-role">
-          Head-Indian Operations
         </div>
       </div>
-
-      <div class="team-member-card">
-        <div class="tmc-avatar">
-          <img src="images/John.jpg" alt="Member 2">
-        </div>
-
-        <div class="tmc-name">
-          John Bosco
-        </div>
-
-        <div class="tmc-role">
-          React JS and .Net Developer
-        </div>
-      </div>
-
-      <div class="team-member-card">
-        <div class="tmc-avatar">
-          <img src="images/Bashil.jpg" alt="Member 3">
-        </div>
-
-        <div class="tmc-name">
-          Mohammed Bashil
-        </div>
-
-        <div class="tmc-role">
-          Senior iOS Developer
-        </div>
-      </div>
-
-      <div class="team-member-card">
-        <div class="tmc-avatar">
-          <img src="images/Rashmi.jpg" alt="Member 4">
-        </div>
-
-        <div class="tmc-name">
-          Rashmi MD
-        </div>
-
-        <div class="tmc-role">
-          Market Research Manager
-        </div>
-      </div>
-
-    </div>
-
-  </div>
-</div>
 
       <!-- SLIDE 4: Who We Are -->
       <div class="about-slide" data-slide="3">
@@ -370,24 +272,24 @@
               <p class="wwa-para">Our incubation at NAARM's a-IDEA program in Hyderabad, our partnership with Vellore Institute of Technology, and our presence at India's leading agri-tech expos have validated that what we are building is both technically sound and commercially necessary. We do not chase technology for its own sake. Every feature in i-Farmate, every data point in TerraMate, every listing on FarmFair, is there because a farmer asked for it or because our field research showed it would make a measurable difference.</p>
               <p class="wwa-para">We build with empathy, ship with rigour, and measure success in yield improvements and lives made easier. At APSI Technologies, we believe the future of food is intelligent, chemical-free, and farmer-owned. We are building it, one field at a time — and we invite you to join us on that journey toward a more sustainable, more equitable, and more productive agricultural future for India and the world.</p>
             </div>
-            
           </div>
         </div>
       </div>
 
     </div><!-- /about-track -->
 
-    <!-- Navigation Controls -->
-    <div class="about-nav">
-      <button class="about-nav-arrow about-prev" id="about-prev" aria-label="Previous slide">&#8592;</button>
-      <div class="about-nav-dots" id="about-nav-dots">
-        <button class="about-dot active" data-slide="0"><span class="about-dot-label">About</span></button>
-        <button class="about-dot" data-slide="1"><span class="about-dot-label">Emblem</span></button>
-        <button class="about-dot" data-slide="2"><span class="about-dot-label">Team</span></button>
-        <button class="about-dot" data-slide="3"><span class="about-dot-label">Who We Are</span></button>
-      </div>
-      <button class="about-nav-arrow about-next" id="about-next" aria-label="Next slide">&#8594;</button>
-    </div>
+    <!-- ⬇ NEW: Arrow Navigation -->
+    <button class="about-arrow about-prev" id="about-prev" aria-label="Previous slide">
+      <svg viewBox="0 0 24 24">
+        <polyline points="15 5 8 12 15 19"></polyline>
+      </svg>
+    </button>
+    <button class="about-arrow about-next" id="about-next" aria-label="Next slide">
+      <svg viewBox="0 0 24 24">
+        <polyline points="9 5 16 12 9 19"></polyline>
+      </svg>
+    </button>
+    <!-- ⬆ NEW -->
 
     <!-- HUD decorations -->
     <div class="about-hud-corner tl"></div>
