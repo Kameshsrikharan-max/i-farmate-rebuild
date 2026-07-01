@@ -346,18 +346,16 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
   dots.forEach((d,i)=>d.addEventListener('click',()=>goTo(i)));
   setInterval(()=>goTo(cur+1),6000);})();
 
-/* ══════════════════════════════════════════
-   TEAM ORBIT — auto-rotating, tap-to-center
-   ══════════════════════════════════════════ */
+/*TEAM ORBIT — auto-rotating, tap-to-center */
 (function initTeamOrbit(){
 
   const TEAM = [
-    { name:"Seenuvasan Balakrishnan",   role:"CTO",                         img:"./images/cto.jpg"    },
-    { name:"Sundhararajan Devaprakash", role:"CEO",                         img:"./images/ceo.jpg"    },
-    { name:"Rani Ponmathi .P",          role:"Head – Indian Operations",    img:"./images/HIO.jpg"    },
-    { name:"John Bosco",                role:"React JS & .Net Developer",   img:"./images/john.jpg"   },
-    { name:"Mohammed Bashil",           role:"Senior iOS Developer",        img:"./images/Bashil.jpg" },
-    { name:"Rashmi MD",                 role:"Market Research Manager",     img:"./images/Rashmi.jpg" }
+    { name:"S",   role:"CTO",                         img:"./images/cto.jpg"    },
+    { name:"S", role:"CEO",                         img:"./images/ceo.jpg"    },
+    { name:"R P",          role:"Head – Indian Operations",    img:"./images/HIO.jpg"    },
+    { name:"JK",                role:"React JS & .Net Developer",   img:"./images/john.jpg"   },
+    { name:"M",           role:"Senior iOS Developer",        img:"./images/Bashil.jpg" },
+    { name:" MD",                 role:"Market Research Manager",     img:"./images/Rashmi.jpg" }
   ];
 
   const stage       = document.getElementById('orbitStage');
@@ -428,7 +426,6 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
     requestAnimationFrame(tick);
   }
 
-  /* ── Show a team member's photo + name/role in the center ── */
   function selectMember(i){
     activeIndex = i;
     const member = TEAM[i];
@@ -449,7 +446,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
     resumeTimer = setTimeout(returnToVideo, AUTO_RETURN_MS);
   }
 
-  /* ── Return center to the live looping video ── */
+  
   function returnToVideo(){
     centerWrap.classList.remove('show-photo');
     nodes.forEach(n => n.classList.remove('active'));
@@ -457,12 +454,11 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
     clearTimeout(resumeTimer);
     paused = false;
     if(centerVideo){
-      centerVideo.currentTime = centerVideo.currentTime; // keep playing smoothly
+      centerVideo.currentTime = centerVideo.currentTime; 
       centerVideo.play().catch(()=>{});
     }
   }
 
-  /* Tap the center itself (while showing a photo) to snap back to video */
   frame.addEventListener('click', () => {
     if(centerWrap.classList.contains('show-photo')) returnToVideo();
   });
@@ -477,7 +473,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
 
   window.addEventListener('resize', layout, { passive:true });
 
-  /* Pause rotation while hovering the stage so users can click comfortably */
+  
   stage.addEventListener('mouseenter', () => { paused = true; });
   stage.addEventListener('mouseleave', () => {
     if(activeIndex === null) paused = false;
@@ -495,8 +491,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
 
   window.addEventListener('resize', layout, { passive:true });
 
-  // Pause orbit rotation while a finger/cursor hovers the stage too,
-  // so users can comfortably tap a moving photo.
+  
   stage.addEventListener('mouseenter', () => { paused = true; });
   stage.addEventListener('mouseleave', () => {
     if(activeIndex === null) paused = false;

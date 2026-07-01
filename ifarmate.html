@@ -46,7 +46,7 @@
   <div id="nav-bar-inner">
     <a href="#hero" class="nb-brand" id="nb-brand-link">
       <div class="nb-brand-dot"></div>
-      🌾 i-<span>Farmate</span>
+       i-<span>Farmate</span>
     </a>
     <ul class="nb-links" id="nb-links">
       <li><span class="nb-sep">─</span></li>
@@ -129,6 +129,7 @@
                 <div class="cube-face cube-face--bottom"><img src="./images/bottom.png" alt="i-Farmate Bottom View"></div>
               </div>
             </div>
+            <br><br><br>
             <p class="cube-label">Hover to <span>pause</span> · Drag to <span>rotate</span></p>
           </div>
         </div>
@@ -200,7 +201,7 @@
                 Our <span style="color:var(--chloro)">Team</span>
               </h2>
               <p class="sb" style="text-align:center;margin:0 auto 1rem;max-width:520px">
-                The minds behind i-Farmate — innovators, engineers, and visionaries building the future of food. Tap any photo to meet them.
+                 25+ Active Team Members working for the growth of the company. Tap any photo to meet them.
               </p>
             </div>
 
@@ -223,12 +224,11 @@
                 <div class="orbit-center-ring orbit-center-ring--outer"></div>
 
                 <div class="orbit-center-frame" id="orbitCenterFrame">
-                  <!-- live looping product video (default state) -->
                   <video
                     id="orbitCenterVideo"
                     class="orbit-center-video"
                     autoplay muted loop playsinline>
-                    <source src="video/intro.mp4" type="video/mp4">
+                    <source src="video/i1.mp4" type="video/mp4">
                   </video>
 
                   <!-- selected member photo (shown on tap) -->
@@ -266,11 +266,10 @@
           </div>
           <div class="slide4-body rv" style="transition-delay:.1s">
             <div class="slide4-text-col">
-              <p class="wwa-para">APSI Technologies — also known as Auxwit Technologies Private Limited — is an agricultural robotics and intelligence company headquartered in Chennai, Tamil Nadu, India. Founded with a singular conviction that Indian agriculture deserves the same quality of intelligent automation that advanced manufacturing has enjoyed for decades, we exist to close that gap — not with imports or half-measures, but with technology built from the ground up for Indian soils, Indian crops, and Indian farmers.</p>
-              <p class="wwa-para">Our flagship product, i-Farmate, is the culmination of that mission: a fully autonomous field robot that navigates, detects, intervenes, and reports without human intervention. But i-Farmate is only the most visible expression of a broader philosophy — that every layer of the agricultural value chain, from soil intelligence and drone mapping to direct-to-consumer commerce and certified organic produce, can be improved through thoughtful, farmer-first technology.</p>
-              <p class="wwa-para">We are engineers, agronomists, data scientists, and farmers' children. We have walked fields at 4am. We have watched crops fail to pests that could have been caught a week earlier. We have seen the arithmetic of farming — rising labour costs, falling margins, climate unpredictability — squeeze the life from families who have farmed the same land for generations. That is the problem we are solving, and we take it personally.</p>
-              <p class="wwa-para">Our incubation at NAARM's a-IDEA program in Hyderabad, our partnership with Vellore Institute of Technology, and our presence at India's leading agri-tech expos have validated that what we are building is both technically sound and commercially necessary. We do not chase technology for its own sake. Every feature in i-Farmate, every data point in TerraMate, every listing on FarmFair, is there because a farmer asked for it or because our field research showed it would make a measurable difference.</p>
-              <p class="wwa-para">We build with empathy, ship with rigour, and measure success in yield improvements and lives made easier. At APSI Technologies, we believe the future of food is intelligent, chemical-free, and farmer-owned. We are building it, one field at a time — and we invite you to join us on that journey toward a more sustainable, more equitable, and more productive agricultural future for India and the world.</p>
+              <p class="wwa-para">At AUXWIT TECHNOLOGIES, we are pioneers in agricultural innovation, driven by a vision to transform farming through automation and precision technology. Our flagship product, i-Farmate, is an advanced unmanned agrobot designed to take the burden off farmers by automating essential tasks such as planting, weeding, and crop monitoring with unparalleled efficiency.</p>
+              <p class="wwa-para">We are dedicated to empowering farmers with smart, sustainable solutions that help optimize crop yield, reduce manual labor, and make agriculture more environmentally friendly. With i-Farmate, we leverage state-of-the-art robotics, AI, and sensor technologies to streamline farming operations, ensuring that farmers can focus on what matters most—nurturing the land and producing quality crops.</p>
+              <p class="wwa-para">Our team of engineers, agronomists, and tech experts work tirelessly to ensure i-Farmate meets the needs of modern agriculture, adapting to various farm environments and enhancing productivity while minimizing environmental impact. We believe in a future where farms operate smarter, not harder, and we’re committed to being at the forefront of this transformation.</p>
+              <p class="wwa-para">Embark on a journey through our diverse agricultural initiatives. At i-Farmate, we go beyond innovation; we cultivate real-world solutions. Step into our world, where we nurture our own organic farm, inviting visitors to witness sustainable farming practices firsthand. Delve into our ventures in agricultural retailing, where we enable local farmers to sell their fresh crops, harvest, poultry, and other farm products directly to consumers. Dive into the realm of space technology with our cutting-edge nano-satellite image processing portal, empowering agronomists with precise insights. Our commitment extends to benefiting consumers, agricultural corporations, small-scale farmers, and beyond. Join us as we revolutionize agriculture for a greener, more prosperous future..</p>
             </div>
           </div>
         </div>
@@ -283,11 +282,13 @@
       <svg viewBox="0 0 24 24">
         <polyline points="15 5 8 12 15 19"></polyline>
       </svg>
+      <span class="about-arrow-tooltip" id="about-prev-tooltip">Prev</span>
     </button>
     <button class="about-arrow about-next" id="about-next" aria-label="Next slide">
       <svg viewBox="0 0 24 24">
         <polyline points="9 5 16 12 9 19"></polyline>
       </svg>
+      <span class="about-arrow-tooltip" id="about-next-tooltip">Next</span>
     </button>
     <!-- ⬆ NEW -->
 
@@ -933,6 +934,17 @@
         <div class="cd-item"><div class="cd-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div><div class="cd-label">Address</div><div class="cd-text">8, Vembuliamman Koil Street,<br>Gowrivakkam, Chennai – 600073,<br>Tamil Nadu, India.</div></div></div>
         <div class="cd-item"><div class="cd-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div><div class="cd-label">Working Hours</div><div class="cd-text">Mon – Fri: 9:30 am – 6:30 pm</div></div></div>
       </div>
+
+      <!-- 📍 LOCATION BADGE (moved below Working Hours) -->
+      <button class="cta-location-badge" id="cta-location-badge" type="button" aria-label="View our location on map"
+        style="position:static;top:auto;right:auto;left:auto;bottom:auto;margin:0.5rem 0 1.5rem;display:inline-flex;">
+        <span class="clb-ping"></span>
+        <svg class="clb-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
+        </svg>
+        <span class="clb-label">Locate Us</span>
+      </button>
+
       <div class="hb" style="justify-content:flex-start;opacity:1;animation:none">
         <a href="mailto:contact@farmate.tech" class="bp">Email Us Directly</a>
         <a href="tel:04422781279" class="bo">Call Now</a>
@@ -1123,10 +1135,19 @@
   const nextBtn = document.getElementById('about-next');
   const numEl   = document.getElementById('about-slide-num');
   const tagEl   = document.getElementById('about-slide-tag');
+  const prevTooltip = document.getElementById('about-prev-tooltip');
+  const nextTooltip = document.getElementById('about-next-tooltip');
 
-  const TAGS = ['About i-Farmate','The Emblem','Our Team','Who We Are'];
+  const TAGS = ['Lets see About i-Farmate','Explore our Emblem','Let\'s meet our Team','Do You Know Who We Are?'];
   let current = 0;
   const total = 4;
+
+  function updateTooltips() {
+    const prevIdx = ((current - 1) % total + total) % total;
+    const nextIdx = (current + 1) % total;
+    if (prevTooltip) prevTooltip.textContent = 'Prev · ' + TAGS[prevIdx];
+    if (nextTooltip) nextTooltip.textContent = 'Next · ' + TAGS[nextIdx];
+  }
 
   function goTo(n) {
     current = ((n % total) + total) % total;
@@ -1134,6 +1155,7 @@
     dots.forEach((d, i) => d.classList.toggle('active', i === current));
     if (numEl) numEl.textContent = String(current + 1).padStart(2, '0');
     if (tagEl) tagEl.textContent = TAGS[current];
+    updateTooltips();
 
     // Trigger scroll-reveal animations for the newly visible slide
     const slides = track ? track.querySelectorAll('.about-slide') : [];
@@ -1176,8 +1198,79 @@
     }, { passive: true });
   }
 
+  [prevBtn, nextBtn].forEach(btn => {
+    if (!btn) return;
+    let touchTimeout = null;
+    const addTouched = () => {
+      clearTimeout(touchTimeout);
+      btn.classList.add('touched');
+    };
+    const removeTouched = () => {
+      clearTimeout(touchTimeout);
+      touchTimeout = setTimeout(() => btn.classList.remove('touched'), 900);
+    };
+    btn.addEventListener('touchstart', addTouched, { passive: true });
+    btn.addEventListener('touchend', removeTouched, { passive: true });
+    btn.addEventListener('touchcancel', removeTouched, { passive: true });
+    // Fallback for stylus / pointer devices that report as touch
+    btn.addEventListener('pointerdown', e => { if (e.pointerType === 'touch') addTouched(); });
+    btn.addEventListener('pointerup', e => { if (e.pointerType === 'touch') removeTouched(); });
+    btn.addEventListener('pointercancel', e => { if (e.pointerType === 'touch') removeTouched(); });
+  });
+
   // Fire initial state
   goTo(0);
+})();
+</script>
+
+<!-- 📍 LOCATION MODAL -->
+<div class="loc-modal-backdrop" id="loc-modal-backdrop"></div>
+<div class="loc-modal" id="loc-modal" role="dialog" aria-modal="true" aria-label="Our location">
+  <div class="loc-modal-top">
+    <div class="loc-modal-badge">📍 Field HQ</div>
+    <button class="loc-modal-close" id="loc-modal-close" aria-label="Close">✕</button>
+  </div>
+  <div class="loc-map-hud">
+    <iframe id="loc-map-iframe" src="" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>
+    <div class="lmh-corner tl"></div><div class="lmh-corner tr"></div>
+    <div class="lmh-corner bl"></div><div class="lmh-corner br"></div>
+    <div class="lmh-scan"></div>
+  </div>
+  <div class="loc-modal-info">
+    <a class="loc-directions-btn" id="loc-directions-btn" href="#" target="_blank" rel="noopener">Get Directions →</a>
+  </div>
+</div>
+
+<script>
+(function initLocationBadge(){
+  const ADDRESS = "8, Vembuliamman Koil Street, Gowrivakkam, Chennai 600073, Tamil Nadu, India";
+  const encoded = encodeURIComponent(ADDRESS);
+  const badge = document.getElementById('cta-location-badge');
+  const backdrop = document.getElementById('loc-modal-backdrop');
+  const modal = document.getElementById('loc-modal');
+  const closeBtn = document.getElementById('loc-modal-close');
+  const iframe = document.getElementById('loc-map-iframe');
+  const dirBtn = document.getElementById('loc-directions-btn');
+  if(!badge || !modal) return;
+
+  dirBtn.href = `https://www.google.com/maps/dir/?api=1&destination=${encoded}`;
+
+  function openLocModal(){
+    iframe.src = `https://www.google.com/maps?q=${encoded}&output=embed`;
+    backdrop.classList.add('open');
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLocModal(){
+    backdrop.classList.remove('open');
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+    setTimeout(()=>{ iframe.src = ''; }, 400);
+  }
+  badge.addEventListener('click', openLocModal);
+  closeBtn.addEventListener('click', closeLocModal);
+  backdrop.addEventListener('click', closeLocModal);
+  document.addEventListener('keydown', e => { if(e.key === 'Escape' && modal.classList.contains('open')) closeLocModal(); });
 })();
 </script>
 
