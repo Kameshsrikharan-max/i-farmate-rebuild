@@ -79,42 +79,60 @@ function initGrass(){blades=[];cutter=new Cutter();gPhase='growing';gStart=Date.
 initGrass();
 (function ag(){const now=Date.now(),elapsed=now-gStart;gctx.clearRect(0,0,gcan.width,gcan.height);blades.forEach(b=>{b.update(now);b.draw();});if(gPhase==='growing'){if(elapsed>6500&&!cutter.active&&!cutter.done)cutter.activate();if(cutter.done){gPhase='cut';gCutTime=now;}}else if(gPhase==='cut'){if(now-gCutTime>10000){gPhase='growing';gStart=now;blades.forEach(b=>{b.cut=false;b.h=0;b.gs=.45+Math.random()*.8;});cutter=new Cutter();}}cutter.update(blades);cutter.draw();requestAnimationFrame(ag);})();
 
-/* ── SCROLL ROBOTS ── */
-const rbdEl=document.getElementById('rbd'),rbuEl=document.getElementById('rbu');
-const robotTipEl=document.getElementById('robot-tip');
-const tipTextEl=document.querySelector('.tip-text');
-const rdC=document.createElement('canvas');rdC.width=54;rdC.height=74;rbdEl.appendChild(rdC);
-const ruC=document.createElement('canvas');ruC.width=54;ruC.height=74;rbuEl.appendChild(ruC);
-const rdx=rdC.getContext('2d'),rux=ruC.getContext('2d');
-const SECTION_TIPS=[{id:'hero',msg:"🚜 i-Farmate here! I work 24/7 so farmers don't have to."},{id:'about',msg:"🌱 Zero chemicals. Full autonomy. That's how I farm."},{id:'rcs',msg:"🤖 That scene below? That's me meeting a farmer for the first time!"},{id:'cap',msg:"▶ Watch the demo on the right — live on the field!"},{id:'ben',msg:"🌾 Flip the cards to explore who benefits from i-Farmate!"},{id:'how',msg:"🔄 Patrol → Detect → Act → Report. Four steps to smarter farming."},{id:'explore',msg:"🖼 Swipe through to explore everything i-Farmate can do!"},{id:'prod',msg:"📦 FarmFair, TerraMate, Thaniyas — the full agri-ecosystem!"},{id:'cta',msg:"🚀 Book a demo! I'd love to visit your farm."},{id:'footer-section',msg:"📞 Reach out anytime. Thank you for exploring i-Farmate! 🌿"}];
-let robotTipTimer=null,lastShownSection='';
-function showRobotTip(msg){if(robotTipTimer)clearTimeout(robotTipTimer);tipTextEl.textContent=msg;robotTipEl.classList.add('show');robotTipTimer=setTimeout(()=>robotTipEl.classList.remove('show'),4500);}
-function updateRobotTipForScroll(robotVisualY){let closestSection=null,closestDist=Infinity;SECTION_TIPS.forEach(s=>{const el=document.getElementById(s.id);if(!el)return;const rect=el.getBoundingClientRect(),mid=(rect.top+rect.bottom)/2,dist=Math.abs(robotVisualY-mid);if(dist<closestDist){closestDist=dist;closestSection=s;}});if(closestSection&&closestSection.id!==lastShownSection&&closestDist<window.innerHeight*0.45){lastShownSection=closestSection.id;showRobotTip(closestSection.msg);}}
-function drawHarvester(ctx,lf,active){ctx.clearRect(0,0,54,74);if(!active)return;const t=lf,cx=27,by=62;ctx.save();ctx.translate(cx,by);const lean=Math.sin(t*.07)*1.2;ctx.rotate(lean*Math.PI/180);ctx.save();ctx.globalAlpha=.18;ctx.beginPath();ctx.ellipse(1,4,9,2.5,0,0,Math.PI*2);ctx.fillStyle='#000';ctx.fill();ctx.restore();[[-15,-5],[6,-5]].forEach(([ox,oy])=>{ctx.beginPath();ctx.roundRect(ox,oy,9,9,2.5);ctx.fillStyle='#192414';ctx.strokeStyle='#39FF14';ctx.lineWidth=1;ctx.fill();ctx.stroke();ctx.fillStyle='rgba(57,255,20,.28)';for(let i=0;i<3;i++){ctx.beginPath();ctx.roundRect(ox+i*3,.5+oy,1.8,7,1);ctx.fill();}ctx.fillStyle='#192414';});ctx.fillStyle='#0a1208';ctx.strokeStyle='rgba(57,255,20,.45)';ctx.lineWidth=.8;ctx.beginPath();ctx.roundRect(-4,-2.5,8,5,2);ctx.fill();ctx.stroke();ctx.fillStyle='#1c2416';ctx.strokeStyle='#39FF14';ctx.lineWidth=1.4;ctx.beginPath();ctx.roundRect(-12,-24,24,20,3.5);ctx.fill();ctx.stroke();ctx.strokeStyle='rgba(57,255,20,.32)';ctx.lineWidth=.8;ctx.beginPath();ctx.roundRect(-9,-22,18,13,1.5);ctx.stroke();['#39FF14','#E8A020','#39FF14'].forEach((c,i)=>{ctx.beginPath();ctx.arc(-4+i*4,-18,1.4,0,Math.PI*2);ctx.fillStyle=Math.floor(t*.045+i)%2===0?c:'rgba(57,255,20,.18)';ctx.fill();});ctx.strokeStyle='rgba(57,255,20,.38)';ctx.lineWidth=.65;ctx.beginPath();ctx.moveTo(-6,-13);ctx.lineTo(2,-13);ctx.stroke();ctx.beginPath();ctx.moveTo(-6,-10);ctx.lineTo(5,-10);ctx.stroke();const as=Math.sin(t*.08)*6;ctx.strokeStyle='rgba(57,255,20,.65)';ctx.lineWidth=1.3;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(12,-16);ctx.lineTo(19,-16+as);ctx.stroke();ctx.save();ctx.translate(19,-16+as);for(let i=0;i<3;i++){const ba=t*.12+i*(Math.PI*2/3);ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(Math.cos(ba)*6,Math.sin(ba)*6);ctx.strokeStyle=`rgba(232,160,32,${.6+Math.abs(Math.cos(ba))*.3})`;ctx.lineWidth=1.5;ctx.lineCap='round';ctx.stroke();}ctx.beginPath();ctx.arc(0,0,2.5,0,Math.PI*2);ctx.fillStyle='#E8A020';ctx.fill();ctx.restore();ctx.strokeStyle='rgba(57,255,20,.55)';ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(-12,-16);ctx.lineTo(-19,-14-as*.4);ctx.stroke();ctx.beginPath();ctx.arc(-21,-13-as*.4,2.5,0,Math.PI*2);ctx.fillStyle='rgba(57,255,20,.12)';ctx.strokeStyle='rgba(57,255,20,.55)';ctx.lineWidth=.9;ctx.fill();ctx.stroke();ctx.save();ctx.translate(-21,-13-as*.4);ctx.rotate(t*.06);ctx.strokeStyle='rgba(57,255,20,.45)';ctx.lineWidth=.7;ctx.beginPath();ctx.moveTo(-2.5,0);ctx.lineTo(2.5,0);ctx.stroke();ctx.beginPath();ctx.moveTo(0,-2.5);ctx.lineTo(0,2.5);ctx.stroke();ctx.restore();ctx.fillStyle='#1c2416';ctx.strokeStyle='#39FF14';ctx.lineWidth=1.4;ctx.beginPath();ctx.roundRect(-9,-36,18,13,2.5);ctx.fill();ctx.stroke();const vg=ctx.createLinearGradient(-6,-34,6,-34);vg.addColorStop(0,'rgba(57,255,20,.12)');vg.addColorStop(.5,'rgba(57,255,20,.82)');vg.addColorStop(1,'rgba(57,255,20,.12)');ctx.beginPath();ctx.roundRect(-6,-34.5,12,5.5,1.2);ctx.fillStyle=vg;ctx.fill();ctx.strokeStyle='rgba(57,255,20,.38)';ctx.lineWidth=.65;ctx.beginPath();ctx.moveTo(2.5,-36);ctx.lineTo(6.5,-42);ctx.stroke();ctx.beginPath();ctx.arc(6.5,-44,2.2,0,Math.PI*2);ctx.fillStyle=Math.floor(t*.038)%2===0?'#39FF14':'#1a5a08';ctx.fill();if(Math.random()<.3){const sx=(Math.random()-.5)*10,sy=-3+Math.random()*3;ctx.beginPath();ctx.arc(sx,sy,.8,0,Math.PI*2);ctx.fillStyle=`rgba(232,160,32,${Math.random()*.5+.2})`;ctx.fill();}ctx.restore();}
-function drawInspector(ctx,lf,active){ctx.clearRect(0,0,54,74);if(!active)return;const t=lf,cx=27,by=62;const hv=Math.sin(t*.11)*1.8;ctx.save();ctx.translate(cx,by+hv);const lean=-Math.sin(t*.07)*1.2;ctx.rotate(lean*Math.PI/180);ctx.save();ctx.globalAlpha=.15;ctx.beginPath();ctx.ellipse(1,4-hv,8,2,0,0,Math.PI*2);ctx.fillStyle='#000';ctx.fill();ctx.restore();[-8,8].forEach(ox=>{ctx.beginPath();ctx.arc(ox,0,5,0,Math.PI*2);ctx.fillStyle='#111808';ctx.strokeStyle='#39FF14';ctx.lineWidth=1.1;ctx.fill();ctx.stroke();ctx.save();ctx.translate(ox,0);ctx.rotate(t*.14*(ox>0?1:-1));ctx.strokeStyle='rgba(57,255,20,.45)';ctx.lineWidth=.8;ctx.beginPath();ctx.moveTo(-4,0);ctx.lineTo(4,0);ctx.stroke();ctx.beginPath();ctx.moveTo(0,-4);ctx.lineTo(0,4);ctx.stroke();ctx.restore();});ctx.fillStyle='#1a2614';ctx.strokeStyle='rgba(57,255,20,.85)';ctx.lineWidth=1.4;ctx.beginPath();ctx.roundRect(-10,-23,20,19,4);ctx.fill();ctx.stroke();ctx.strokeStyle='rgba(57,255,20,.28)';ctx.lineWidth=.75;ctx.beginPath();ctx.roundRect(-7,-21,14,11,1.5);ctx.stroke();const sy2=-21+((t*1.8)%11);ctx.fillStyle='rgba(57,255,20,.38)';ctx.fillRect(-6,sy2,12,1.3);ctx.fillStyle='rgba(232,160,32,.38)';ctx.fillRect(-10,-12.5,20,1.4);const as2=Math.sin(t*.09)*4.5;ctx.strokeStyle='rgba(232,160,32,.78)';ctx.lineWidth=1.1;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(10,-14);ctx.lineTo(17,-14+as2);ctx.stroke();ctx.beginPath();ctx.roundRect(16,-17+as2,5.5,5.5,1.5);ctx.fillStyle='rgba(232,160,32,.12)';ctx.strokeStyle='rgba(232,160,32,.65)';ctx.lineWidth=.9;ctx.fill();ctx.stroke();ctx.strokeStyle='rgba(57,255,20,.65)';ctx.lineWidth=1.1;ctx.beginPath();ctx.moveTo(-10,-14);ctx.lineTo(-17,-12-as2*.4);ctx.stroke();ctx.beginPath();ctx.arc(-19,-11-as2*.4,2.5,0,Math.PI*2);ctx.fillStyle='rgba(57,255,20,.12)';ctx.strokeStyle='rgba(57,255,20,.6)';ctx.lineWidth=.9;ctx.fill();ctx.stroke();ctx.fillStyle='#1a2614';ctx.strokeStyle='rgba(57,255,20,.85)';ctx.lineWidth=1.4;ctx.beginPath();ctx.arc(0,-29,9.5,0,Math.PI*2);ctx.fill();ctx.stroke();[[-3.5,-30],[3.5,-30]].forEach(([ex,ey])=>{ctx.beginPath();ctx.arc(ex,ey,2.2,0,Math.PI*2);ctx.fillStyle=Math.floor(t*.055)%2===0?'rgba(57,255,20,.88)':'rgba(57,255,20,.35)';ctx.fill();});ctx.strokeStyle='rgba(57,255,20,.55)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,-38.5);ctx.lineTo(0,-44);ctx.stroke();ctx.save();ctx.translate(0,-45.5);ctx.rotate(t*.07);ctx.strokeStyle='rgba(57,255,20,.45)';ctx.lineWidth=.9;ctx.beginPath();ctx.moveTo(-3.5,0);ctx.lineTo(3.5,0);ctx.stroke();ctx.beginPath();ctx.arc(0,0,3.5,0,Math.PI*2);ctx.strokeStyle='rgba(57,255,20,.28)';ctx.stroke();ctx.restore();ctx.restore();}
-let rY=90,prevSY=0,rLF=0,rActiveDown=true;
-(function aro(){const sy=window.scrollY,msy=document.documentElement.scrollHeight-window.innerHeight,prog=msy>0?Math.min(1,sy/msy):0,delta=sy-prevSY;prevSY=sy;if(Math.abs(delta)>1){const newDown=delta>0;if(newDown!==rActiveDown){rActiveDown=newDown;rbdEl.style.display=newDown?'block':'none';rbuEl.style.display=newDown?'none':'block';}}const targetY=90+prog*(window.innerHeight-190);rY+=(targetY-rY)*.09;rbdEl.style.top=rY+'px';rbuEl.style.top=rY+'px';robotTipEl.style.top=(rY+10)+'px';updateRobotTipForScroll(rY+37);rLF+=Math.abs(delta)>.5?1.8:.25;drawHarvester(rdx,rLF,rActiveDown);drawInspector(rux,rLF,!rActiveDown);requestAnimationFrame(aro);})();
-
-/* ── DRONE ── */
-const droneWrap=document.getElementById('drone-wrap'),droneCvs=document.getElementById('drone-canvas'),droneTip=document.getElementById('drone-tooltip'),dctx=droneCvs.getContext('2d');
-const droneTipText=document.querySelector('.drone-tip-text');
-let droneX=window.innerWidth+60,droneY=-60,droneTX=window.innerWidth/2,droneTY=window.innerHeight/2,dronePropRot=0,droneT=0,droneAngle=0,droneVisible=true,droneTipShown=false;
-function pickDroneTarget(){const margin=120;droneTX=margin+Math.random()*(window.innerWidth-margin*2);droneTY=margin+Math.random()*(window.innerHeight-margin*1.5);}
-pickDroneTarget();setInterval(()=>{if(droneVisible)pickDroneTarget();},10000);
-const DRONE_TIPS=['🌾 Scanning crop health…','🔍 Monitoring soil data…','⚡ All systems nominal!','📡 Sending field report…','🌱 Protecting your harvest.','🤖 AI-powered precision farming.','💧 Checking soil moisture…','🌿 Zero chemicals. Pure results.'];
-let droneNearTarget=false;
-function checkDroneNearTarget(){const dist=Math.hypot(droneX-droneTX,droneY-droneTY);if(dist<30&&!droneNearTarget&&droneVisible&&!droneTipShown){droneNearTarget=true;const msg=DRONE_TIPS[Math.floor(Math.random()*DRONE_TIPS.length)];droneTipText.textContent=msg;droneTip.style.opacity='1';droneTip.style.transform='translateX(-50%) translateY(0)';droneTipShown=true;setTimeout(()=>{droneTip.style.opacity='0';droneTip.style.transform='translateX(-50%) translateY(-8px)';droneTipShown=false;droneNearTarget=false;},2800);}if(dist>60)droneNearTarget=false;}
-function checkDroneVisibility(){const heroEl=document.getElementById('hero');if(!heroEl)return;const heroBottom=heroEl.offsetTop+heroEl.offsetHeight,shouldShow=window.scrollY<heroBottom-100;if(shouldShow!==droneVisible){droneVisible=shouldShow;droneWrap.style.opacity=shouldShow?'1':'0';if(!shouldShow){droneTip.style.opacity='0';droneTipShown=false;}else{pickDroneTarget();}}}
-window.addEventListener('scroll',checkDroneVisibility,{passive:true});checkDroneVisibility();
-setTimeout(()=>{if(!droneVisible)return;droneTipText.textContent='🌱 i-Farmate — AI-powered farming, 24/7.';droneTip.style.opacity='1';droneTip.style.transform='translateX(-50%) translateY(0)';droneTipShown=true;setTimeout(()=>{droneTip.style.opacity='0';droneTip.style.transform='translateX(-50%) translateY(-8px)';droneTipShown=false;},3500);},3000);
-function drawDrone(t){dctx.clearRect(0,0,90,90);const cx=45,cy=48;const glow=dctx.createRadialGradient(cx,cy,4,cx,cy,32);glow.addColorStop(0,'rgba(57,255,20,.18)');glow.addColorStop(1,'rgba(57,255,20,0)');dctx.beginPath();dctx.arc(cx,cy,32,0,Math.PI*2);dctx.fillStyle=glow;dctx.fill();[[-1,-1],[1,-1],[1,1],[-1,1]].forEach(([sx,sy2],i)=>{dctx.save();dctx.translate(cx,cy);dctx.rotate(Math.PI/4+i*Math.PI/2);dctx.fillStyle=i%2===0?'rgba(57,255,20,.7)':'rgba(232,160,32,.55)';dctx.fillRect(-1,0,2,24);dctx.beginPath();dctx.arc(0,24,4,0,Math.PI*2);dctx.fillStyle='#1c2416';dctx.fill();dctx.strokeStyle=i%2===0?'#39FF14':'#E8A020';dctx.lineWidth=1;dctx.stroke();dctx.save();dctx.translate(0,24);dctx.rotate(dronePropRot*(i%2===0?1:-1));dctx.strokeStyle=i%2===0?'rgba(57,255,20,.8)':'rgba(232,160,32,.7)';dctx.lineWidth=1.5;dctx.lineCap='round';dctx.beginPath();dctx.moveTo(-11,0);dctx.lineTo(11,0);dctx.stroke();dctx.beginPath();dctx.moveTo(0,-5);dctx.lineTo(0,5);dctx.stroke();dctx.restore();dctx.restore();});dctx.save();dctx.translate(cx,cy);dctx.beginPath();dctx.roundRect(-10,-4,20,8,3);dctx.fillStyle='#0a1208';dctx.strokeStyle='rgba(57,255,20,.6)';dctx.lineWidth=1.2;dctx.fill();dctx.stroke();dctx.beginPath();dctx.roundRect(-11,-12,22,14,4);dctx.fillStyle='#1c2416';dctx.strokeStyle='#39FF14';dctx.lineWidth=1.4;dctx.fill();dctx.stroke();dctx.beginPath();dctx.ellipse(0,-12,9,5,0,Math.PI,0);dctx.fillStyle='#141a10';dctx.strokeStyle='rgba(57,255,20,.5)';dctx.lineWidth=1;dctx.fill();dctx.stroke();dctx.beginPath();dctx.arc(0,-6,3.5,0,Math.PI*2);dctx.fillStyle='rgba(57,255,20,.1)';dctx.strokeStyle='#39FF14';dctx.lineWidth=1;dctx.fill();dctx.stroke();dctx.beginPath();dctx.arc(0,-6,1.8,0,Math.PI*2);dctx.fillStyle='#39FF14';dctx.fill();const blinkOn=Math.floor(t*.04)%2===0;dctx.beginPath();dctx.arc(-7,-2,1.5,0,Math.PI*2);dctx.fillStyle=blinkOn?'#39FF14':'rgba(57,255,20,.2)';dctx.fill();dctx.beginPath();dctx.arc(7,-2,1.5,0,Math.PI*2);dctx.fillStyle=blinkOn?'#E8A020':'rgba(232,160,32,.2)';dctx.fill();dctx.restore();}
-(function animateDrone(){droneT++;dronePropRot+=0.28;const hoverBob=Math.sin(droneT*.022)*4;droneX+=(droneTX-droneX)*0.018;droneY+=(droneTY+hoverBob-droneY)*0.018;const vx=droneTX-droneX;droneAngle=Math.max(-0.22,Math.min(0.22,vx*0.004));droneWrap.style.left=(droneX-45)+'px';droneWrap.style.top=(droneY-45)+'px';dctx.save();dctx.translate(45,45);dctx.rotate(droneAngle);dctx.translate(-45,-45);drawDrone(droneT);dctx.restore();checkDroneNearTarget();requestAnimationFrame(animateDrone);})();
-
-/* ══ WHO BENEFITS */
+/* ══ WHO BENEFITS ══ */
 (function initBenSection(){
-document.querySelectorAll('.ben-flip-card').forEach(card=>{card.addEventListener('click',function(e){if(e.target.classList.contains('ben-read-more-btn'))return;this.classList.toggle('flipped');});});
-document.querySelectorAll('.ben-read-more-btn').forEach(btn=>{btn.addEventListener('click',function(e){e.stopPropagation();const id=this.dataset.card;const shutter=document.getElementById('bsh-'+id);const card=document.getElementById('bfc-'+id);if(!shutter)return;const cardH=card.offsetHeight;shutter.style.height=Math.max(cardH,360)+'px';shutter.classList.add('open');card.classList.remove('flipped');});});
-document.querySelectorAll('.ben-shutter-close').forEach(btn=>{btn.addEventListener('click',function(e){e.stopPropagation();const id=this.dataset.card;const shutter=document.getElementById('bsh-'+id);if(shutter)shutter.classList.remove('open');});});
+  document.querySelectorAll('.ben-flip-card').forEach(card=>{
+    card.addEventListener('click',function(e){
+      if(e.target.classList.contains('ben-read-more-btn'))return;
+      this.classList.toggle('flipped');
+    });
+  });
+
+
+  function resetFlipInstant(card){
+    if(!card)return;
+    const inner=card.querySelector('.ben-flip-inner');
+    if(!inner){card.classList.remove('flipped');return;}
+    inner.style.transition='none';
+    card.classList.remove('flipped');
+    void inner.offsetWidth; 
+    inner.style.transition='';
+  }
+
+  document.querySelectorAll('.ben-read-more-btn').forEach(btn=>{
+    btn.addEventListener('click',function(e){
+      e.stopPropagation();
+      const id=this.dataset.card;
+      const shutter=document.getElementById('bsh-'+id);
+      const card=document.getElementById('bfc-'+id);
+      if(!shutter)return;
+      const cardH=card.offsetHeight;
+      shutter.style.height=Math.max(cardH,360)+'px';
+      shutter.classList.add('open');
+    });
+  });
+
+  document.querySelectorAll('.ben-shutter-close-btn').forEach(btn=>{
+    btn.addEventListener('click',function(e){
+      e.stopPropagation();
+      const id=this.dataset.card;
+      const shutter=document.getElementById('bsh-'+id);
+      const card=document.getElementById('bfc-'+id);
+      if(shutter)shutter.classList.remove('open');
+      resetFlipInstant(card);
+    });
+  });
+
+
+  document.addEventListener('keydown',e=>{
+    if(e.key==='Escape'){
+      document.querySelectorAll('.ben-shutter.open').forEach(s=>{
+        s.classList.remove('open');
+        const id=s.id.replace('bsh-','');
+        resetFlipInstant(document.getElementById('bfc-'+id));
+      });
+    }
+  });
 
   const railCvs=document.getElementById('ben-rail-canvas');
   if(!railCvs)return;
@@ -220,29 +238,6 @@ document.querySelectorAll('.ben-shutter-close').forEach(btn=>{btn.addEventListen
     rctx2.clearRect(0,0,80,H);drawRailLine(rctx2,H,progress);drawRailRobot(rctx2,40,benRailRobotY,benRailT,1.0);}
 benRailT=0;(function animateBenRail(){benRailT++;updateBenRailRobot();requestAnimationFrame(animateBenRail);})();})();
 
-/* ══ MEET THE MACHINE ══ */
-const sceneCvs=document.getElementById('scene-canvas');
-const sctx=sceneCvs.getContext('2d');
-function resizeScene(){sceneCvs.width=sceneCvs.offsetWidth||window.innerWidth;sceneCvs.height=600;}
-resizeScene();window.addEventListener('resize',resizeScene,{passive:true});
-const SCENE={ROBOT_ENTER:0,ROBOT_STAND:1,ROBOT_INTRO:2,MAN_ENTER:3,CONVO:4,GOODBYE:5,DONE:6};
-let sceneState=SCENE.ROBOT_ENTER,sceneT=0,stateT=0,sceneStarted=false;
-const robot={x:-120,y:0,targetX:-60,scale:1,wobble:0,legPhase:0,armWave:0,eyeBlink:0,antennaWave:0,speaking:false,facingRight:true};
-const man={x:800,targetX:80,scale:1,legPhase:0,armSwing:0,waving:false,speaking:false,facingLeft:true};
-const CONVO_SCRIPT=[{speaker:'man',text:"What is i-Farmate?",duration:140},{speaker:'robot',text:"I am an AI-powered farming robot\nthat automates planting, weeding,\nand crop monitoring.",duration:200},{speaker:'man',text:"How do you remove weeds?",duration:130},{speaker:'robot',text:"I use cameras and AI to identify\nand remove weeds without\nharming crops.",duration:190},{speaker:'man',text:"How do you monitor crops?",duration:130},{speaker:'robot',text:"I continuously track plant health,\nsoil conditions, and crop growth\nin real time.",duration:190},{speaker:'man',text:"Can you detect pests\nand weather changes?",duration:150},{speaker:'robot',text:"Yes, I detect pest threats early\nand adapt my actions based on\nweather conditions.",duration:200},{speaker:'man',text:"How can farmers track you?",duration:130},{speaker:'robot',text:"Farmers can monitor my work\nand field data through a mobile\nor web application.",duration:200},{speaker:'robot',text:"For more details,\nplease contact us. Thank you!",duration:190},{speaker:'man',text:"Sure, thank you! 😊🌱🤖",duration:150}];
-let convoIndex=0,convoTimer=0,typedChars=0,typingTimer=0;
-let sceneObserved=false;
-const sceneObs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting&&!sceneObserved){sceneObserved=true;sceneStarted=true;sceneObs.disconnect();}});},{threshold:0.3});
-sceneObs.observe(sceneCvs);
-function drawSceneBackground(ctx,W,H){ctx.clearRect(0,0,W,H);const bg=ctx.createLinearGradient(0,0,0,H);bg.addColorStop(0,'rgba(6,10,5,0.5)');bg.addColorStop(.6,'rgba(10,18,8,0.6)');bg.addColorStop(1,'rgba(13,26,10,0.7)');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);const gy=H*0.78;const groundGrad=ctx.createLinearGradient(0,gy,0,H);groundGrad.addColorStop(0,'rgba(26,46,10,0.9)');groundGrad.addColorStop(.4,'rgba(20,34,8,0.95)');groundGrad.addColorStop(1,'rgba(10,18,5,0.98)');ctx.fillStyle=groundGrad;ctx.fillRect(0,gy,W,H-gy);ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(W,gy);ctx.strokeStyle='rgba(57,255,20,.3)';ctx.lineWidth=1.5;ctx.stroke();}
-function drawRobot3D(ctx,cx,gy,t,scale,opts){const S=scale*1.0,fw=opts.facingRight?1:-1,wobble=opts.wobble||0,lp=opts.legPhase||0,aw=opts.armWave||0,speaking=opts.speaking||false;ctx.save();ctx.translate(cx,gy);ctx.save();ctx.globalAlpha=.22;const shadowGrad=ctx.createRadialGradient(0,8,0,0,8,55*S);shadowGrad.addColorStop(0,'rgba(0,0,0,0.55)');shadowGrad.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=shadowGrad;ctx.scale(1,0.3);ctx.beginPath();ctx.arc(0,8*S/0.3,45*S,0,Math.PI*2);ctx.fill();ctx.restore();const treadY=-28*S+wobble;[-1,1].forEach(side=>{const tx2=side*28*S*fw;ctx.save();ctx.translate(tx2,treadY);ctx.fillStyle='#0d1a08';ctx.strokeStyle='rgba(57,255,20,.5)';ctx.lineWidth=1.2*S;ctx.beginPath();ctx.roundRect(-12*S,-8*S,24*S,16*S,4*S);ctx.fill();ctx.stroke();[-6*S,6*S].forEach(wx=>{ctx.beginPath();ctx.arc(wx,0,5*S,0,Math.PI*2);ctx.fillStyle='#0a1208';ctx.strokeStyle='rgba(57,255,20,.6)';ctx.lineWidth=1.2*S;ctx.fill();ctx.stroke();ctx.save();ctx.rotate(lp*(side===1?1:-1));ctx.strokeStyle='rgba(57,255,20,.4)';ctx.lineWidth=0.8*S;ctx.beginPath();ctx.moveTo(-4*S,0);ctx.lineTo(4*S,0);ctx.stroke();ctx.beginPath();ctx.moveTo(0,-4*S);ctx.lineTo(0,4*S);ctx.stroke();ctx.restore();});ctx.restore();});const bodyY=-100*S+wobble;const bodyGrad=ctx.createLinearGradient(-20*S,bodyY,20*S,bodyY+54*S);bodyGrad.addColorStop(0,'#1c2e10');bodyGrad.addColorStop(.5,'#152208');bodyGrad.addColorStop(1,'#0e1a06');ctx.fillStyle=bodyGrad;ctx.strokeStyle='#39FF14';ctx.lineWidth=1.8*S;ctx.beginPath();ctx.roundRect(-22*S,bodyY,44*S,54*S,6*S);ctx.fill();ctx.stroke();const dispY=bodyY+14*S;ctx.fillStyle='rgba(57,255,20,.08)';ctx.strokeStyle='rgba(57,255,20,.4)';ctx.lineWidth=1*S;ctx.beginPath();ctx.roundRect(-14*S,dispY,28*S,14*S,2*S);ctx.fill();ctx.stroke();const scanY=dispY+(t*1.2%(14*S));ctx.fillStyle='rgba(57,255,20,.35)';ctx.fillRect(-13*S,scanY,26*S,1.5*S);[-6*S,0,6*S].forEach((lx2,li)=>{ctx.beginPath();ctx.arc(lx2,bodyY+34*S,2.5*S,0,Math.PI*2);const colors=['#39FF14','#E8A020','#39FF14'];ctx.fillStyle=Math.floor(t*.05+li)%3===0?colors[li]:'rgba(57,255,20,.15)';ctx.fill();});const armAngleR=fw>0?(-0.15+Math.sin(lp*0.5)*0.08+aw*0.4):(-0.15-Math.sin(lp*0.5)*0.08);const armAngleL=fw>0?(0.15-Math.sin(lp*0.5)*0.08):(0.15+Math.sin(lp*0.5)*0.08+aw*0.4);[[-1,armAngleL],[1,armAngleR]].forEach(([side2,aa])=>{ctx.save();ctx.translate(side2*fw*24*S,bodyY+8*S);ctx.rotate(aa);ctx.fillStyle='#1c2e10';ctx.strokeStyle='rgba(57,255,20,.5)';ctx.lineWidth=1.2*S;ctx.beginPath();ctx.roundRect(-5*S,0,10*S,22*S,3*S);ctx.fill();ctx.stroke();ctx.save();ctx.translate(0,22*S);ctx.rotate(aa*0.5);ctx.fillStyle='#111e0a';ctx.strokeStyle='rgba(57,255,20,.4)';ctx.lineWidth=1*S;ctx.beginPath();ctx.roundRect(-4*S,0,8*S,18*S,3*S);ctx.fill();ctx.stroke();ctx.translate(0,18*S);ctx.beginPath();ctx.arc(0,0,5*S,0,Math.PI*2);ctx.fillStyle='#0a1208';ctx.strokeStyle='rgba(57,255,20,.7)';ctx.lineWidth=1.2*S;ctx.fill();ctx.stroke();ctx.restore();ctx.restore();});const headY=-142*S+wobble+Math.sin(t*.03)*2*S;const headGrad=ctx.createLinearGradient(-18*S,headY,18*S,headY+36*S);headGrad.addColorStop(0,'#1e3010');headGrad.addColorStop(1,'#0e1e06');ctx.fillStyle=headGrad;ctx.strokeStyle='#39FF14';ctx.lineWidth=1.8*S;ctx.beginPath();ctx.roundRect(-18*S,headY,36*S,36*S,8*S);ctx.fill();ctx.stroke();const blinkH=opts.eyeBlink>0.8?0.5:1.0;[-7*S,7*S].forEach((ex2)=>{ctx.beginPath();ctx.arc(ex2,headY+14*S,5*S,0,Math.PI*2);ctx.fillStyle='rgba(57,255,20,.12)';ctx.fill();const eyeGlow=ctx.createRadialGradient(ex2,headY+14*S,0,ex2,headY+14*S,4.5*S);eyeGlow.addColorStop(0,'rgba(57,255,20,0.9)');eyeGlow.addColorStop(1,'rgba(57,255,20,0.1)');ctx.save();ctx.beginPath();ctx.ellipse(ex2,headY+14*S,4*S,4*S*blinkH,0,0,Math.PI*2);ctx.fillStyle=eyeGlow;ctx.fill();ctx.restore();ctx.beginPath();ctx.arc(ex2+fw*1*S,headY+14*S,1.5*S,0,Math.PI*2);ctx.fillStyle='#0a1208';ctx.fill();});if(speaking){const mw=(5+Math.sin(t*.15)*4)*S;ctx.fillStyle='rgba(57,255,20,.6)';ctx.beginPath();ctx.roundRect(-mw/2,headY+24*S,mw,3*S,1*S);ctx.fill();}else{ctx.fillStyle='rgba(57,255,20,.3)';ctx.beginPath();ctx.roundRect(-6*S,headY+24*S,12*S,2*S,1*S);ctx.fill();}const antWave=Math.sin(t*.08)*3*S+(opts.antennaWave||0)*5*S;ctx.strokeStyle='rgba(57,255,20,.7)';ctx.lineWidth=1.5*S;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(0,headY);ctx.lineTo(antWave,headY-16*S);ctx.stroke();const antGlow=ctx.createRadialGradient(antWave,headY-16*S,0,antWave,headY-16*S,4*S);antGlow.addColorStop(0,speaking?'rgba(57,255,20,1)':'rgba(57,255,20,0.6)');antGlow.addColorStop(1,'rgba(57,255,20,0)');ctx.beginPath();ctx.arc(antWave,headY-16*S,3.5*S,0,Math.PI*2);ctx.fillStyle=antGlow;ctx.fill();ctx.restore();}
-function drawMan(ctx,cx,gy,t,opts){const S=1.0,fw=opts.facingLeft?-1:1,lp=opts.legPhase||0,waving=opts.waving||false,speaking=opts.speaking||false;ctx.save();ctx.translate(cx,gy);ctx.save();ctx.globalAlpha=0.2;const shadowGrad=ctx.createRadialGradient(0,5,0,0,5,40);shadowGrad.addColorStop(0,'rgba(0,0,0,0.5)');shadowGrad.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=shadowGrad;ctx.scale(1.2,0.25);ctx.beginPath();ctx.arc(0,5/0.25,38,0,Math.PI*2);ctx.fill();ctx.restore();const leftLegAngle=Math.sin(lp)*0.35,rightLegAngle=-Math.sin(lp)*0.35;[[fw*8,leftLegAngle],[fw*-8,rightLegAngle]].forEach(([lx2,la])=>{ctx.save();ctx.translate(lx2,-10);ctx.rotate(la);ctx.fillStyle='#2a3d1a';ctx.beginPath();ctx.roundRect(-5,-2,10,24,3);ctx.fill();ctx.save();ctx.translate(0,24);ctx.rotate(la*0.5);ctx.fillStyle='#1e2e10';ctx.beginPath();ctx.roundRect(-4,0,8,22,3);ctx.fill();ctx.save();ctx.translate(fw*2,22);ctx.fillStyle='#111';ctx.beginPath();ctx.roundRect(fw>0?-5:-9,-2,14,8,3);ctx.fill();ctx.restore();ctx.restore();ctx.restore();});const torsoY=-85;const shirtGrad=ctx.createLinearGradient(-14,torsoY,14,torsoY+40);shirtGrad.addColorStop(0,'#2d4a18');shirtGrad.addColorStop(1,'#1e3210');ctx.fillStyle=shirtGrad;ctx.beginPath();ctx.roundRect(-14,torsoY,28,42,5);ctx.fill();ctx.fillStyle='#0a0f06';ctx.strokeStyle='rgba(57,255,20,.3)';ctx.lineWidth=0.8;ctx.beginPath();ctx.roundRect(-14,torsoY+38,28,5,1);ctx.fill();ctx.stroke();const walkArmL=Math.sin(lp)*0.3,walkArmR=-Math.sin(lp)*0.3,waveArm=waving?(-0.8+Math.sin(t*.1)*0.4):walkArmR;[[fw*14,torsoY+4,walkArmL,false],[fw*-14,torsoY+4,waving?waveArm:walkArmL,waving]].forEach(([ax,ay,aa,isWave])=>{ctx.save();ctx.translate(ax,ay);ctx.rotate(aa);ctx.fillStyle='#2d4a18';ctx.beginPath();ctx.roundRect(fw>0?0:-8,0,8,20,3);ctx.fill();ctx.save();ctx.translate(fw>0?4:-4,20);if(isWave)ctx.rotate(-0.6+Math.sin(t*.1)*0.3);else ctx.rotate(aa*0.4);ctx.fillStyle='#d4956a';ctx.beginPath();ctx.roundRect(-4,0,8,16,3);ctx.fill();ctx.translate(0,16);ctx.beginPath();ctx.arc(0,0,5,0,Math.PI*2);ctx.fillStyle='#d4956a';ctx.fill();ctx.restore();ctx.restore();});ctx.fillStyle='#d4956a';ctx.beginPath();ctx.roundRect(-5,-100,10,12,3);ctx.fill();ctx.fillStyle='#e8aa80';ctx.beginPath();ctx.arc(0,-116,15,0,Math.PI*2);ctx.fill();ctx.fillStyle='#1a0f08';ctx.beginPath();ctx.arc(0,-116,15,Math.PI,0);ctx.fill();ctx.fillRect(-15,-120,30,8);[-5,5].forEach(ex2=>{ctx.beginPath();ctx.arc(ex2,-117,2.5,0,Math.PI*2);ctx.fillStyle='#1a0f08';ctx.fill();});if(speaking){const mw=3+Math.sin(t*.12)*2;ctx.beginPath();ctx.ellipse(0,-113,mw,1.5+Math.abs(Math.sin(t*.12)),0,0,Math.PI*2);ctx.fillStyle='#6a3020';ctx.fill();}else{ctx.strokeStyle='#6a3020';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(-4,-113);ctx.quadraticCurveTo(0,-111,4,-113);ctx.stroke();}ctx.fillStyle='#c4a055';ctx.strokeStyle='#8a6030';ctx.lineWidth=1.2;ctx.beginPath();ctx.ellipse(0,-129,22,5,0,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.fillStyle='#c4a055';ctx.strokeStyle='#8a6030';ctx.lineWidth=1.2;ctx.beginPath();ctx.roundRect(-12,-146,24,18,4);ctx.fill();ctx.stroke();ctx.fillStyle='#2d4a18';ctx.fillRect(-12,-133,24,4);ctx.restore();}
-function drawSpeechBubble(ctx,x,y,text,fromLeft,W,H){const lines=text.split('\n'),maxLen=Math.max(...lines.map(l=>l.length));const bubbleW=Math.min(Math.max(maxLen*8+32,120),260),lineH=18,bubbleH=lines.length*lineH+24;let bx=fromLeft?x+30:x-bubbleW-30;bx=Math.max(10,Math.min(bx,W-bubbleW-10));const by=y-bubbleH-20;ctx.save();ctx.fillStyle=fromLeft?'rgba(20,35,12,0.96)':'rgba(12,22,8,0.96)';ctx.strokeStyle=fromLeft?'rgba(57,255,20,0.8)':'rgba(232,160,32,0.8)';ctx.lineWidth=1.5;ctx.beginPath();ctx.roundRect(bx,by,bubbleW,bubbleH,8);ctx.fill();ctx.stroke();const tailX=fromLeft?bx+20:bx+bubbleW-20;ctx.beginPath();ctx.moveTo(tailX-8,by+bubbleH);ctx.lineTo(fromLeft?x+10:x-10,by+bubbleH+18);ctx.lineTo(tailX+8,by+bubbleH);ctx.closePath();ctx.fill();ctx.stroke();ctx.font=`bold 9px 'Space Grotesk', sans-serif`;ctx.fillStyle=fromLeft?'rgba(57,255,20,0.7)':'rgba(232,160,32,0.7)';ctx.textAlign='left';ctx.fillText(fromLeft?'🤖 i-Farmate':'👨 Farmer',bx+10,by+13);ctx.font=`12px 'Inter', sans-serif`;ctx.fillStyle=fromLeft?'rgba(240,244,236,0.95)':'rgba(255,240,200,0.95)';ctx.textAlign='left';lines.forEach((line,i)=>{ctx.fillText(line,bx+12,by+28+i*lineH);});}
-function drawNameLabel(ctx,cx,gy,name,isRobot){ctx.save();ctx.font=`bold 11px 'Space Grotesk', sans-serif`;ctx.textAlign='center';const tw=ctx.measureText(name).width,bw=tw+20,bh=18,bx=cx-bw/2,by=gy+8;ctx.fillStyle=isRobot?'rgba(20,35,12,0.8)':'rgba(12,22,8,0.8)';ctx.strokeStyle=isRobot?'rgba(57,255,20,0.5)':'rgba(232,160,32,0.4)';ctx.lineWidth=1;ctx.beginPath();ctx.roundRect(bx,by,bw,bh,3);ctx.fill();ctx.stroke();ctx.fillStyle=isRobot?'#39FF14':'#E8A020';ctx.fillText(name,cx,by+13);ctx.restore();}
-function drawReplayBtn(ctx,W,H){const bw=140,bh=40,bx=W/2-bw/2,by=H-60;ctx.fillStyle='rgba(10,13,8,0.9)';ctx.strokeStyle='rgba(57,255,20,0.7)';ctx.lineWidth=1.5;ctx.beginPath();ctx.roundRect(bx,by,bw,bh,4);ctx.fill();ctx.stroke();ctx.font=`bold 13px 'Space Grotesk', sans-serif`;ctx.textAlign='center';ctx.fillStyle='#39FF14';ctx.fillText('▶ Replay Scene',W/2,by+26);sceneCvs._replayBtn={bx,by,bw,bh};}
-sceneCvs.addEventListener('click',e=>{if(!sceneCvs._replayBtn)return;const rect=sceneCvs.getBoundingClientRect(),px=e.clientX-rect.left,py=e.clientY-rect.top;const {bx,by,bw,bh}=sceneCvs._replayBtn;if(px>=bx&&px<=bx+bw&&py>=by&&py<=by+bh){sceneState=SCENE.ROBOT_ENTER;stateT=0;sceneT=0;convoIndex=0;convoTimer=0;typedChars=0;typingTimer=0;robot.x=-120;man.x=sceneCvs.width+120;robot.speaking=false;man.speaking=false;man.waving=false;sceneCvs._replayBtn=null;}});
-(function animateScene(){if(!sceneStarted){requestAnimationFrame(animateScene);return;}const W=sceneCvs.width,H=sceneCvs.height,groundY=H*0.78,centerX=W/2;sceneT++;stateT++;sctx.clearRect(0,0,W,H);drawSceneBackground(sctx,W,H);switch(sceneState){case SCENE.ROBOT_ENTER:{const progress=Math.min(1,stateT/80),eased=1-Math.pow(1-progress,3);robot.x=-150+(centerX-60+150)*eased;robot.scale=0.4+0.6*eased;robot.legPhase+=0.12;robot.wobble=Math.sin(robot.legPhase)*3;robot.facingRight=true;drawRobot3D(sctx,centerX+robot.x-centerX,groundY,sceneT,robot.scale,robot);if(stateT>85){sceneState=SCENE.ROBOT_STAND;stateT=0;}break;}case SCENE.ROBOT_STAND:{robot.x=centerX-60-centerX;robot.scale=1.0;robot.legPhase*=0.9;robot.wobble=Math.sin(sceneT*.04)*2;robot.antennaWave=Math.sin(sceneT*.06)*0.5;robot.speaking=false;robot.facingRight=true;drawRobot3D(sctx,centerX-60,groundY,sceneT,1.0,robot);if(stateT>60){sceneState=SCENE.ROBOT_INTRO;stateT=0;}break;}case SCENE.ROBOT_INTRO:{robot.speaking=true;robot.antennaWave=1;robot.wobble=Math.sin(sceneT*.04)*2;drawRobot3D(sctx,centerX-60,groundY,sceneT,1.0,robot);const intro="Hello! I am i-Farmate 🤖\nYour autonomous AI farming robot.\nI work 24/7 to protect your crops!";typingTimer++;if(typingTimer%2===0&&typedChars<intro.length)typedChars++;drawSpeechBubble(sctx,centerX-60,groundY-160,intro.substring(0,typedChars),true,W,H);if(stateT>180){sceneState=SCENE.MAN_ENTER;stateT=0;typedChars=0;typingTimer=0;robot.speaking=false;}break;}case SCENE.MAN_ENTER:{robot.speaking=false;robot.wobble=Math.sin(sceneT*.04)*1.5;drawRobot3D(sctx,centerX-60,groundY,sceneT,1.0,robot);const progress=Math.min(1,stateT/90),eased=1-Math.pow(1-progress,2);man.x=W+120-(W+120-(centerX+80))*eased;man.legPhase+=0.14*progress;man.waving=progress>0.8;man.facingLeft=true;drawMan(sctx,man.x,groundY,sceneT,man);drawNameLabel(sctx,centerX-60,groundY,'i-Farmate',true);drawNameLabel(sctx,man.x,groundY,'Farmer',false);if(progress>0.8){robot.armWave=Math.sin(sceneT*.1)*0.5;}if(stateT>100){man.x=centerX+80;man.legPhase=0;man.waving=false;sceneState=SCENE.CONVO;stateT=0;convoIndex=0;convoTimer=0;typedChars=0;typingTimer=0;}break;}case SCENE.CONVO:{robot.wobble=Math.sin(sceneT*.04)*1.5;robot.facingRight=true;man.facingLeft=true;const line=CONVO_SCRIPT[convoIndex];if(!line){sceneState=SCENE.GOODBYE;stateT=0;break;}const isRobot=line.speaker==='robot';robot.speaking=isRobot;man.speaking=!isRobot;robot.antennaWave=isRobot?0.8:0.2;man.waving=false;typingTimer++;if(typingTimer%2===0&&typedChars<line.text.length)typedChars++;convoTimer++;if(convoTimer>=line.duration){convoIndex++;convoTimer=0;typedChars=0;typingTimer=0;}drawRobot3D(sctx,centerX-60,groundY,sceneT,1.0,robot);drawMan(sctx,man.x,groundY,sceneT,man);drawNameLabel(sctx,centerX-60,groundY,'i-Farmate',true);drawNameLabel(sctx,man.x,groundY,'Farmer',false);if(typedChars>0){if(isRobot)drawSpeechBubble(sctx,centerX-60,groundY-160,line.text.substring(0,typedChars),true,W,H);else drawSpeechBubble(sctx,man.x,groundY-160,line.text.substring(0,typedChars),false,W,H);}sctx.save();const dotW=CONVO_SCRIPT.length*16,dotStartX=W/2-dotW/2;CONVO_SCRIPT.forEach((_,i)=>{sctx.beginPath();sctx.arc(dotStartX+i*16+8,H-20,4,0,Math.PI*2);sctx.fillStyle=i===convoIndex?'#39FF14':i<convoIndex?'rgba(57,255,20,0.5)':'rgba(57,255,20,0.15)';sctx.fill();});sctx.restore();break;}case SCENE.GOODBYE:{robot.speaking=false;man.speaking=false;man.waving=true;const progress=Math.min(1,stateT/100),robotExit=centerX-60-progress*300,manExit=centerX+80+progress*350;robot.legPhase+=0.12;man.legPhase+=0.14;robot.facingRight=false;man.facingLeft=false;drawRobot3D(sctx,robotExit,groundY,sceneT,1.0-progress*0.3,robot);drawMan(sctx,manExit,groundY,sceneT,man);if(stateT>110){sceneState=SCENE.DONE;stateT=0;}break;}case SCENE.DONE:{const alpha=Math.min(1,stateT/40);sctx.save();sctx.globalAlpha=alpha;sctx.textAlign='center';sctx.font=`bold 22px 'Space Grotesk', sans-serif`;sctx.fillStyle='rgba(57,255,20,0.9)';sctx.fillText('i-Farmate — Your AI Farm Companion 🌱',W/2,H/2-30);sctx.font=`14px 'Inter', sans-serif`;sctx.fillStyle='rgba(240,244,236,0.6)';sctx.fillText('24/7 Autonomous · AI-Precision · Zero Chemicals',W/2,H/2+5);sctx.restore();drawReplayBtn(sctx,W,H);break;}}requestAnimationFrame(animateScene);})();
-
 /* CAROUSEL */
 const capTrack=document.getElementById('cap-track');
 const capDots=document.querySelectorAll('.carousel-dot');
@@ -265,18 +260,6 @@ let as2=0;
 function setStep(n){sps.forEach((s,i)=>s.classList.toggle('active',i===n));const d=SD[n];if(vlEl)vlEl.textContent=d.l;if(v1)v1.textContent=d.a;if(v2)v2.textContent=d.b;as2=n;}
 sps.forEach((s,i)=>s.addEventListener('click',()=>setStep(i)));
 setInterval(()=>setStep((as2+1)%sps.length),3200);
-
-/* MINI HOW ROBOT */
-const howSection=document.getElementById('how');
-const howRobotCvs=document.getElementById('how-robot');
-const hrCtx=howRobotCvs.getContext('2d');
-let hrX=0,hrY=0,hrTX=0,hrTY=0,hrT=0,hrActive=false,hrLegPhase=0,hrVX=0,hrVY=0;
-function drawHowRobot(ctx,t,vx,vy){ctx.clearRect(0,0,60,80);const cx=30,by=72;hrLegPhase+=Math.sqrt(vx*vx+vy*vy)*.08+0.06;const tilt=Math.max(-.2,Math.min(.2,vx*.008)),fw=vx>0?1:-1;ctx.save();ctx.translate(cx,by);ctx.rotate(tilt);[-12,12].forEach(ox=>{ctx.fillStyle='#0d1a08';ctx.strokeStyle='rgba(57,255,20,.55)';ctx.lineWidth=1.1;ctx.beginPath();ctx.roundRect(ox-7,-8,14,10,3);ctx.fill();ctx.stroke();ctx.save();ctx.translate(ox,-3);ctx.beginPath();ctx.arc(0,0,3.5,0,Math.PI*2);ctx.fillStyle='#0a1208';ctx.strokeStyle='rgba(57,255,20,.5)';ctx.fill();ctx.stroke();ctx.save();ctx.rotate(hrLegPhase*(ox>0?1:-1));ctx.strokeStyle='rgba(57,255,20,.35)';ctx.lineWidth=.8;ctx.beginPath();ctx.moveTo(-3,0);ctx.lineTo(3,0);ctx.stroke();ctx.restore();ctx.restore();});const bG=ctx.createLinearGradient(-14,-36,14,-10);bG.addColorStop(0,'#1c2e10');bG.addColorStop(1,'#0e1a06');ctx.fillStyle=bG;ctx.strokeStyle='#39FF14';ctx.lineWidth=1.5;ctx.beginPath();ctx.roundRect(-14,-36,28,32,4);ctx.fill();ctx.stroke();const hG=ctx.createLinearGradient(-13,-58,13,-42);hG.addColorStop(0,'#1e3210');hG.addColorStop(1,'#0e1e06');ctx.fillStyle=hG;ctx.strokeStyle='#39FF14';ctx.lineWidth=1.5;ctx.beginPath();ctx.roundRect(-13,-60+Math.sin(t*.04)*1.5,26,20,5);ctx.fill();ctx.stroke();[-5,5].forEach(ex=>{const eG=ctx.createRadialGradient(ex,-51,0,ex,-51,3);eG.addColorStop(0,'rgba(57,255,20,.95)');eG.addColorStop(1,'rgba(57,255,20,.05)');ctx.beginPath();ctx.arc(ex,-51,3,0,Math.PI*2);ctx.fillStyle=eG;ctx.fill();});ctx.restore();}
-howSection.addEventListener('mouseenter',()=>{hrActive=true;howRobotCvs.style.display='block';});
-howSection.addEventListener('mouseleave',()=>{hrActive=false;howRobotCvs.style.display='none';});
-howSection.addEventListener('mousemove',e=>{hrVX=e.clientX-hrTX;hrVY=e.clientY-hrTY;hrTX=e.clientX;hrTY=e.clientY;});
-const howStyle=document.createElement('style');howStyle.textContent='#how{cursor:none}';document.head.appendChild(howStyle);
-(function animateHowRobot(){hrT++;if(hrActive){hrX+=(hrTX-hrX)*.15;hrY+=(hrTY-hrY)*.15;howRobotCvs.style.left=hrX+'px';howRobotCvs.style.top=hrY+'px';drawHowRobot(hrCtx,hrT,hrVX,hrVY);hrVX*=0.85;hrVY*=0.85;}requestAnimationFrame(animateHowRobot);})();
 
 const fc2=document.getElementById('fc');
 if(fc2){const fctx=fc2.getContext('2d');function szFC(){const p=fc2.parentElement;fc2.width=p.offsetWidth;fc2.height=p.offsetHeight;}szFC();window.addEventListener('resize',szFC,{passive:true});let bx2=30,by3=0,bt=0,rows=[],sd=1;function buildR(){rows=[];const h=fc2.height;for(let i=0;i<7;i++)rows.push({y:60+(i/6)*(h-120),sc:0});by3=rows[0]?rows[0].y:0;}buildR();(function afc(){if(!rows.length){requestAnimationFrame(afc);return;}const w=fc2.width,h=fc2.height;fctx.clearRect(0,0,w,h);rows.forEach(r=>{fctx.beginPath();fctx.moveTo(20,r.y);fctx.lineTo(w-20,r.y);fctx.strokeStyle='rgba(57,255,20,.07)';fctx.lineWidth=1;fctx.stroke();if(r.sc>0){fctx.fillStyle='rgba(57,255,20,.04)';fctx.fillRect(20,r.y-10,(w-40)*r.sc,20);}for(let c=0;c<12;c++){const cx2=30+(c/11)*(w-60);fctx.beginPath();fctx.arc(cx2,r.y,2.8,0,Math.PI*2);fctx.fillStyle=r.sc>c/11?'rgba(57,255,20,.48)':'rgba(57,255,20,.09)';fctx.fill();}});fctx.save();fctx.translate(bx2,by3);fctx.beginPath();fctx.arc(0,0,8,0,Math.PI*2);fctx.fillStyle='rgba(57,255,20,.13)';fctx.fill();fctx.strokeStyle='#39FF14';fctx.lineWidth=1.4;fctx.stroke();fctx.beginPath();fctx.arc(0,0,2.8,0,Math.PI*2);fctx.fillStyle='#39FF14';fctx.fill();fctx.restore();bx2+=1.4*sd;if(bx2>=w-30){sd=-1;if(bt<rows.length-1)bt++;}if(bx2<=30){sd=1;if(bt<rows.length-1)bt++;}by3+=(rows[bt].y-by3)*.08;rows[bt].sc=Math.min(1,rows[bt].sc+.0025);requestAnimationFrame(afc);})();}
@@ -338,7 +321,6 @@ backdrop.addEventListener('click',()=>{if(currentModal)closeModal(currentModal);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeModal(currentModal);});
 
 
-
 (function(){const slides=document.querySelectorAll('.explore-slide');const dots=document.querySelectorAll('.explore-dots .explore-dot');let cur=0;
   function goTo(n){cur=(n+4)%4;slides.forEach((s,i)=>s.classList.toggle('active',i===cur));dots.forEach((d,i)=>d.classList.toggle('active',i===cur));document.getElementById('explore-current').textContent=String(cur+1).padStart(2,'0');}
   document.getElementById('explore-prev').addEventListener('click',()=>goTo(cur-1));
@@ -346,7 +328,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
   dots.forEach((d,i)=>d.addEventListener('click',()=>goTo(i)));
   setInterval(()=>goTo(cur+1),6000);})();
 
-/*TEAM ORBIT — auto-rotating, tap-to-center */
+/*TEAM ORBIT */
 (function initTeamOrbit(){
 
   const TEAM = [
@@ -379,7 +361,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
   const SPEED = 0.080;
   const AUTO_RETURN_MS = 6000;
 
-  /* ── Build orbiting node photos ── */
+
   function buildNodes(){
     track.innerHTML = '';
     nodes = TEAM.map((member, i) => {
@@ -420,11 +402,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
     });
   }
 
-  function tick(){
-    if(!paused) angle = (angle + SPEED) % 360;
-    layout();
-    requestAnimationFrame(tick);
-  }
+  function tick(){if(!paused) angle = (angle + SPEED) % 360;layout();requestAnimationFrame(tick);}
 
   function selectMember(i){
     activeIndex = i;
@@ -484,7 +462,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
   });
 
 
-  // Init
+  
   buildNodes();
   layout();
   requestAnimationFrame(tick);
@@ -500,5 +478,279 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
       resumeTimer = setTimeout(() => { paused = false; }, 5000);
     }
   })
+
+})();
+
+
+(function initQACompanion(){
+  'use strict';
+
+  
+  ['rbd','rbu','drone-wrap','how-robot','scene-canvas'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+  document.querySelectorAll('.robot-tip').forEach(function(el){
+    el.style.display = 'none';
+  });
+
+  var hud = document.getElementById('qa-hud');
+  if (!hud) return;
+
+  var robotCanvas = document.getElementById('qa-robot-canvas');
+  var humanCanvas = document.getElementById('qa-human-canvas');
+  var robotBubble = document.getElementById('qa-bubble-robot');
+  var humanBubble = document.getElementById('qa-bubble-human');
+  var robotTextEl = document.getElementById('qa-robot-text');
+  var humanTextEl = document.getElementById('qa-human-text');
+
+  var rCtx = robotCanvas ? robotCanvas.getContext('2d') : null;
+  var hCtx = humanCanvas ? humanCanvas.getContext('2d') : null;
+
+  /* ── 2. Dialogue script — one Q&A pair per major section ── */
+  var DIALOGUE = {
+    hero:    { q: "What exactly does i-Farmate do?",              a: "I'm an autonomous field robot — I weed, seed, monitor and protect crops around the clock, on my own." },
+    about:   { q: "So who actually builds you?",                  a: "AUXWIT Technologies engineered me, fusing edge-AI, multi-spectral vision and precision mechanics into one field companion." },
+    cap:     { q: "What can you actually detect out there?",      a: "Weeds, pests, early disease signs, weather shifts — thousands of sensor readings an hour, all analysed on the move." },
+    ben:     { q: "Who really benefits from having you around?",  a: "Farmers, crops, consumers, soil and water all gain — chemical-free operation keeps the whole ecosystem healthier." },
+    how:     { q: "Walk me through how you actually work a field.", a: "I patrol with GPS and vision, detect issues with AI, act with precision, then log everything to your dashboard." },
+    prod:    { q: "Is it just you, or is there more to this?",    a: "There's a whole stack — FarmFair for direct sales, TerraMate for soil IoT, and Thaniyas Organic growing produce with me." },
+    explore: { q: "Where has i-Farmate actually been shown off?", a: "From VIT Chennai's labs to United AgriTech 2025 and NAARM's incubation program — real fields, real farmers, real feedback." },
+    cta:     { q: "How do I actually get you on my farm?",        a: "Fill out the form below or call us directly — our team will get a demo scheduled on your field within days." }
+  };
+
+  var currentSection = null;
+  var typeTimerR = null, typeTimerH = null;
+
+  function typeText(el, text, speed, isRobot){
+    if (isRobot) { clearInterval(typeTimerR); } else { clearInterval(typeTimerH); }
+    el.textContent = '';
+    var i = 0;
+    var timer = setInterval(function(){
+      el.textContent += text.charAt(i);
+      i++;
+      if (i >= text.length) clearInterval(timer);
+    }, speed || 16);
+    if (isRobot) { typeTimerR = timer; } else { typeTimerH = timer; }
+  }
+
+  function playDialogue(key){
+    var d = DIALOGUE[key];
+    if (!d || key === currentSection) return;
+    currentSection = key;
+
+    if (humanBubble) humanBubble.classList.remove('show');
+    if (robotBubble) robotBubble.classList.remove('show');
+
+    setTimeout(function(){
+      if (humanBubble) humanBubble.classList.add('show');
+      if (humanTextEl) typeText(humanTextEl, d.q, 16, false);
+    }, 120);
+
+    setTimeout(function(){
+      if (robotBubble) robotBubble.classList.add('show');
+      if (robotTextEl) typeText(robotTextEl, d.a, 14, true);
+    }, 620);
+  }
+
+  
+  var sectionIds = Object.keys(DIALOGUE);
+  var sections = sectionIds
+    .map(function(id){ return document.getElementById(id); })
+    .filter(Boolean);
+
+  if ('IntersectionObserver' in window && sections.length) {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting && entry.intersectionRatio > 0.35) {
+          playDialogue(entry.target.id);
+        }
+      });
+    }, { threshold: [0, 0.35, 0.6, 1], rootMargin: '-10% 0px -10% 0px' });
+    sections.forEach(function(sec){ io.observe(sec); });
+  }
+
+  
+  var footer = document.getElementById('footer-section');
+  if (footer && 'IntersectionObserver' in window) {
+    var footIO = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        hud.style.opacity = entry.isIntersecting ? '0' : '1';
+        hud.style.pointerEvents = entry.isIntersecting ? 'none' : '';
+      });
+    }, { threshold: 0.1 });
+    footIO.observe(footer);
+  }
+
+  
+  function fitCanvas(canvas){
+    if (!canvas || canvas._scaled) return;
+    var dpr = window.devicePixelRatio || 1;
+    var w = canvas.width, h = canvas.height;
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    var ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    canvas._scaled = true;
+    canvas._logW = w;
+    canvas._logH = h;
+  }
+  fitCanvas(robotCanvas);
+  fitCanvas(humanCanvas);
+
+  function rr(ctx, x, y, w, h, r){
+    if (ctx.roundRect) { ctx.roundRect(x, y, w, h, r); }
+    else { ctx.rect(x, y, w, h); }
+  }
+
+
+  function drawRobot(ctx, w, h, t){
+    ctx.clearRect(0, 0, w, h);
+    var bob = Math.sin(t / 650) * 2.2;
+    var cx = w / 2;
+    ctx.save();
+    ctx.translate(0, bob);
+
+    var grad = ctx.createRadialGradient(cx, h - 6, 2, cx, h - 6, 26);
+    grad.addColorStop(0, 'rgba(57,255,20,.35)');
+    grad.addColorStop(1, 'rgba(57,255,20,0)');
+    ctx.fillStyle = grad;
+    ctx.beginPath(); ctx.ellipse(cx, h - 6, 24, 6, 0, 0, Math.PI * 2); ctx.fill();
+
+    ctx.strokeStyle = '#39FF14';
+    ctx.lineWidth = 2;
+
+    /* legs */
+    ctx.beginPath();
+    ctx.moveTo(cx - 10, h - 38); ctx.lineTo(cx - 12, h - 8);
+    ctx.moveTo(cx + 10, h - 38); ctx.lineTo(cx + 12, h - 8);
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(57,255,20,.12)';
+    ctx.beginPath(); rr(ctx, cx - 16, h - 10, 10, 6, 2); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); rr(ctx, cx + 6, h - 10, 10, 6, 2); ctx.fill(); ctx.stroke();
+
+    /* torso */
+    ctx.beginPath(); rr(ctx, cx - 15, h - 64, 30, 28, 6); ctx.fill(); ctx.stroke();
+
+    /* chest core light */
+    var pulse = 0.5 + 0.5 * Math.sin(t / 300);
+    ctx.beginPath();
+    ctx.arc(cx, h - 50, 4 + pulse * 1.2, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(57,255,20,' + (0.5 + pulse * 0.5) + ')';
+    ctx.fill();
+    ctx.fillStyle = 'rgba(57,255,20,.12)';
+
+    /* arms */
+    var armSwing = Math.sin(t / 700) * 6;
+    ctx.strokeStyle = '#39FF14';
+    ctx.beginPath();
+    ctx.moveTo(cx - 15, h - 58); ctx.lineTo(cx - 24, h - 42 + armSwing * 0.3);
+    ctx.moveTo(cx + 15, h - 58); ctx.lineTo(cx + 24, h - 42 - armSwing * 0.3);
+    ctx.stroke();
+
+    /* neck + head */
+    ctx.beginPath(); ctx.moveTo(cx, h - 64); ctx.lineTo(cx, h - 70); ctx.stroke();
+    ctx.beginPath(); rr(ctx, cx - 12, h - 92, 24, 24, 7); ctx.fill(); ctx.stroke();
+
+    /* antenna */
+    ctx.beginPath(); ctx.moveTo(cx, h - 92); ctx.lineTo(cx, h - 100); ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx, h - 102, 2.4, 0, Math.PI * 2);
+    ctx.fillStyle = '#E8A020'; ctx.fill();
+
+    /* visor / eyes */
+    var blink = (Math.sin(t / 1900) > 0.94) ? 0.2 : 1;
+    ctx.fillStyle = '#0A0D08';
+    ctx.beginPath(); rr(ctx, cx - 9, h - 85, 18, 8 * blink, 3); ctx.fill();
+    ctx.fillStyle = '#39FF14';
+    ctx.shadowColor = '#39FF14'; ctx.shadowBlur = 6;
+    ctx.beginPath(); ctx.arc(cx - 4, h - 81, 1.6 * blink, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(cx + 4, h - 81, 1.6 * blink, 0, Math.PI * 2); ctx.fill();
+    ctx.shadowBlur = 0;
+
+    ctx.restore();
+  }
+
+
+  function drawFarmer(ctx, w, h, t){
+    ctx.clearRect(0, 0, w, h);
+    var bob = Math.sin(t / 700 + 1.2) * 2;
+    var cx = w / 2;
+    ctx.save();
+    ctx.translate(0, bob);
+
+    var grad = ctx.createRadialGradient(cx, h - 6, 2, cx, h - 6, 24);
+    grad.addColorStop(0, 'rgba(232,160,32,.3)');
+    grad.addColorStop(1, 'rgba(232,160,32,0)');
+    ctx.fillStyle = grad;
+    ctx.beginPath(); ctx.ellipse(cx, h - 6, 22, 6, 0, 0, Math.PI * 2); ctx.fill();
+
+    ctx.strokeStyle = '#E8A020';
+    ctx.lineWidth = 2;
+
+    /* legs */
+    var legSwing = Math.sin(t / 900) * 1.5;
+    ctx.beginPath();
+    ctx.moveTo(cx - 6, h - 40); ctx.lineTo(cx - 9 + legSwing, h - 8);
+    ctx.moveTo(cx + 6, h - 40); ctx.lineTo(cx + 9 - legSwing, h - 8);
+    ctx.stroke();
+
+    /* shirt */
+    ctx.fillStyle = 'rgba(232,160,32,.14)';
+    ctx.beginPath(); rr(ctx, cx - 13, h - 66, 26, 30, 8); ctx.fill(); ctx.stroke();
+
+    /* arms */
+    var armSwing2 = Math.sin(t / 750 + 1) * 7;
+    ctx.beginPath();
+    ctx.moveTo(cx - 13, h - 58); ctx.lineTo(cx - 22, h - 40 + armSwing2 * 0.3);
+    ctx.moveTo(cx + 13, h - 58); ctx.lineTo(cx + 22, h - 40 - armSwing2 * 0.3);
+    ctx.stroke();
+
+    /* neck */
+    ctx.beginPath(); ctx.moveTo(cx, h - 66); ctx.lineTo(cx, h - 70); ctx.stroke();
+
+    /* head */
+    ctx.fillStyle = '#f0d3a0';
+    ctx.beginPath(); ctx.arc(cx, h - 80, 11, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = '#E8A020'; ctx.stroke();
+
+    /* straw hat */
+    ctx.fillStyle = '#c99a3f';
+    ctx.beginPath(); ctx.ellipse(cx, h - 90, 15, 4, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(cx, h - 92, 8, Math.PI, 0); ctx.fill();
+
+    /* eyes */
+    var blink2 = (Math.sin(t / 2300 + 0.6) > 0.94) ? 0.2 : 1;
+    ctx.fillStyle = '#2a1c0a';
+    ctx.beginPath(); ctx.ellipse(cx - 4, h - 80, 1.4, 1.6 * blink2, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(cx + 4, h - 80, 1.4, 1.6 * blink2, 0, 0, Math.PI * 2); ctx.fill();
+
+    /* smile */
+    ctx.strokeStyle = '#8a5a20';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.arc(cx, h - 77, 3, 0.15 * Math.PI, 0.85 * Math.PI); ctx.stroke();
+
+    ctx.restore();
+  }
+
+  /* ── 7. Animation loop ── */
+  var raf;
+  function loop(t){
+    if (rCtx) drawRobot(rCtx, robotCanvas._logW || 72, robotCanvas._logH || 94, t);
+    if (hCtx) drawFarmer(hCtx, humanCanvas._logW || 72, humanCanvas._logH || 94, t);
+    raf = requestAnimationFrame(loop);
+  }
+  raf = requestAnimationFrame(loop);
+
+  document.addEventListener('visibilitychange', function(){
+    if (document.hidden) { cancelAnimationFrame(raf); }
+    else { raf = requestAnimationFrame(loop); }
+  });
+
+
+  window.addEventListener('load', function(){
+    setTimeout(function(){ playDialogue('hero'); }, 1800);
+  });
 
 })();

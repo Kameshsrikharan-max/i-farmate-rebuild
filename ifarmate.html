@@ -35,6 +35,26 @@
 </div>
 <canvas id="how-robot" width="60" height="80"></canvas>
 
+
+<div id="qa-hud">
+  <div class="qa-side qa-side-left">
+    <div class="qa-bubble qa-bubble-robot" id="qa-bubble-robot">
+      <div class="qa-bubble-bar"></div>
+      <div class="qa-bubble-tag">i-Farmate</div>
+      <div class="qa-bubble-text" id="qa-robot-text"></div>
+    </div>
+    <canvas id="qa-robot-canvas" width="72" height="94"></canvas>
+  </div>
+  <div class="qa-side qa-side-right">
+    <div class="qa-bubble qa-bubble-human" id="qa-bubble-human">
+      <div class="qa-bubble-bar"></div>
+      <div class="qa-bubble-tag">Farmer</div>
+      <div class="qa-bubble-text" id="qa-human-text"></div>
+    </div>
+    <canvas id="qa-human-canvas" width="72" height="94"></canvas>
+  </div>
+</div>
+
 <svg id="nav-progress-svg" viewBox="0 0 62 62" fill="none" xmlns="http://www.w3.org/2000/svg">
   <circle cx="31" cy="31" r="26" stroke="rgba(57,255,20,0.1)" stroke-width="2"/>
   <circle id="nav-ring-circle" cx="31" cy="31" r="26" stroke="#39FF14" stroke-width="2"
@@ -190,7 +210,7 @@
         </div>
       </div>
 
-      <!-- SLIDE 3: Our Team (ROTATING ORBIT + LIVE VIDEO CENTER) -->
+      <!-- SLIDE 3: Our Team -->
       <div class="about-slide" data-slide="2">
         <div class="about-slide-inner slide3-layout">
 
@@ -207,17 +227,15 @@
 
             <div class="orbit-stage orbit-stage--xl" id="orbitStage">
 
-              <!-- decorative orbit rings -->
               <svg class="orbit-rings-svg" viewBox="0 0 620 620">
                 <circle cx="310" cy="310" r="270" fill="none" stroke="rgba(57,255,20,.16)" stroke-width="1" stroke-dasharray="2 10"/>
                 <circle cx="310" cy="310" r="150" fill="none" stroke="rgba(57,255,20,.10)" stroke-width="1" stroke-dasharray="2 7"/>
                 <circle cx="310" cy="310" r="150" fill="none" stroke="rgba(57,255,20,.25)" stroke-width="1" stroke-dasharray="1 1" id="orbitSpinRing"/>
               </svg>
 
-              <!-- orbiting team node track -->
               <div class="orbit-track" id="orbitTrack"></div>
 
-              <!-- CENTER: video by default, photo on tap -->
+              <!-- CENTER-->
               <div class="orbit-center orbit-center--xl" id="orbitCenter">
                 <div class="orbit-center-glow"></div>
                 <div class="orbit-center-ring"></div>
@@ -231,7 +249,7 @@
                     <source src="video/i1.mp4" type="video/mp4">
                   </video>
 
-                  <!-- selected member photo (shown on tap) -->
+                  <!-- selected member photo  -->
                   <div class="orbit-center-photo" id="orbitCenterPhoto">
                     <img id="centerImg" src="" alt="">
                     <div class="orbit-center-photo-shade"></div>
@@ -241,7 +259,7 @@
                     </div>
                   </div>
 
-                  <!-- HUD scanline + corner ticks, shown over whichever layer is active -->
+         -->
                   <div class="orbit-center-scan"></div>
                   <div class="orbit-center-corner tl"></div>
                   <div class="orbit-center-corner tr"></div>
@@ -303,16 +321,6 @@
     <div class="about-slide-tag" id="about-slide-tag">About i-Farmate</div>
 
   </div><!-- /about-carousel-wrap -->
-</section>
-
-<!-- MEET THE MACHINE -->
-<section id="rcs" style="padding:0;">
-  <div class="scene-header rv">
-    <p class="slb" style="justify-content:center">The Machine</p>
-    <h2 class="st" style="text-align:center;transition-delay:.1s">Meet i-Farmate <span style="color:var(--chloro)">In Person</span></h2>
-    <p class="sb rv" style="text-align:center;margin:0 auto 1rem;transition-delay:.2s;max-width:480px">An introduction from the field — watch as a farmer meets i-Farmate for the first time.</p>
-  </div>
-  <canvas id="scene-canvas" height="600"></canvas>
 </section>
 
 <!-- CAPABILITIES -->
@@ -470,6 +478,7 @@
         </div>
         <div class="ben-shutter" id="bsh-1">
           <div class="ben-shutter-bar"></div>
+          <button class="ben-shutter-close-btn" data-card="1" aria-label="Close">✕</button>
           <div class="ben-shutter-inner">
             <div class="ben-shutter-top">
               <span class="ben-shutter-emoji">🌿</span>
@@ -479,7 +488,6 @@
               </div>
             </div>
             <div class="ben-shutter-text">i-Farmate's adoption of eco-friendly and chemical-free farming practices has positive implications for pests, bees, and other creatures in the agricultural ecosystem. By avoiding the use of chemical pesticides, i-Farmate protects beneficial insects such as bees, which play a crucial role in pollination and maintaining ecosystem balance. Furthermore, i-Farmate's sustainable farming practices promote biodiversity and create a more hospitable environment for various organisms within the agricultural ecosystem, contributing to the overall health and resilience of the ecosystem.</div>
-            <button class="ben-shutter-close" data-card="1">✕ Close</button>
           </div>
         </div>
       </div>
@@ -514,6 +522,7 @@
         </div>
         <div class="ben-shutter" id="bsh-2">
           <div class="ben-shutter-bar"></div>
+          <button class="ben-shutter-close-btn" data-card="2" aria-label="Close">✕</button>
           <div class="ben-shutter-inner">
             <div class="ben-shutter-top">
               <span class="ben-shutter-emoji">🌾</span>
@@ -523,7 +532,6 @@
               </div>
             </div>
             <div class="ben-shutter-text">i-Farmate's chemical-free approach to farming directly benefits crops, leading to healthier plants and improved yields. By avoiding the use of chemical pesticides and herbicides, i-Farmate ensures that crops are not exposed to harmful chemicals, resulting in higher quality produce that is safe for consumption. Additionally, i-Farmate's efficient weeding practices help reduce competition from weeds, allowing crops to thrive and reach their full potential. The increased productivity resulting from i-Farmate's interventions translates into higher yields for farmers, thereby enhancing agricultural productivity and food security.</div>
-            <button class="ben-shutter-close" data-card="2">✕ Close</button>
           </div>
         </div>
       </div>
@@ -558,6 +566,7 @@
         </div>
         <div class="ben-shutter" id="bsh-3">
           <div class="ben-shutter-bar"></div>
+          <button class="ben-shutter-close-btn" data-card="3" aria-label="Close">✕</button>
           <div class="ben-shutter-inner">
             <div class="ben-shutter-top">
               <span class="ben-shutter-emoji">🍅</span>
@@ -567,7 +576,6 @@
               </div>
             </div>
             <div class="ben-shutter-text">i-Farmate's focus on sustainable and organic farming practices has significant benefits for consumers. By producing organic food that is free from chemical residues and pesticides, i-Farmate ensures that consumers have access to safer and healthier food options. This contributes to a greener and more sustainable food system, promoting consumer health and environmental well-being. Additionally, by supporting eco-friendly farming practices, i-Farmate helps reduce the carbon footprint of food production and consumption, contributing to global efforts to mitigate climate change and promote environmental sustainability.</div>
-            <button class="ben-shutter-close" data-card="3">✕ Close</button>
           </div>
         </div>
       </div>
@@ -602,6 +610,7 @@
         </div>
         <div class="ben-shutter" id="bsh-4">
           <div class="ben-shutter-bar"></div>
+          <button class="ben-shutter-close-btn" data-card="4" aria-label="Close">✕</button>
           <div class="ben-shutter-inner">
             <div class="ben-shutter-top">
               <span class="ben-shutter-emoji">👨‍🌾</span>
@@ -611,7 +620,6 @@
               </div>
             </div>
             <div class="ben-shutter-text">i-FARMATE brings a multitude of benefits to farmers, enhancing their farming practices and overall efficiency. By automating and streamlining farming processes, i-FARMATE significantly reduces labor requirements, allowing farmers to allocate their time and resources more effectively. The data capture and interpretation capabilities of i-FARMATE provide farmers with valuable insights into their crops, soil health, and farming practices, enabling informed decision-making and optimization of agricultural activities. Moreover, i-FARMATE's precise weeding technology, powered by image tech, ensures targeted and effective weed control without the need for harmful chemicals, thereby promoting sustainable farming practices.</div>
-            <button class="ben-shutter-close" data-card="4">✕ Close</button>
           </div>
         </div>
       </div>
@@ -646,6 +654,7 @@
         </div>
         <div class="ben-shutter" id="bsh-5">
           <div class="ben-shutter-bar"></div>
+          <button class="ben-shutter-close-btn" data-card="5" aria-label="Close">✕</button>
           <div class="ben-shutter-inner">
             <div class="ben-shutter-top">
               <span class="ben-shutter-emoji">💧</span>
@@ -655,7 +664,6 @@
               </div>
             </div>
             <div class="ben-shutter-text">i-Farmate's eco-friendly approach to farming has significant positive impacts on soil, water, and the overall ecosystem. By supporting organic farming and adopting chemical-free practices, i-Farmate helps preserve soil health and fertility, minimizing soil degradation and erosion. Additionally, by eliminating the use of harmful chemicals, i-Farmate contributes to cleaner water sources and reduces contamination of groundwater, thereby safeguarding water quality and availability. Furthermore, i-Farmate's sustainable farming practices promote biodiversity and ecosystem health, fostering a balanced and resilient agricultural environment that benefits both farmers and surrounding ecosystems.</div>
-            <button class="ben-shutter-close" data-card="5">✕ Close</button>
           </div>
         </div>
       </div>
@@ -935,7 +943,7 @@
         <div class="cd-item"><div class="cd-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div><div class="cd-label">Working Hours</div><div class="cd-text">Mon – Fri: 9:30 am – 6:30 pm</div></div></div>
       </div>
 
-      <!-- 📍 LOCATION BADGE (moved below Working Hours) -->
+      <!--LOCATION BADGE -->
       <button class="cta-location-badge" id="cta-location-badge" type="button" aria-label="View our location on map"
         style="position:static;top:auto;right:auto;left:auto;bottom:auto;margin:0.5rem 0 1.5rem;display:inline-flex;">
         <span class="clb-ping"></span>
@@ -1126,7 +1134,7 @@
 })();
 </script>
 
-<!-- ABOUT CAROUSEL JS — inline after DOM is ready -->
+<!-- ABOUT CAROUSEL JS  -->
 <script>
 (function initAboutCarousel(){
   const track   = document.getElementById('about-track');
@@ -1157,7 +1165,7 @@
     if (tagEl) tagEl.textContent = TAGS[current];
     updateTooltips();
 
-    // Trigger scroll-reveal animations for the newly visible slide
+  
     const slides = track ? track.querySelectorAll('.about-slide') : [];
     const activeSlide = slides[current];
     if (activeSlide) {
@@ -1168,7 +1176,7 @@
       });
     }
 
-    // Video control for slide 2
+    
     const vid = document.getElementById('about-video');
     if (vid) { current === 1 ? vid.play() : vid.pause(); }
   }
@@ -1177,7 +1185,7 @@
   if (nextBtn) nextBtn.addEventListener('click', () => goTo(current + 1));
   dots.forEach(d => d.addEventListener('click', () => goTo(+d.dataset.slide)));
 
-  // Keyboard navigation
+  
   document.addEventListener('keydown', e => {
     const aboutEl = document.getElementById('about');
     if (!aboutEl) return;
@@ -1187,7 +1195,7 @@
     if (e.key === 'ArrowRight') goTo(current + 1);
   });
 
-  // Touch / swipe
+  
   let touchX = 0;
   const wrap = document.querySelector('.about-carousel-wrap');
   if (wrap) {
@@ -1218,45 +1226,64 @@
     btn.addEventListener('pointercancel', e => { if (e.pointerType === 'touch') removeTouched(); });
   });
 
-  // Fire initial state
+  
   goTo(0);
 })();
 </script>
 
-<!-- 📍 LOCATION MODAL -->
+<!--  LOCATION MODAL -->
 <div class="loc-modal-backdrop" id="loc-modal-backdrop"></div>
-<div class="loc-modal" id="loc-modal" role="dialog" aria-modal="true" aria-label="Our location">
+<div class="loc-modal" id="loc-modal" role="dialog" aria-modal="true" aria-label="Our locations">
   <div class="loc-modal-top">
-    <div class="loc-modal-badge">📍 Field HQ</div>
+    <div class="loc-modal-badge">📍 Global Presence</div>
     <button class="loc-modal-close" id="loc-modal-close" aria-label="Close">✕</button>
   </div>
-  <div class="loc-map-hud">
-    <iframe id="loc-map-iframe" src="" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>
-    <div class="lmh-corner tl"></div><div class="lmh-corner tr"></div>
-    <div class="lmh-corner bl"></div><div class="lmh-corner br"></div>
-    <div class="lmh-scan"></div>
-  </div>
-  <div class="loc-modal-info">
-    <a class="loc-directions-btn" id="loc-directions-btn" href="#" target="_blank" rel="noopener">Get Directions →</a>
+  <div class="loc-map-grid">
+    <div class="loc-map-col">
+      <div class="loc-map-label"><span class="loc-map-flag">🇮🇳</span> India Location</div>
+      <div class="loc-map-hud">
+        <iframe id="loc-map-iframe-in" src="" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>
+        <div class="lmh-corner tl"></div><div class="lmh-corner tr"></div>
+        <div class="lmh-corner bl"></div><div class="lmh-corner br"></div>
+        <div class="lmh-scan"></div>
+      </div>
+      <a class="loc-directions-btn" id="loc-directions-btn-in" href="#" target="_blank" rel="noopener">Get Directions →</a>
+    </div>
+    <div class="loc-map-col">
+      <div class="loc-map-label"><span class="loc-map-flag">🇺🇸</span> US Location</div>
+      <div class="loc-map-hud">
+        <iframe id="loc-map-iframe-us" src="" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>
+        <div class="lmh-corner tl"></div><div class="lmh-corner tr"></div>
+        <div class="lmh-corner bl"></div><div class="lmh-corner br"></div>
+        <div class="lmh-scan"></div>
+      </div>
+      <a class="loc-directions-btn" id="loc-directions-btn-us" href="#" target="_blank" rel="noopener">Get Directions →</a>
+    </div>
   </div>
 </div>
 
 <script>
 (function initLocationBadge(){
-  const ADDRESS = "8, Vembuliamman Koil Street, Gowrivakkam, Chennai 600073, Tamil Nadu, India";
-  const encoded = encodeURIComponent(ADDRESS);
+  const ADDRESS_IN = "8, Vembuliamman Koil Street, Gowrivakkam, Chennai 600073, Tamil Nadu, India";
+  const ADDRESS_US = "3006 Delmonico St, Chalfont, PA 18914, USA";
+  const encodedIn = encodeURIComponent(ADDRESS_IN);
+  const encodedUs = encodeURIComponent(ADDRESS_US);
   const badge = document.getElementById('cta-location-badge');
   const backdrop = document.getElementById('loc-modal-backdrop');
   const modal = document.getElementById('loc-modal');
   const closeBtn = document.getElementById('loc-modal-close');
-  const iframe = document.getElementById('loc-map-iframe');
-  const dirBtn = document.getElementById('loc-directions-btn');
+  const iframeIn = document.getElementById('loc-map-iframe-in');
+  const iframeUs = document.getElementById('loc-map-iframe-us');
+  const dirBtnIn = document.getElementById('loc-directions-btn-in');
+  const dirBtnUs = document.getElementById('loc-directions-btn-us');
   if(!badge || !modal) return;
 
-  dirBtn.href = `https://www.google.com/maps/dir/?api=1&destination=${encoded}`;
+  dirBtnIn.href = `https://www.google.com/maps/dir/?api=1&destination=${encodedIn}`;
+  dirBtnUs.href = `https://www.google.com/maps/dir/?api=1&destination=${encodedUs}`;
 
   function openLocModal(){
-    iframe.src = `https://www.google.com/maps?q=${encoded}&output=embed`;
+    iframeIn.src = `https://www.google.com/maps?q=${encodedIn}&output=embed`;
+    iframeUs.src = `https://www.google.com/maps?q=${encodedUs}&output=embed`;
     backdrop.classList.add('open');
     modal.classList.add('open');
     document.body.style.overflow = 'hidden';
@@ -1265,7 +1292,7 @@
     backdrop.classList.remove('open');
     modal.classList.remove('open');
     document.body.style.overflow = '';
-    setTimeout(()=>{ iframe.src = ''; }, 400);
+    setTimeout(()=>{ iframeIn.src = ''; iframeUs.src = ''; }, 400);
   }
   badge.addEventListener('click', openLocModal);
   closeBtn.addEventListener('click', closeLocModal);
