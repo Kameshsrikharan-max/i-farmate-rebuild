@@ -654,11 +654,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
     ctx.beginPath(); ctx.moveTo(cx, h - 64); ctx.lineTo(cx, h - 70); ctx.stroke();
     ctx.beginPath(); rr(ctx, cx - 12, h - 92, 24, 24, 7); ctx.fill(); ctx.stroke();
 
-    /* antenna */
-    ctx.beginPath(); ctx.moveTo(cx, h - 92); ctx.lineTo(cx, h - 100); ctx.stroke();
-    ctx.beginPath(); ctx.arc(cx, h - 102, 2.4, 0, Math.PI * 2);
-    ctx.fillStyle = '#E8A020'; ctx.fill();
-
+    
     /* visor / eyes */
     var blink = (Math.sin(t / 1900) > 0.94) ? 0.2 : 1;
     ctx.fillStyle = '#0A0D08';
