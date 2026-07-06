@@ -36,6 +36,16 @@
 <canvas id="how-robot" width="60" height="80"></canvas>
 
 
+<button id="qa-toggle" type="button" aria-label="Toggle field companion chat" aria-expanded="true">
+  <span class="qa-toggle-dot"></span>
+  <span class="qa-toggle-icon qa-toggle-icon-open">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+  </span>
+  <span class="qa-toggle-icon qa-toggle-icon-close">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </span>
+</button>
+
 <div id="qa-hud">
   <div class="qa-side qa-side-left">
     <div class="qa-bubble qa-bubble-robot" id="qa-bubble-robot">
@@ -43,7 +53,80 @@
       <div class="qa-bubble-tag">i-Farmate</div>
       <div class="qa-bubble-text" id="qa-robot-text"></div>
     </div>
-    <canvas id="qa-robot-canvas" width="72" height="94"></canvas>
+    <div class="qa-rover-stage" id="qa-rover-stage">
+      <svg class="qa-rover" viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg" aria-label="i-Farmate autonomous rover">
+        <defs>
+          <linearGradient id="roverBody" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#22331a"/>
+            <stop offset="100%" stop-color="#0a1408"/>
+          </linearGradient>
+          <linearGradient id="roverArmMetal" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#e7ece4"/>
+            <stop offset="100%" stop-color="#8a958a"/>
+          </linearGradient>
+        </defs>
+
+        <ellipse class="rover-shadow" cx="103" cy="130" rx="72" ry="8"/>
+
+        <!-- rear wheel -->
+        <g class="rover-wheel rover-wheel-rear">
+          <circle cx="152" cy="106" r="21" fill="#0a0a0a" stroke="#39FF14" stroke-width="2"/>
+          <circle cx="152" cy="106" r="8" fill="#141a10" stroke="#39FF14" stroke-width="1.4"/>
+          <g stroke="#39FF14" stroke-width="1.4">
+            <line x1="152" y1="87" x2="152" y2="125"/>
+            <line x1="133" y1="106" x2="171" y2="106"/>
+            <line x1="138" y1="92" x2="166" y2="120"/>
+            <line x1="138" y1="120" x2="166" y2="92"/>
+          </g>
+        </g>
+
+        <!-- front wheel -->
+        <g class="rover-wheel rover-wheel-front">
+          <circle cx="58" cy="106" r="21" fill="#0a0a0a" stroke="#39FF14" stroke-width="2"/>
+          <circle cx="58" cy="106" r="8" fill="#141a10" stroke="#39FF14" stroke-width="1.4"/>
+          <g stroke="#39FF14" stroke-width="1.4">
+            <line x1="58" y1="87" x2="58" y2="125"/>
+            <line x1="39" y1="106" x2="77" y2="106"/>
+            <line x1="44" y1="92" x2="72" y2="120"/>
+            <line x1="44" y1="120" x2="72" y2="92"/>
+          </g>
+        </g>
+
+        <!-- suspension struts -->
+        <g stroke="#39FF14" stroke-width="2.4" fill="none" opacity=".75" stroke-linecap="round">
+          <path d="M88 58 L152 88"/>
+          <path d="M88 74 L58 88"/>
+          <path d="M112 58 L112 38"/>
+        </g>
+
+        <!-- chassis -->
+        <rect class="rover-chassis" x="66" y="28" width="92" height="32" rx="5" fill="url(#roverBody)" stroke="#39FF14" stroke-width="2"/>
+        <rect x="71" y="32" width="82" height="6" fill="#c99a3f" opacity=".55"/>
+        <rect class="rover-battery" x="120" y="43" width="26" height="11" rx="2" fill="#E8A020"/>
+        <circle class="rover-led" cx="82" cy="48" r="2.4" fill="#39FF14"/>
+        <circle class="rover-led rover-led-2" cx="90" cy="48" r="2.4" fill="#39FF14"/>
+
+        <!-- antenna -->
+        <g class="rover-antenna">
+          <line x1="112" y1="28" x2="112" y2="7" stroke="#39FF14" stroke-width="2" stroke-linecap="round"/>
+          <circle class="rover-led" cx="112" cy="5" r="2.6" fill="#39FF14"/>
+        </g>
+
+        <!-- arm + claw -->
+        <g class="rover-arm">
+          <line x1="70" y1="32" x2="28" y2="60" stroke="url(#roverArmMetal)" stroke-width="4.5" stroke-linecap="round"/>
+          <line x1="70" y1="39" x2="28" y2="67" stroke="url(#roverArmMetal)" stroke-width="4.5" stroke-linecap="round"/>
+          <g class="rover-claw">
+            <circle cx="24" cy="63" r="10" fill="#141a10" stroke="#39FF14" stroke-width="1.6"/>
+            <g class="rover-claw-fingers" stroke="#39FF14" stroke-width="1.3" stroke-linecap="round">
+              <line x1="24" y1="63" x2="12" y2="56"/>
+              <line x1="24" y1="63" x2="10" y2="63"/>
+              <line x1="24" y1="63" x2="12" y2="70"/>
+            </g>
+          </g>
+        </g>
+      </svg>
+    </div>
   </div>
   <div class="qa-side qa-side-right">
     <div class="qa-bubble qa-bubble-human" id="qa-bubble-human">
@@ -120,19 +203,16 @@
 </section>
 <!-- ABOUT  -->
 <section id="about">
-  <div class="about-carousel-wrap">
+  <div class="about-carousel-wrap" id="about-carousel-wrap">
 
-    <!-- Track -->
+    <!-- Persistent main slide -->
     <div class="about-track" id="about-track">
-
-      <!-- SLIDE 1: Original About -->
       <div class="about-slide" data-slide="0">
         <div class="about-slide-inner grid-2col">
           <div class="rl">
             <p class="slb">About i-Farmate</p>
             <h2 class="st">Revolutionizing Farming from the Ground Up</h2>
             <p class="sb">i-Farmate is a pioneering force redefining agriculture from the root level. An autonomous robot meticulously engineered for the living, breathing complexity of modern farmland — fusing edge-AI inference, multi-spectral vision, and precision mechanics into a single tireless field companion.</p>
-      
           </div>
           <div class="rr" style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
             <div class="cube-scene">
@@ -150,83 +230,91 @@
           </div>
         </div>
       </div>
-      <br>
-      <br>
+    </div><!-- /about-track -->
 
-      <!-- SLIDE 2: i-Farmate Emblem + Video -->
-      <div class="about-slide" data-slide="1">
+    <!-- HUD decorations -->
+    <div class="about-hud-corner tl"></div>
+    <div class="about-hud-corner tr"></div>
+    <div class="about-hud-corner bl"></div>
+    <div class="about-hud-corner br"></div>
+    <div class="about-slide-tag" id="about-slide-tag">About i-Farmate</div>
+
+    <!-- NEW: Dropdown toggle -->
+    <button class="about-dropdown-toggle" id="about-dropdown-toggle" type="button" aria-expanded="false" aria-controls="about-dropdown-panel" aria-label="Reveal more about i-Farmate">
+      <span class="adt-text" id="adt-text">Discover More</span>
+      <span class="adt-circle">
+        <svg viewBox="0 0 24 24" class="adt-chevron"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </span>
+    </button>
+
+  </div><!-- /about-carousel-wrap -->
+
+  <!-- NEW: Dropdown panel — Emblem / Team / Who We Are -->
+  <div class="about-dropdown-panel" id="about-dropdown-panel">
+    <div class="about-dropdown-inner" id="about-dropdown-inner">
+
+      <!-- DROP 1: Emblem -->
+      <div class="about-drop-slide rv" data-parallax="0.12">
+        <div class="adp-bg" style="background-image:url('./images/back.png')"></div>
+        <div class="adp-hud-corner tl"></div><div class="adp-hud-corner tr"></div>
+        <div class="adp-tag">02 · Our Emblem</div>
+
         <div class="about-slide-inner slide2-layout-new">
-
           <h1 class="emblem-h1 rv">
-            <span class="emblem-line1">
-              Harnessing Nature with Technology.
-            </span>
+            <span class="emblem-line1">Harnessing Nature with Technology.</span>
           </h1>
 
           <div class="slide2-video-hud rv" style="transition-delay:.2s">
-            <video id="about-video" autoplay muted loop playsinline>
+            <video id="about-video" muted loop playsinline>
               <source src="video/intro.mp4" type="video/mp4">
             </video>
-
             <div class="svh-corner tl"></div>
             <div class="svh-corner tr"></div>
             <div class="svh-corner bl"></div>
             <div class="svh-corner br"></div>
-
             <div class="svh-topbar">
               <span class="svh-badge">i-Farmate</span>
-              <div class="svh-live">
-                <div class="svh-live-dot"></div>
-                Intro
-              </div>
+              <div class="svh-live"><div class="svh-live-dot"></div>Intro</div>
             </div>
-
             <div class="svh-scanline"></div>
           </div>
 
           <p class="emblem-para rv">
             <strong>Unveiling the i-Farmate emblem:</strong>
-            A dynamic symbol of technology’s synergy with nature in agriculture.
+            A dynamic symbol of technology's synergy with nature in agriculture.
             <br><br>
-
             <strong>Color Palette:</strong>
             Various shades of green, from light to dark, capturing the essence of agriculture and eco-consciousness.
             <br><br>
-
             <strong>Logo Concept:</strong>
-            “i-Farmate” merges “Farm” and “Mate,” embodying its role as a companion to the farm and its ecosystem.
-
+            "i-Farmate" merges "Farm" and "Mate," embodying its role as a companion to the farm and its ecosystem.
             <br><br>
-
-            At the emblem’s core lies the letter “M,” symbolizing i-Farmate’s mission heart. Within it, two hands unite—one human and one robotic.
-
+            At the emblem's core lies the letter "M," symbolizing i-Farmate's mission heart. Within it, two hands unite—one human and one robotic.
             <br><br>
-
             i-Farmate advocates for organic farming while enhancing efficiency and reducing pesticide reliance.
           </p>
-
         </div>
       </div>
-      <br>
-      <br>
 
-      <!-- SLIDE 3: Our Team -->
-      <div class="about-slide" data-slide="2">
+      <div class="about-drop-divider"></div>
+
+      <!-- DROP 2: Team -->
+      <div class="about-drop-slide rv" data-parallax="0.08">
+        <div class="adp-bg" style="background-image:url('./images/front.png')"></div>
+        <div class="adp-hud-corner tl"></div><div class="adp-hud-corner tr"></div>
+        <div class="adp-tag">03 · Our Team</div>
+
         <div class="about-slide-inner slide3-layout">
-
           <section class="team-orbit-section rv">
             <div class="team-orbit-header">
               <p class="slb" style="justify-content:center">The People</p>
-              <h2 class="st" style="text-align:center">
-                Our <span style="color:var(--chloro)">Team</span>
-              </h2>
+              <h2 class="st" style="text-align:center">Our <span style="color:var(--chloro)">Team</span></h2>
               <p class="sb" style="text-align:center;margin:0 auto 1rem;max-width:520px">
-                 25+ Active Team Members working for the growth of the company. Tap any photo to meet them.
+                25+ Active Team Members working for the growth of the company. Tap any photo to meet them.
               </p>
             </div>
 
             <div class="orbit-stage orbit-stage--xl" id="orbitStage">
-
               <svg class="orbit-rings-svg" viewBox="0 0 620 620">
                 <circle cx="310" cy="310" r="270" fill="none" stroke="rgba(57,255,20,.16)" stroke-width="1" stroke-dasharray="2 10"/>
                 <circle cx="310" cy="310" r="150" fill="none" stroke="rgba(57,255,20,.10)" stroke-width="1" stroke-dasharray="2 7"/>
@@ -235,21 +323,16 @@
 
               <div class="orbit-track" id="orbitTrack"></div>
 
-              <!-- CENTER-->
               <div class="orbit-center orbit-center--xl" id="orbitCenter">
                 <div class="orbit-center-glow"></div>
                 <div class="orbit-center-ring"></div>
                 <div class="orbit-center-ring orbit-center-ring--outer"></div>
 
                 <div class="orbit-center-frame" id="orbitCenterFrame">
-                  <video
-                    id="orbitCenterVideo"
-                    class="orbit-center-video"
-                    autoplay muted loop playsinline>
+                  <video id="orbitCenterVideo" class="orbit-center-video" muted loop playsinline>
                     <source src="video/i1.mp4" type="video/mp4">
                   </video>
 
-                  <!-- selected member photo  -->
                   <div class="orbit-center-photo" id="orbitCenterPhoto">
                     <img id="centerImg" src="" alt="">
                     <div class="orbit-center-photo-shade"></div>
@@ -259,7 +342,6 @@
                     </div>
                   </div>
 
-        
                   <div class="orbit-center-scan"></div>
                   <div class="orbit-center-corner tl"></div>
                   <div class="orbit-center-corner tr"></div>
@@ -267,17 +349,21 @@
                   <div class="orbit-center-corner br"></div>
                 </div>
 
-
-              <div class="orbit-hint" id="orbitHint">Tap a photo to meet the <span>team</span></div>
+                <div class="orbit-hint" id="orbitHint">Tap a photo to meet the <span>team</span></div>
+              </div>
             </div>
           </section>
-
         </div>
       </div>
-<br>
-<br>
-      <!-- SLIDE 4: Who We Are -->
-      <div class="about-slide" data-slide="3">
+
+      <div class="about-drop-divider"></div>
+
+      <!-- DROP 3: Who We Are -->
+      <div class="about-drop-slide rv" data-parallax="0.14">
+        <div class="adp-bg" style="background-image:url('./images/right.png')"></div>
+        <div class="adp-hud-corner tl"></div><div class="adp-hud-corner tr"></div>
+        <div class="adp-tag">04 · Who We Are</div>
+
         <div class="about-slide-inner slide4-layout">
           <div class="slide4-eyebrow rv">
             <p class="slb" style="justify-content:center">Our Identity</p>
@@ -287,43 +373,23 @@
             <div class="slide4-text-col">
               <p class="wwa-para">At AUXWIT TECHNOLOGIES, we are pioneers in agricultural innovation, driven by a vision to transform farming through automation and precision technology. Our flagship product, i-Farmate, is an advanced unmanned agrobot designed to take the burden off farmers by automating essential tasks such as planting, weeding, and crop monitoring with unparalleled efficiency.</p>
               <p class="wwa-para">We are dedicated to empowering farmers with smart, sustainable solutions that help optimize crop yield, reduce manual labor, and make agriculture more environmentally friendly. With i-Farmate, we leverage state-of-the-art robotics, AI, and sensor technologies to streamline farming operations, ensuring that farmers can focus on what matters most—nurturing the land and producing quality crops.</p>
-              <p class="wwa-para">Our team of engineers, agronomists, and tech experts work tirelessly to ensure i-Farmate meets the needs of modern agriculture, adapting to various farm environments and enhancing productivity while minimizing environmental impact. We believe in a future where farms operate smarter, not harder, and we’re committed to being at the forefront of this transformation.</p>
-              <p class="wwa-para">Embark on a journey through our diverse agricultural initiatives. At i-Farmate, we go beyond innovation; we cultivate real-world solutions. Step into our world, where we nurture our own organic farm, inviting visitors to witness sustainable farming practices firsthand. Delve into our ventures in agricultural retailing, where we enable local farmers to sell their fresh crops, harvest, poultry, and other farm products directly to consumers. Dive into the realm of space technology with our cutting-edge nano-satellite image processing portal, empowering agronomists with precise insights. Our commitment extends to benefiting consumers, agricultural corporations, small-scale farmers, and beyond. Join us as we revolutionize agriculture for a greener, more prosperous future..</p>
+              <p class="wwa-para">Our team of engineers, agronomists, and tech experts work tirelessly to ensure i-Farmate meets the needs of modern agriculture, adapting to various farm environments and enhancing productivity while minimizing environmental impact. We believe in a future where farms operate smarter, not harder, and we're committed to being at the forefront of this transformation.</p>
+              <p class="wwa-para">Embark on a journey through our diverse agricultural initiatives. At i-Farmate, we go beyond innovation; we cultivate real-world solutions. Step into our world, where we nurture our own organic farm, inviting visitors to witness sustainable farming practices firsthand. Delve into our ventures in agricultural retailing, where we enable local farmers to sell their fresh crops, harvest, poultry, and other farm products directly to consumers. Dive into the realm of space technology with our cutting-edge nano-satellite image processing portal, empowering agronomists with precise insights. Our commitment extends to benefiting consumers, agricultural corporations, small-scale farmers, and beyond. Join us as we revolutionize agriculture for a greener, more prosperous future.</p>
             </div>
           </div>
         </div>
       </div>
 
-    </div><!-- /about-track -->
+      <!-- Collapse control at the end of the panel -->
+      <button class="about-dropdown-collapse" id="about-dropdown-collapse" type="button" aria-label="Collapse this section">
+        <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
+        <span>Collapse</span>
+      </button>
 
-    <!-- ⬇ NEW: Arrow Navigation -->
-    <button class="about-arrow about-prev" id="about-prev" aria-label="Previous slide">
-      <svg viewBox="0 0 24 24">
-        <polyline points="15 5 8 12 15 19"></polyline>
-      </svg>
-      <span class="about-arrow-tooltip" id="about-prev-tooltip">Prev</span>
-    </button>
-    <button class="about-arrow about-next" id="about-next" aria-label="Next slide">
-      <svg viewBox="0 0 24 24">
-        <polyline points="9 5 16 12 9 19"></polyline>
-      </svg>
-      <span class="about-arrow-tooltip" id="about-next-tooltip">Next</span>
-    </button>
-    <!-- ⬆ NEW -->
-
-    <!-- HUD decorations -->
-    <div class="about-hud-corner tl"></div>
-    <div class="about-hud-corner tr"></div>
-    <div class="about-hud-corner bl"></div>
-    <div class="about-hud-corner br"></div>
-    <div class="about-slide-counter">
-      <span id="about-slide-num">01</span> / <span>04</span>
     </div>
-    <div class="about-slide-tag" id="about-slide-tag">About i-Farmate</div>
+  </div>
 
-  </div><!-- /about-carousel-wrap -->
 </section>
-
 <!-- CAPABILITIES -->
 <section id="cap">
   <div class="cph">

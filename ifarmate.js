@@ -461,31 +461,26 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
     }
   });
 
-
-  
-  buildNodes();
-  layout();
-  requestAnimationFrame(tick);
-
-  window.addEventListener('resize', layout, { passive:true });
-
-  
-  stage.addEventListener('mouseenter', () => { paused = true; });
-  stage.addEventListener('mouseleave', () => {
-    if(activeIndex === null) paused = false;
-    else {
-      clearTimeout(resumeTimer);
-      resumeTimer = setTimeout(() => { paused = false; }, 5000);
-    }
-  })
-
 })();
 
 
+/* ══════════════════════════════════════════════════════════════
+   QA SCROLL-COMPANION HUD
+   — Robot side now uses the animated 3D SVG rover (.qa-rover) that
+     already lives in the markup/stylesheet (transform-style:
+     preserve-3d + keyframe float/spin/claw/antenna animation).
+     The old canvas-drawn robot avatar has been fully removed.
+   — The chat toggle button is now wired up, bubbles are tappable to
+     shrink/expand ("peek mode"), and the HUD auto-steps out of the
+     way near the footer and while the contact form is being filled
+     in, so it never sits on top of content the visitor needs.
+   ══════════════════════════════════════════════════════════════ */
 (function initQACompanion(){
   'use strict';
 
-  
+  /* Legacy standalone widgets (old sidebar robot / drone / how-it-works
+     walking robot) are unrelated leftovers in the markup — keep them
+     hidden exactly as before. */
   ['rbd','rbu','drone-wrap','how-robot','scene-canvas'].forEach(function(id){
     var el = document.getElementById(id);
     if (el) el.style.display = 'none';
@@ -497,17 +492,59 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
   var hud = document.getElementById('qa-hud');
   if (!hud) return;
 
-  var robotCanvas = document.getElementById('qa-robot-canvas');
+  var toggleBtn   = document.getElementById('qa-toggle');
   var humanCanvas = document.getElementById('qa-human-canvas');
   var robotBubble = document.getElementById('qa-bubble-robot');
   var humanBubble = document.getElementById('qa-bubble-human');
   var robotTextEl = document.getElementById('qa-robot-text');
   var humanTextEl = document.getElementById('qa-human-text');
+  var roverStage  = document.getElementById('qa-rover-stage');
 
-  var rCtx = robotCanvas ? robotCanvas.getContext('2d') : null;
   var hCtx = humanCanvas ? humanCanvas.getContext('2d') : null;
 
-  /* ── 2. Dialogue script — one Q&A pair per major section ── */
+  /* ── Small injected stylesheet for the new "peek" (minimized) bubble
+     state and smoother transitions. Kept in JS since only this file is
+     being edited — mirrors the pattern already used elsewhere on the
+     page (e.g. the reCAPTCHA spin keyframes, the cube drag animation). */
+  if (!document.getElementById('qa-injected-style')) {
+    var qaStyle = document.createElement('style');
+    qaStyle.id = 'qa-injected-style';
+    qaStyle.textContent =
+      '.qa-bubble{cursor:pointer;transition:opacity .4s ease,transform .4s cubic-bezier(.16,1,.3,1),max-width .35s ease,padding .35s ease,min-width .35s ease;}' +
+      '.qa-bubble.qa-peek{min-width:0;width:auto;max-width:none;padding:.5rem .7rem;}' +
+      '.qa-bubble.qa-peek .qa-bubble-text{display:none;}' +
+      '.qa-bubble-peek-dots{display:none;align-items:center;gap:3px;}' +
+      '.qa-bubble.qa-peek .qa-bubble-peek-dots{display:flex;}' +
+      '.qa-bubble-peek-dots span{width:4px;height:4px;border-radius:50%;background:currentColor;opacity:.4;animation:qaPeekBlink 1.4s ease-in-out infinite;}' +
+      '.qa-bubble-peek-dots span:nth-child(2){animation-delay:.2s;}' +
+      '.qa-bubble-peek-dots span:nth-child(3){animation-delay:.4s;}' +
+      '@keyframes qaPeekBlink{0%,100%{opacity:.3;transform:scale(1);}50%{opacity:1;transform:scale(1.3);}}' +
+      '.qa-rover-stage{transition:transform .4s cubic-bezier(.16,1,.3,1);}' +
+      '#qa-hud{transition:opacity .4s ease,transform .4s cubic-bezier(.16,1,.3,1);}' +
+      '#qa-hud.qa-hidden{opacity:0;transform:translateY(18px);}';
+    document.head.appendChild(qaStyle);
+  }
+
+  /* Make the bubbles individually tappable (they inherit pointer-events:
+     none from their non-interactive parent by default) and give each one
+     a quiet "typing dots" pill to show while peeked/minimized. */
+  [robotBubble, humanBubble].forEach(function(b){
+    if (!b) return;
+    b.style.pointerEvents = 'auto';
+    var dots = document.createElement('div');
+    dots.className = 'qa-bubble-peek-dots';
+    dots.innerHTML = '<span></span><span></span><span></span>';
+    b.appendChild(dots);
+    b.addEventListener('click', function(e){
+      e.stopPropagation();
+      b.classList.toggle('qa-peek');
+      armIdlePeek();
+    });
+  });
+
+  function setPeek(b, on){ if (b) b.classList.toggle('qa-peek', !!on); }
+
+  /* ── Dialogue script — one Q&A pair per major section ── */
   var DIALOGUE = {
     hero:    { q: "What exactly does i-Farmate do?",              a: "I'm an autonomous field robot — I weed, seed, monitor and protect crops around the clock, on my own." },
     about:   { q: "So who actually builds you?",                  a: "AUXWIT Technologies engineered me, fusing edge-AI, multi-spectral vision and precision mechanics into one field companion." },
@@ -521,6 +558,9 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
 
   var currentSection = null;
   var typeTimerR = null, typeTimerH = null;
+  var hudVisible = true;       // user-controlled (toggle button)
+  var autoSuppressed = false;  // footer / form-focus auto-hide
+  var pendingKey = null;
 
   function typeText(el, text, speed, isRobot){
     if (isRobot) { clearInterval(typeTimerR); } else { clearInterval(typeTimerH); }
@@ -536,9 +576,14 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
 
   function playDialogue(key){
     var d = DIALOGUE[key];
-    if (!d || key === currentSection) return;
+    if (!d) return;
+    pendingKey = key;
+    if (key === currentSection) return;
     currentSection = key;
+    if (!hudVisible || autoSuppressed) return; // remembered via pendingKey, replays once visible again
 
+    setPeek(robotBubble, false);
+    setPeek(humanBubble, false);
     if (humanBubble) humanBubble.classList.remove('show');
     if (robotBubble) robotBubble.classList.remove('show');
 
@@ -551,9 +596,21 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
       if (robotBubble) robotBubble.classList.add('show');
       if (robotTextEl) typeText(robotTextEl, d.a, 14, true);
     }, 620);
+
+    armIdlePeek();
   }
 
-  
+  /* Idle-peek: a few seconds after a dialogue "settles", shrink both
+     bubbles to a quiet dot-pill so they never linger over content. */
+  var idleTimer = null;
+  function armIdlePeek(){
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(function(){
+      setPeek(humanBubble, true);
+      setPeek(robotBubble, true);
+    }, 6000);
+  }
+
   var sectionIds = Object.keys(DIALOGUE);
   var sections = sectionIds
     .map(function(id){ return document.getElementById(id); })
@@ -570,19 +627,79 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
     sections.forEach(function(sec){ io.observe(sec); });
   }
 
-  
+  /* ── Combined visibility state (user toggle + auto-suppression) ── */
+  function applyHudState(){
+    var show = hudVisible && !autoSuppressed;
+    hud.classList.toggle('qa-hidden', !show);
+    hud.style.pointerEvents = show ? '' : 'none';
+    if (toggleBtn){
+      toggleBtn.classList.toggle('qa-open', hudVisible);
+      toggleBtn.setAttribute('aria-expanded', hudVisible ? 'true' : 'false');
+      toggleBtn.setAttribute('aria-label', hudVisible ? 'Hide field companion chat' : 'Show field companion chat');
+    }
+    if (show && pendingKey) {
+      var replay = pendingKey;
+      currentSection = null;
+      playDialogue(replay);
+    }
+  }
+
+  if (toggleBtn){
+    toggleBtn.addEventListener('click', function(){
+      hudVisible = !hudVisible;
+      applyHudState();
+    });
+  }
+
+  /* Auto-suppress once the footer scrolls into view, so the HUD never
+     sits on top of footer content. */
   var footer = document.getElementById('footer-section');
   if (footer && 'IntersectionObserver' in window) {
     var footIO = new IntersectionObserver(function(entries){
       entries.forEach(function(entry){
-        hud.style.opacity = entry.isIntersecting ? '0' : '1';
-        hud.style.pointerEvents = entry.isIntersecting ? 'none' : '';
+        autoSuppressed = entry.isIntersecting;
+        applyHudState();
       });
     }, { threshold: 0.1 });
     footIO.observe(footer);
   }
 
-  
+  /* Auto-suppress while a contact-form field is focused — keeps the HUD
+     from fighting with the on-screen keyboard / form fields on mobile. */
+  var ctaSection = document.getElementById('cta');
+  if (ctaSection){
+    var formFields = ctaSection.querySelectorAll('input, select, textarea');
+    formFields.forEach(function(field){
+      field.addEventListener('focus', function(){ autoSuppressed = true; applyHudState(); });
+      field.addEventListener('blur', function(){
+        setTimeout(function(){
+          var stillFocused = ctaSection.contains(document.activeElement) && document.activeElement !== document.body;
+          if (!stillFocused){ autoSuppressed = false; applyHudState(); }
+        }, 60);
+      });
+    });
+  }
+
+  /* ── Subtle pointer-driven 3D parallax tilt on the rover stage, layered
+     on top of its own CSS keyframe float/spin animation. Desktop only. ── */
+  if (roverStage && window.matchMedia && window.matchMedia('(pointer:fine)').matches){
+    roverStage.addEventListener('mousemove', function(e){
+      var r = roverStage.getBoundingClientRect();
+      var px = (e.clientX - r.left) / r.width - 0.5;
+      var py = (e.clientY - r.top) / r.height - 0.5;
+      roverStage.style.transform = 'rotateX(' + (py * -12).toFixed(2) + 'deg) rotateY(' + (px * 16).toFixed(2) + 'deg)';
+    });
+    roverStage.addEventListener('mouseleave', function(){
+      roverStage.style.transform = '';
+    });
+  }
+
+  /* ── Farmer canvas avatar (right side) ── */
+  function rr(ctx, x, y, w, h, r){
+    if (ctx.roundRect) { ctx.roundRect(x, y, w, h, r); }
+    else { ctx.rect(x, y, w, h); }
+  }
+
   function fitCanvas(canvas){
     if (!canvas || canvas._scaled) return;
     var dpr = window.devicePixelRatio || 1;
@@ -597,77 +714,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
     canvas._logW = w;
     canvas._logH = h;
   }
-  fitCanvas(robotCanvas);
   fitCanvas(humanCanvas);
-
-  function rr(ctx, x, y, w, h, r){
-    if (ctx.roundRect) { ctx.roundRect(x, y, w, h, r); }
-    else { ctx.rect(x, y, w, h); }
-  }
-
-
-  function drawRobot(ctx, w, h, t){
-    ctx.clearRect(0, 0, w, h);
-    var bob = Math.sin(t / 650) * 2.2;
-    var cx = w / 2;
-    ctx.save();
-    ctx.translate(0, bob);
-
-    var grad = ctx.createRadialGradient(cx, h - 6, 2, cx, h - 6, 26);
-    grad.addColorStop(0, 'rgba(57,255,20,.35)');
-    grad.addColorStop(1, 'rgba(57,255,20,0)');
-    ctx.fillStyle = grad;
-    ctx.beginPath(); ctx.ellipse(cx, h - 6, 24, 6, 0, 0, Math.PI * 2); ctx.fill();
-
-    ctx.strokeStyle = '#39FF14';
-    ctx.lineWidth = 2;
-
-    /* legs */
-    ctx.beginPath();
-    ctx.moveTo(cx - 10, h - 38); ctx.lineTo(cx - 12, h - 8);
-    ctx.moveTo(cx + 10, h - 38); ctx.lineTo(cx + 12, h - 8);
-    ctx.stroke();
-    ctx.fillStyle = 'rgba(57,255,20,.12)';
-    ctx.beginPath(); rr(ctx, cx - 16, h - 10, 10, 6, 2); ctx.fill(); ctx.stroke();
-    ctx.beginPath(); rr(ctx, cx + 6, h - 10, 10, 6, 2); ctx.fill(); ctx.stroke();
-
-    /* torso */
-    ctx.beginPath(); rr(ctx, cx - 15, h - 64, 30, 28, 6); ctx.fill(); ctx.stroke();
-
-    /* chest core light */
-    var pulse = 0.5 + 0.5 * Math.sin(t / 300);
-    ctx.beginPath();
-    ctx.arc(cx, h - 50, 4 + pulse * 1.2, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(57,255,20,' + (0.5 + pulse * 0.5) + ')';
-    ctx.fill();
-    ctx.fillStyle = 'rgba(57,255,20,.12)';
-
-    /* arms */
-    var armSwing = Math.sin(t / 700) * 6;
-    ctx.strokeStyle = '#39FF14';
-    ctx.beginPath();
-    ctx.moveTo(cx - 15, h - 58); ctx.lineTo(cx - 24, h - 42 + armSwing * 0.3);
-    ctx.moveTo(cx + 15, h - 58); ctx.lineTo(cx + 24, h - 42 - armSwing * 0.3);
-    ctx.stroke();
-
-    /* neck + head */
-    ctx.beginPath(); ctx.moveTo(cx, h - 64); ctx.lineTo(cx, h - 70); ctx.stroke();
-    ctx.beginPath(); rr(ctx, cx - 12, h - 92, 24, 24, 7); ctx.fill(); ctx.stroke();
-
-    
-    /* visor / eyes */
-    var blink = (Math.sin(t / 1900) > 0.94) ? 0.2 : 1;
-    ctx.fillStyle = '#0A0D08';
-    ctx.beginPath(); rr(ctx, cx - 9, h - 85, 18, 8 * blink, 3); ctx.fill();
-    ctx.fillStyle = '#39FF14';
-    ctx.shadowColor = '#39FF14'; ctx.shadowBlur = 6;
-    ctx.beginPath(); ctx.arc(cx - 4, h - 81, 1.6 * blink, 0, Math.PI * 2); ctx.fill();
-    ctx.beginPath(); ctx.arc(cx + 4, h - 81, 1.6 * blink, 0, Math.PI * 2); ctx.fill();
-    ctx.shadowBlur = 0;
-
-    ctx.restore();
-  }
-
 
   function drawFarmer(ctx, w, h, t){
     ctx.clearRect(0, 0, w, h);
@@ -730,10 +777,10 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
     ctx.restore();
   }
 
-  /* ── 7. Animation loop ── */
+  /* ── Animation loop (only the farmer canvas needs a per-frame draw —
+     the rover is pure CSS/SVG animation now, so it costs nothing here) ── */
   var raf;
   function loop(t){
-    if (rCtx) drawRobot(rCtx, robotCanvas._logW || 72, robotCanvas._logH || 94, t);
     if (hCtx) drawFarmer(hCtx, humanCanvas._logW || 72, humanCanvas._logH || 94, t);
     raf = requestAnimationFrame(loop);
   }
@@ -744,9 +791,79 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
     else { raf = requestAnimationFrame(loop); }
   });
 
-
   window.addEventListener('load', function(){
     setTimeout(function(){ playDialogue('hero'); }, 1800);
   });
 
+})();
+
+/* ══ ABOUT SECTION DROPDOWN ══ */
+(function initAboutDropdown(){
+  const wrap    = document.getElementById('about-carousel-wrap');
+  const toggle  = document.getElementById('about-dropdown-toggle');
+  const panel   = document.getElementById('about-dropdown-panel');
+  const inner   = document.getElementById('about-dropdown-inner');
+  const collapseBtn = document.getElementById('about-dropdown-collapse');
+  const video   = document.getElementById('about-video');
+  if (!toggle || !panel || !inner) return;
+  let open = false;
+  const dropRevealEls = inner.querySelectorAll('.rv, .rl, .rr');
+  function playIntroVideo(play){
+    if (!video) return;
+    if (play) video.play().catch(()=>{});
+    else video.pause();
+  }
+  function revealDropElements(){
+    dropRevealEls.forEach((el, i) => {
+      el.classList.remove('vs');
+      void el.offsetWidth;
+      setTimeout(() => el.classList.add('vs'), 60 + i * 60);
+    });
+  }
+  function hideDropElements(){
+    dropRevealEls.forEach(el => el.classList.remove('vs'));
+  }
+  function setOpenHeight(){
+    if (open) panel.style.maxHeight = inner.scrollHeight + 'px';
+  }
+  function openPanel(){
+    open = true;
+    toggle.classList.add('open');
+    toggle.setAttribute('aria-expanded', 'true');
+    panel.classList.add('open');
+    panel.style.maxHeight = inner.scrollHeight + 'px';
+    revealDropElements();
+    playIntroVideo(true);
+  }
+  function closePanel(){
+    open = false;
+    toggle.classList.remove('open');
+    toggle.setAttribute('aria-expanded', 'false');
+    panel.style.maxHeight = '0px';
+    panel.classList.remove('open');
+    hideDropElements();
+    playIntroVideo(false);
+    if (wrap) wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  toggle.addEventListener('click', () => (open ? closePanel() : openPanel()));
+  if (collapseBtn) collapseBtn.addEventListener('click', closePanel);
+  window.addEventListener('resize', () => { if (open) setOpenHeight(); }, { passive: true });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && open) closePanel(); });
+  /* ── Parallax while scrolling through the open panel ── */
+  const parallaxEls = inner.querySelectorAll('[data-parallax]');
+  function updateParallax(){
+    if (!open || !parallaxEls.length) return;
+    const vh = window.innerHeight;
+    parallaxEls.forEach(el => {
+      const rect = el.getBoundingClientRect();
+      const speed = parseFloat(el.dataset.parallax) || 0.12;
+      const centerOffset = (rect.top + rect.height / 2) - vh / 2;
+      const bg = el.querySelector('.adp-bg');
+      if (bg) bg.style.transform = `translateY(${centerOffset * -speed}px)`;
+    });
+  }
+  window.addEventListener('scroll', updateParallax, { passive: true });
+  window.addEventListener('resize', updateParallax, { passive: true });
+  /* If content changes size after images/fonts load, keep height accurate */
+  window.addEventListener('load', () => { if (open) setOpenHeight(); });
 })();
