@@ -378,9 +378,9 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
            <div class="orbit-node-name">${member.name}</div>
            <div class="orbit-node-role">${member.role}</div>
          </div>`;
-      el.addEventListener('click', () => selectMember(i));
+      el.addEventListener('click', e => { e.stopPropagation(); selectMember(i); });
       el.addEventListener('keydown', e => {
-        if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); selectMember(i); }
+        if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); e.stopPropagation(); selectMember(i); }
       });
       track.appendChild(el);
       return el;
@@ -437,12 +437,18 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
     }
   }
 
-  frame.addEventListener('click', () => {
+  frame.addEventListener('click', e => {
+    e.stopPropagation();
     if(centerWrap.classList.contains('show-photo')) returnToVideo();
   });
   if(backBtn){
     backBtn.addEventListener('click', e => { e.stopPropagation(); returnToVideo(); });
   }
+
+  /* ── Click ANYWHERE on the page closes the enlarged photo ── */
+  document.addEventListener('click', () => {
+    if(centerWrap.classList.contains('show-photo')) returnToVideo();
+  });
 
   /* Init */
   buildNodes();
@@ -464,23 +470,9 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
 })();
 
 
-/* ══════════════════════════════════════════════════════════════
-   QA SCROLL-COMPANION HUD
-   — Robot side now uses the animated 3D SVG rover (.qa-rover) that
-     already lives in the markup/stylesheet (transform-style:
-     preserve-3d + keyframe float/spin/claw/antenna animation).
-     The old canvas-drawn robot avatar has been fully removed.
-   — The chat toggle button is now wired up, bubbles are tappable to
-     shrink/expand ("peek mode"), and the HUD auto-steps out of the
-     way near the footer and while the contact form is being filled
-     in, so it never sits on top of content the visitor needs.
-   ══════════════════════════════════════════════════════════════ */
 (function initQACompanion(){
   'use strict';
 
-  /* Legacy standalone widgets (old sidebar robot / drone / how-it-works
-     walking robot) are unrelated leftovers in the markup — keep them
-     hidden exactly as before. */
   ['rbd','rbu','drone-wrap','how-robot','scene-canvas'].forEach(function(id){
     var el = document.getElementById(id);
     if (el) el.style.display = 'none';
@@ -502,10 +494,6 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
 
   var hCtx = humanCanvas ? humanCanvas.getContext('2d') : null;
 
-  /* ── Small injected stylesheet for the new "peek" (minimized) bubble
-     state and smoother transitions. Kept in JS since only this file is
-     being edited — mirrors the pattern already used elsewhere on the
-     page (e.g. the reCAPTCHA spin keyframes, the cube drag animation). */
   if (!document.getElementById('qa-injected-style')) {
     var qaStyle = document.createElement('style');
     qaStyle.id = 'qa-injected-style';
@@ -521,13 +509,12 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
       '@keyframes qaPeekBlink{0%,100%{opacity:.3;transform:scale(1);}50%{opacity:1;transform:scale(1.3);}}' +
       '.qa-rover-stage{transition:transform .4s cubic-bezier(.16,1,.3,1);}' +
       '#qa-hud{transition:opacity .4s ease,transform .4s cubic-bezier(.16,1,.3,1);}' +
-      '#qa-hud.qa-hidden{opacity:0;transform:translateY(18px);}';
+      '#qa-hud.qa-hidden{opacity:0;transform:translateY(18px);}' +
+      '#qa-human-canvas{cursor:pointer;pointer-events:auto;transition:transform .25s ease;}' +
+      '#qa-human-canvas:hover{transform:scale(1.06);}';
     document.head.appendChild(qaStyle);
   }
 
-  /* Make the bubbles individually tappable (they inherit pointer-events:
-     none from their non-interactive parent by default) and give each one
-     a quiet "typing dots" pill to show while peeked/minimized. */
   [robotBubble, humanBubble].forEach(function(b){
     if (!b) return;
     b.style.pointerEvents = 'auto';
@@ -558,7 +545,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
 
   var currentSection = null;
   var typeTimerR = null, typeTimerH = null;
-  var hudVisible = true;       // user-controlled (toggle button)
+  var hudVisible = true;       // now controlled by clicking the farmer
   var autoSuppressed = false;  // footer / form-focus auto-hide
   var pendingKey = null;
 
@@ -580,7 +567,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
     pendingKey = key;
     if (key === currentSection) return;
     currentSection = key;
-    if (!hudVisible || autoSuppressed) return; // remembered via pendingKey, replays once visible again
+    if (!hudVisible || autoSuppressed) return;
 
     setPeek(robotBubble, false);
     setPeek(humanBubble, false);
@@ -600,8 +587,6 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
     armIdlePeek();
   }
 
-  /* Idle-peek: a few seconds after a dialogue "settles", shrink both
-     bubbles to a quiet dot-pill so they never linger over content. */
   var idleTimer = null;
   function armIdlePeek(){
     clearTimeout(idleTimer);
@@ -627,15 +612,20 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
     sections.forEach(function(sec){ io.observe(sec); });
   }
 
-  /* ── Combined visibility state (user toggle + auto-suppression) ── */
+  /* ── Combined visibility state (farmer-click closes, icon reopens, + auto-suppression) ── */
   function applyHudState(){
     var show = hudVisible && !autoSuppressed;
     hud.classList.toggle('qa-hidden', !show);
     hud.style.pointerEvents = show ? '' : 'none';
+    if (humanCanvas){
+      humanCanvas.style.pointerEvents = 'auto'; // farmer stays clickable even when hud is faded
+      humanCanvas.setAttribute('aria-label', 'Hide field companion chat');
+    }
     if (toggleBtn){
-      toggleBtn.classList.toggle('qa-open', hudVisible);
+      // the reopen icon only appears once the user has actively closed the chat
+      // (not during the brief footer/form auto-suppression)
+      toggleBtn.classList.toggle('show', !hudVisible);
       toggleBtn.setAttribute('aria-expanded', hudVisible ? 'true' : 'false');
-      toggleBtn.setAttribute('aria-label', hudVisible ? 'Hide field companion chat' : 'Show field companion chat');
     }
     if (show && pendingKey) {
       var replay = pendingKey;
@@ -644,15 +634,35 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
     }
   }
 
+  /* ── Clicking the farmer CLOSES the chat ── */
+  if (humanCanvas){
+    humanCanvas.style.cursor = 'pointer';
+    humanCanvas.style.pointerEvents = 'auto';
+    humanCanvas.setAttribute('role', 'button');
+    humanCanvas.setAttribute('tabindex', '0');
+    humanCanvas.addEventListener('click', function(e){
+      e.stopPropagation();
+      hudVisible = false;
+      applyHudState();
+    });
+    humanCanvas.addEventListener('keydown', function(e){
+      if (e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        hudVisible = false;
+        applyHudState();
+      }
+    });
+  }
+
+  /* ── Clicking the glowing icon REOPENS the chat ── */
   if (toggleBtn){
-    toggleBtn.addEventListener('click', function(){
-      hudVisible = !hudVisible;
+    toggleBtn.addEventListener('click', function(e){
+      e.stopPropagation();
+      hudVisible = true;
       applyHudState();
     });
   }
 
-  /* Auto-suppress once the footer scrolls into view, so the HUD never
-     sits on top of footer content. */
   var footer = document.getElementById('footer-section');
   if (footer && 'IntersectionObserver' in window) {
     var footIO = new IntersectionObserver(function(entries){
@@ -664,8 +674,6 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
     footIO.observe(footer);
   }
 
-  /* Auto-suppress while a contact-form field is focused — keeps the HUD
-     from fighting with the on-screen keyboard / form fields on mobile. */
   var ctaSection = document.getElementById('cta');
   if (ctaSection){
     var formFields = ctaSection.querySelectorAll('input, select, textarea');
@@ -680,8 +688,6 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
     });
   }
 
-  /* ── Subtle pointer-driven 3D parallax tilt on the rover stage, layered
-     on top of its own CSS keyframe float/spin animation. Desktop only. ── */
   if (roverStage && window.matchMedia && window.matchMedia('(pointer:fine)').matches){
     roverStage.addEventListener('mousemove', function(e){
       var r = roverStage.getBoundingClientRect();
@@ -694,11 +700,13 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
     });
   }
 
-  /* ── Farmer canvas avatar (right side) ── */
-  function rr(ctx, x, y, w, h, r){
-    if (ctx.roundRect) { ctx.roundRect(x, y, w, h, r); }
-    else { ctx.rect(x, y, w, h); }
-  }
+  /* ══════════════════════════════════════════════════════════
+     REALISTIC FARMER CANVAS AVATAR
+     Jointed limbs (upper/lower segments), breathing chest,
+     idle weight-shift, natural arm pendulum, blink + brow,
+     shaded straw hat, fabric folds, cheek blush.
+     Walking gait blended in on scroll (see WALK ENGINE below).
+  ══════════════════════════════════════════════════════════ */
 
   function fitCanvas(canvas){
     if (!canvas || canvas._scaled) return;
@@ -716,72 +724,260 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
   }
   fitCanvas(humanCanvas);
 
-  function drawFarmer(ctx, w, h, t){
+  function drawLimbSeg(ctx, x1, y1, x2, y2, w1, w2, color){
+    var dx = x2 - x1, dy = y2 - y1;
+    var len = Math.sqrt(dx*dx + dy*dy) || 1;
+    var nx = -dy / len, ny = dx / len;
+    ctx.beginPath();
+    ctx.moveTo(x1 + nx*w1, y1 + ny*w1);
+    ctx.lineTo(x2 + nx*w2, y2 + ny*w2);
+    ctx.lineTo(x2 - nx*w2, y2 - ny*w2);
+    ctx.lineTo(x1 - nx*w1, y1 - ny*w1);
+    ctx.closePath();
+    ctx.fillStyle = color;
+    ctx.fill();
+    ctx.beginPath(); ctx.arc(x1, y1, w1, 0, Math.PI*2); ctx.fillStyle = color; ctx.fill();
+    ctx.beginPath(); ctx.arc(x2, y2, w2, 0, Math.PI*2); ctx.fillStyle = color; ctx.fill();
+  }
+
+  /* ── WALK ENGINE — driven by scroll activity ──
+     walkAmt eases toward 1 while the page is being scrolled and back
+     toward 0 a moment after scrolling stops. walkPhase advances only
+     while walkAmt > 0, so the gait cycle runs at a natural cadence
+     tied to how much you're actually scrolling. */
+  var walkTarget = 0, walkAmt = 0, walkPhase = 0, walkDir = 1;
+  var scrollStopTimer = null, lastScrollY = window.scrollY;
+
+  window.addEventListener('scroll', function(){
+    var sy = window.scrollY;
+    walkDir = (sy < lastScrollY) ? -1 : 1; // walk "backwards" feel when scrolling up
+    lastScrollY = sy;
+    walkTarget = 1;
+    clearTimeout(scrollStopTimer);
+    scrollStopTimer = setTimeout(function(){ walkTarget = 0; }, 220);
+  }, { passive: true });
+
+  function drawFarmer(ctx, w, h, t, walkAmt){
     ctx.clearRect(0, 0, w, h);
-    var bob = Math.sin(t / 700 + 1.2) * 2;
+
     var cx = w / 2;
+    var groundY = h - 4;
+
+    /* idle rhythms — slow, human, mixed frequencies so it never feels looped */
+    var breathe   = Math.sin(t / 1400);
+    var weightSh  = Math.sin(t / 2600) * 1.4 * (1 - walkAmt);
+    var bodyTilt  = Math.sin(t / 3100) * 0.035 * (1 - walkAmt) + Math.sin(walkPhase) * 0.05 * walkAmt;
+    var headTurn  = Math.sin(t / 5200) * 2.2 * (1 - walkAmt);
+    var blink     = (Math.sin(t / 2500 + 0.7) > 0.965) ? 0.15 : 1;
+
+    /* walking gait cycle — alternating stride, knee bend on swing, footfall bounce */
+    var strideL   = Math.sin(walkPhase) * walkDir;
+    var strideR   = Math.sin(walkPhase + Math.PI) * walkDir;
+    var kneeBendL = Math.max(0, Math.sin(walkPhase + Math.PI/2)) * 5;
+    var kneeBendR = Math.max(0, Math.sin(walkPhase + Math.PI/2 + Math.PI)) * 5;
+    var liftL     = Math.max(0, Math.sin(walkPhase)) * 2.6;
+    var liftR     = Math.max(0, Math.sin(walkPhase + Math.PI)) * 2.6;
+    var bounce    = Math.abs(Math.sin(walkPhase)) * 2.1 * walkAmt;
+
+    var armSwingL = (Math.sin(t / 2100) * 6 + weightSh * 0.6) * (1 - walkAmt) + (-strideL * 7) * walkAmt;
+    var armSwingR = (Math.sin(t / 2100 + Math.PI) * 6 - weightSh * 0.6) * (1 - walkAmt) + (-strideR * 7) * walkAmt;
+    var headBob   = Math.sin(t / 1900 + 0.4) * 1.1 + breathe * 0.4 - bounce * 0.7;
+
     ctx.save();
-    ctx.translate(0, bob);
+    ctx.translate(cx + weightSh * 0.5, -bounce);
+    ctx.rotate(bodyTilt);
+    ctx.translate(-cx, 0);
 
-    var grad = ctx.createRadialGradient(cx, h - 6, 2, cx, h - 6, 24);
-    grad.addColorStop(0, 'rgba(232,160,32,.3)');
-    grad.addColorStop(1, 'rgba(232,160,32,0)');
-    ctx.fillStyle = grad;
-    ctx.beginPath(); ctx.ellipse(cx, h - 6, 22, 6, 0, 0, Math.PI * 2); ctx.fill();
+    /* contact shadow, widens slightly with weight shift / stride */
+    var shadowW = 20 + Math.abs(weightSh) * 0.8 + Math.abs(strideL - strideR) * 1.2 * walkAmt;
+    var shGrad = ctx.createRadialGradient(cx, groundY, 1, cx, groundY, shadowW);
+    shGrad.addColorStop(0, 'rgba(0,0,0,.32)');
+    shGrad.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = shGrad;
+    ctx.beginPath(); ctx.ellipse(cx, groundY, shadowW, 5, 0, 0, Math.PI*2); ctx.fill();
 
-    ctx.strokeStyle = '#E8A020';
-    ctx.lineWidth = 2;
+    var hipY   = h - 40;
+    var footY  = groundY - 2;
 
-    /* legs */
-    var legSwing = Math.sin(t / 900) * 1.5;
+    /* ── Legs (thigh + shin, bent knees, idle stance blended with walk stride) ── */
+    var hipL = { x: cx - 5.5 + weightSh*0.3, y: hipY };
+    var hipR = { x: cx + 5.5 + weightSh*0.3, y: hipY };
+
+    var kneeLPt = {
+      x: hipL.x - 1.5 + strideL * 5 * walkAmt,
+      y: hipY + 15 + kneeBendL * walkAmt
+    };
+    var kneeRPt = {
+      x: hipR.x + 1.5 + strideR * 5 * walkAmt,
+      y: hipY + 15 + kneeBendR * walkAmt
+    };
+    var footL = {
+      x: hipL.x - 4 - weightSh*0.25 + strideL * 9 * walkAmt,
+      y: footY - liftL * walkAmt
+    };
+    var footR = {
+      x: hipR.x + 4 + weightSh*0.25 + strideR * 9 * walkAmt,
+      y: footY - liftR * walkAmt
+    };
+
+    var trouser = '#5b4326';
+    drawLimbSeg(ctx, hipL.x, hipL.y, kneeLPt.x, kneeLPt.y, 4.2, 3.4, trouser);
+    drawLimbSeg(ctx, kneeLPt.x, kneeLPt.y, footL.x, footL.y, 3.2, 2.6, trouser);
+    drawLimbSeg(ctx, hipR.x, hipR.y, kneeRPt.x, kneeRPt.y, 4.2, 3.4, trouser);
+    drawLimbSeg(ctx, kneeRPt.x, kneeRPt.y, footR.x, footR.y, 3.2, 2.6, trouser);
+
+    /* shoes */
+    ctx.fillStyle = '#3a2a18';
+    ctx.beginPath(); ctx.ellipse(footL.x - 1.5, footL.y + 1.5, 4.6, 2.6, 0, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(footR.x + 1.5, footR.y + 1.5, 4.6, 2.6, 0, 0, Math.PI*2); ctx.fill();
+
+    /* ── Torso (rounded, breathing) ── */
+    var chestW = 13 + breathe * 0.6;
+    var torsoTop = hipY - 30 - breathe * 0.5;
+    var torsoGrad = ctx.createLinearGradient(cx - chestW, torsoTop, cx + chestW, hipY);
+    torsoGrad.addColorStop(0, '#1a6e0e');
+    torsoGrad.addColorStop(0.55, '#2fa314');
+    torsoGrad.addColorStop(1, '#1a6e0e');
+    ctx.fillStyle = torsoGrad;
     ctx.beginPath();
-    ctx.moveTo(cx - 6, h - 40); ctx.lineTo(cx - 9 + legSwing, h - 8);
-    ctx.moveTo(cx + 6, h - 40); ctx.lineTo(cx + 9 - legSwing, h - 8);
+    ctx.moveTo(cx - chestW*0.75, torsoTop);
+    ctx.bezierCurveTo(cx - chestW, torsoTop + 6, cx - chestW*0.95, hipY - 10, cx - 7, hipY);
+    ctx.lineTo(cx + 7, hipY);
+    ctx.bezierCurveTo(cx + chestW*0.95, hipY - 10, cx + chestW, torsoTop + 6, cx + chestW*0.75, torsoTop);
+    ctx.bezierCurveTo(cx + chestW*0.4, torsoTop - 4, cx - chestW*0.4, torsoTop - 4, cx - chestW*0.75, torsoTop);
+    ctx.closePath();
+    ctx.fill();
+
+    /* fabric fold shading */
+    ctx.strokeStyle = 'rgba(0,0,0,.14)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(cx - 4, torsoTop + 8); ctx.quadraticCurveTo(cx - 2, hipY - 14, cx - 5, hipY - 2);
+    ctx.moveTo(cx + 4, torsoTop + 8); ctx.quadraticCurveTo(cx + 2, hipY - 14, cx + 5, hipY - 2);
     ctx.stroke();
 
-    /* shirt */
-    ctx.fillStyle = 'rgba(232,160,32,.14)';
-    ctx.beginPath(); rr(ctx, cx - 13, h - 66, 26, 30, 8); ctx.fill(); ctx.stroke();
-
-    /* arms */
-    var armSwing2 = Math.sin(t / 750 + 1) * 7;
+    /* shirt placket + collar */
+    ctx.strokeStyle = 'rgba(255,255,255,.18)';
+    ctx.beginPath(); ctx.moveTo(cx, torsoTop + 3); ctx.lineTo(cx, hipY - 4); ctx.stroke();
     ctx.beginPath();
-    ctx.moveTo(cx - 13, h - 58); ctx.lineTo(cx - 22, h - 40 + armSwing2 * 0.3);
-    ctx.moveTo(cx + 13, h - 58); ctx.lineTo(cx + 22, h - 40 - armSwing2 * 0.3);
+    ctx.moveTo(cx - 4, torsoTop + 2); ctx.lineTo(cx, torsoTop + 6); ctx.lineTo(cx + 4, torsoTop + 2);
+    ctx.strokeStyle = 'rgba(0,0,0,.2)'; ctx.stroke();
+
+    /* ── Arms (upper arm + forearm, natural pendulum, walk-swing blended) ── */
+    var shoulderL = { x: cx - chestW*0.7, y: torsoTop + 7 };
+    var shoulderR = { x: cx + chestW*0.7, y: torsoTop + 7 };
+    var elbowL = { x: shoulderL.x - 5 + armSwingL*0.12, y: shoulderL.y + 13 };
+    var elbowR = { x: shoulderR.x + 5 + armSwingR*0.12, y: shoulderR.y + 13 };
+    var handL  = { x: elbowL.x - 2 + armSwingL*0.35, y: elbowL.y + 12 };
+    var handR  = { x: elbowR.x + 2 + armSwingR*0.35, y: elbowR.y + 12 };
+
+    var skin = '#f0d3a0';
+    drawLimbSeg(ctx, shoulderR.x, shoulderR.y, elbowR.x, elbowR.y, 3.1, 2.6, '#2b8a10');
+    drawLimbSeg(ctx, elbowR.x, elbowR.y, handR.x, handR.y, 2.5, 2, skin);
+    drawLimbSeg(ctx, shoulderL.x, shoulderL.y, elbowL.x, elbowL.y, 3.1, 2.6, '#2b8a10');
+    drawLimbSeg(ctx, elbowL.x, elbowL.y, handL.x, handL.y, 2.5, 2, skin);
+
+    ctx.fillStyle = skin;
+    ctx.beginPath(); ctx.arc(handL.x, handL.y, 2.1, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(handR.x, handR.y, 2.1, 0, Math.PI*2); ctx.fill();
+
+    /* ── Head + neck (bob, subtle turn, blink) ── */
+    var neckY = torsoTop - 1;
+    ctx.fillStyle = skin;
+    ctx.fillRect(cx - 2, neckY - 4 + headBob, 4, 6);
+
+    var headX = cx + headTurn * 0.4;
+    var headY = neckY - 9 + headBob;
+
+    var headGrad = ctx.createRadialGradient(headX - 3, headY - 3, 1, headX, headY, 11);
+    headGrad.addColorStop(0, '#f7dcae');
+    headGrad.addColorStop(1, '#e8c48d');
+    ctx.fillStyle = headGrad;
+    ctx.beginPath(); ctx.ellipse(headX, headY, 8.4, 9.2, 0, 0, Math.PI*2); ctx.fill();
+
+    /* ears */
+    ctx.fillStyle = '#e8c48d';
+    ctx.beginPath(); ctx.ellipse(headX - 8, headY + 1, 1.6, 2.4, 0, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(headX + 8, headY + 1, 1.6, 2.4, 0, 0, Math.PI*2); ctx.fill();
+
+    /* eyebrows */
+    ctx.strokeStyle = '#6b4a24';
+    ctx.lineWidth = 1.1;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(headX - 5.6 + headTurn*0.3, headY - 2.4);
+    ctx.lineTo(headX - 2.6 + headTurn*0.3, headY - 3);
+    ctx.moveTo(headX + 2.6 + headTurn*0.3, headY - 3);
+    ctx.lineTo(headX + 5.6 + headTurn*0.3, headY - 2.4);
     ctx.stroke();
 
-    /* neck */
-    ctx.beginPath(); ctx.moveTo(cx, h - 66); ctx.lineTo(cx, h - 70); ctx.stroke();
-
-    /* head */
-    ctx.fillStyle = '#f0d3a0';
-    ctx.beginPath(); ctx.arc(cx, h - 80, 11, 0, Math.PI * 2); ctx.fill();
-    ctx.strokeStyle = '#E8A020'; ctx.stroke();
-
-    /* straw hat */
-    ctx.fillStyle = '#c99a3f';
-    ctx.beginPath(); ctx.ellipse(cx, h - 90, 15, 4, 0, 0, Math.PI * 2); ctx.fill();
-    ctx.beginPath(); ctx.arc(cx, h - 92, 8, Math.PI, 0); ctx.fill();
-
-    /* eyes */
-    var blink2 = (Math.sin(t / 2300 + 0.6) > 0.94) ? 0.2 : 1;
+    /* eyes (blink) */
     ctx.fillStyle = '#2a1c0a';
-    ctx.beginPath(); ctx.ellipse(cx - 4, h - 80, 1.4, 1.6 * blink2, 0, 0, Math.PI * 2); ctx.fill();
-    ctx.beginPath(); ctx.ellipse(cx + 4, h - 80, 1.4, 1.6 * blink2, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(headX - 3.6 + headTurn*0.3, headY + 0.4, 1.3, 1.7 * blink, 0, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(headX + 3.6 + headTurn*0.3, headY + 0.4, 1.3, 1.7 * blink, 0, 0, Math.PI*2); ctx.fill();
 
-    /* smile */
+    /* nose */
+    ctx.strokeStyle = 'rgba(0,0,0,.28)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(headX + headTurn*0.3, headY - 0.5);
+    ctx.quadraticCurveTo(headX + 1.4 + headTurn*0.3, headY + 2, headX + headTurn*0.3, headY + 3.2);
+    ctx.stroke();
+
+    /* smile — subtle, alive */
+    var smileCurve = 3 + Math.sin(t / 3000) * 0.4;
     ctx.strokeStyle = '#8a5a20';
-    ctx.lineWidth = 1.2;
-    ctx.beginPath(); ctx.arc(cx, h - 77, 3, 0.15 * Math.PI, 0.85 * Math.PI); ctx.stroke();
+    ctx.lineWidth = 1.1;
+    ctx.beginPath();
+    ctx.arc(headX + headTurn*0.3, headY + 4.4, smileCurve, 0.15*Math.PI, 0.85*Math.PI);
+    ctx.stroke();
+
+    /* cheek blush */
+    ctx.fillStyle = 'rgba(232,140,110,.22)';
+    ctx.beginPath(); ctx.ellipse(headX - 5, headY + 3.4, 1.6, 1, 0, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(headX + 5, headY + 3.4, 1.6, 1, 0, 0, Math.PI*2); ctx.fill();
+
+    /* ── Straw hat (dome + wide shaded brim) ── */
+    var hatY = headY - 6.5;
+    ctx.fillStyle = 'rgba(0,0,0,.18)';
+    ctx.beginPath(); ctx.ellipse(headX + 0.6, hatY + 1.2, 12.5, 3.6, 0, 0, Math.PI*2); ctx.fill();
+
+    var brimGrad = ctx.createLinearGradient(headX - 12, hatY, headX + 12, hatY + 3);
+    brimGrad.addColorStop(0, '#a9812f');
+    brimGrad.addColorStop(0.5, '#d4aa4e');
+    brimGrad.addColorStop(1, '#a9812f');
+    ctx.fillStyle = brimGrad;
+    ctx.beginPath(); ctx.ellipse(headX, hatY, 12, 3.4, 0, 0, Math.PI*2); ctx.fill();
+
+    var domeGrad = ctx.createLinearGradient(headX - 8, hatY - 8, headX + 8, hatY);
+    domeGrad.addColorStop(0, '#c99a3f');
+    domeGrad.addColorStop(1, '#a9812f');
+    ctx.fillStyle = domeGrad;
+    ctx.beginPath(); ctx.arc(headX, hatY, 7.6, Math.PI, 0); ctx.fill();
+
+    /* hat band */
+    ctx.strokeStyle = 'rgba(90,60,20,.55)';
+    ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.arc(headX, hatY, 7.6, Math.PI*0.98, Math.PI*0.02); ctx.stroke();
+
+    /* subtle rim light on brim edge */
+    ctx.strokeStyle = 'rgba(255,240,190,.35)';
+    ctx.lineWidth = 0.8;
+    ctx.beginPath(); ctx.ellipse(headX, hatY, 12, 3.4, 0, Math.PI*1.05, Math.PI*1.95); ctx.stroke();
 
     ctx.restore();
   }
 
-  /* ── Animation loop (only the farmer canvas needs a per-frame draw —
-     the rover is pure CSS/SVG animation now, so it costs nothing here) ── */
   var raf;
   function loop(t){
-    if (hCtx) drawFarmer(hCtx, humanCanvas._logW || 72, humanCanvas._logH || 94, t);
+    /* ease walkAmt toward its target and advance the gait phase only
+       while there is walking motion, so the stride stays smooth and
+       comes to a natural, non-abrupt stop */
+    walkAmt += (walkTarget - walkAmt) * 0.1;
+    if (walkAmt > 0.01) walkPhase += 0.16 * walkAmt;
+    else walkAmt = 0;
+
+    if (hCtx) drawFarmer(hCtx, humanCanvas._logW || 72, humanCanvas._logH || 94, t, walkAmt);
     raf = requestAnimationFrame(loop);
   }
   raf = requestAnimationFrame(loop);
@@ -864,6 +1060,5 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
   }
   window.addEventListener('scroll', updateParallax, { passive: true });
   window.addEventListener('resize', updateParallax, { passive: true });
-  /* If content changes size after images/fonts load, keep height accurate */
   window.addEventListener('load', () => { if (open) setOpenHeight(); });
 })();
