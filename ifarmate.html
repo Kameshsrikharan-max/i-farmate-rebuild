@@ -159,6 +159,10 @@
       <li><span class="nb-sep">─</span></li>
       <li><a href="#cap" class="nb-link"><span class="nb-emoji">🚜</span>Features</a></li>
       <li><span class="nb-sep">─</span></li>
+      <li><a href="#live" class="nb-link"><span class="nb-emoji">📡</span>Live</a></li>
+      <li><span class="nb-sep">─</span></li>
+      <li><a href="#roi" class="nb-link"><span class="nb-emoji">💰</span>Savings</a></li>
+      <li><span class="nb-sep">─</span></li>
       <li><a href="#explore" class="nb-link"><span class="nb-emoji">🌍</span>Explore</a></li>
       <li><span class="nb-sep">─</span></li>
       <li><a href="#prod" class="nb-link"><span class="nb-emoji">📦</span>Others</a></li>
@@ -282,15 +286,15 @@
           <p class="emblem-para rv">
             <strong>Unveiling the i-Farmate emblem:</strong>
             A dynamic symbol of technology's synergy with nature in agriculture.
-            <br><br>
+            <br>
             <strong>Color Palette:</strong>
             Various shades of green, from light to dark, capturing the essence of agriculture and eco-consciousness.
-            <br><br>
+            <br>
             <strong>Logo Concept:</strong>
             "i-Farmate" merges "Farm" and "Mate," embodying its role as a companion to the farm and its ecosystem.
-            <br><br>
+            <br>
             At the emblem's core lies the letter "M," symbolizing i-Farmate's mission heart. Within it, two hands unite—one human and one robotic.
-            <br><br>
+            <br>
             i-Farmate advocates for organic farming while enhancing efficiency and reducing pesticide reliance.
           </p>
         </div>
@@ -505,6 +509,47 @@
         <div class="cap-stat"><div class="cs-val">8</div><div class="cs-lbl">AI Capabilities</div></div>
         <div class="cap-stat"><div class="cs-val">0</div><div class="cs-lbl">Chemicals Used</div></div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- LIVE FIELD INTELLIGENCE -->
+<section id="live">
+  <div class="live-header">
+    <p class="slb rv">Live Intelligence</p>
+    <h2 class="st rv" style="transition-delay:.1s">Real-Time Field Conditions</h2>
+    <p class="sb rv" style="transition-delay:.2s">i-Farmate continuously reads live weather telemetry and adapts field operations automatically. This panel is pulling real conditions right now.</p>
+  </div>
+  <div class="live-grid rv" style="transition-delay:.3s">
+    <div class="live-weather-panel">
+      <div class="lwp-hud-corner tl"></div><div class="lwp-hud-corner tr"></div>
+      <div class="lwp-hud-corner bl"></div><div class="lwp-hud-corner br"></div>
+      <div class="lwp-topbar">
+        <span class="lwp-badge">LIVE FEED</span>
+        <div class="lwp-live"><div class="lwp-live-dot"></div><span id="lwp-location">Locating field…</span></div>
+      </div>
+      <div class="lwp-main">
+        <div class="lwp-temp-block">
+          <div class="lwp-icon" id="lwp-icon">⛅</div>
+          <div class="lwp-temp" id="lwp-temp">--°<span class="lwp-temp-unit">C</span></div>
+        </div>
+        <div class="lwp-metrics">
+          <div class="lwp-metric"><span class="lwp-m-lbl">Condition</span><span class="lwp-m-val" id="lwp-condition">Reading sensors…</span></div>
+          <div class="lwp-metric"><span class="lwp-m-lbl">Humidity</span><span class="lwp-m-val" id="lwp-humidity">--%</span></div>
+          <div class="lwp-metric"><span class="lwp-m-lbl">Wind Speed</span><span class="lwp-m-val" id="lwp-wind">-- km/h</span></div>
+        </div>
+      </div>
+      <div class="lwp-scan"></div>
+    </div>
+    <div class="live-decision-panel">
+      <div class="ldp-tag">i-Farmate AI Decision Engine</div>
+      <div class="ldp-status" id="ldp-status">
+        <div class="ldp-status-dot" id="ldp-status-dot"></div>
+        <span id="ldp-status-text">Analyzing live conditions…</span>
+      </div>
+      <div class="ldp-action" id="ldp-action">Waiting on the live feed to determine today's field operations.</div>
+      <div class="ldp-tasks" id="ldp-tasks"></div>
+      <div class="ldp-footnote">Powered by live open-air weather telemetry · Decisions simulated for demonstration</div>
     </div>
   </div>
 </section>
@@ -992,6 +1037,57 @@
       <button class="explore-dot" data-slide="3"></button>
     </div>
     <div class="explore-counter"><span id="explore-current">01</span> / <span>04</span></div>
+  </div>
+</section>
+
+<!-- ROI CALCULATOR -->
+<section id="roi">
+  <div class="roi-header">
+    <p class="slb rv">Estimate Your Impact</p>
+    <h2 class="st rv" style="transition-delay:.1s">Calculate Your Savings</h2>
+    <p class="sb rv" style="transition-delay:.2s">Drag the sliders to match your farm — the projection updates instantly.</p>
+  </div>
+  <div class="roi-grid rv" style="transition-delay:.3s">
+    <div class="roi-controls">
+      <div class="roi-field">
+        <div class="roi-field-top"><label for="roi-land">Land Size</label><span class="roi-field-val" id="roi-land-val">5 acres</span></div>
+        <input type="range" id="roi-land" min="1" max="100" value="5">
+      </div>
+      <div class="roi-field">
+        <div class="roi-field-top"><label for="roi-labor">Current Seasonal Labor Cost</label><span class="roi-field-val" id="roi-labor-val">₹50,000</span></div>
+        <input type="range" id="roi-labor" min="10000" max="500000" step="5000" value="50000">
+      </div>
+      <div class="roi-field">
+        <div class="roi-field-top"><label for="roi-yield">Current Yield Value / Season</label><span class="roi-field-val" id="roi-yield-val">₹2,00,000</span></div>
+        <input type="range" id="roi-yield" min="50000" max="2000000" step="10000" value="200000">
+      </div>
+      <div class="roi-note">Estimates use i-Farmate's observed averages: 60% labor cost reduction, 40% yield increase.</div>
+    </div>
+    <div class="roi-results">
+      <div class="roi-result-row">
+        <div class="roi-result-card">
+          <div class="roi-result-lbl">Labor Cost Saved</div>
+          <div class="roi-result-val" id="roi-out-labor">₹0</div>
+          <div class="roi-result-bar"><div class="roi-result-fill" id="roi-bar-labor"></div></div>
+        </div>
+        <div class="roi-result-card">
+          <div class="roi-result-lbl">Additional Yield Value</div>
+          <div class="roi-result-val" id="roi-out-yield">₹0</div>
+          <div class="roi-result-bar"><div class="roi-result-fill" id="roi-bar-yield"></div></div>
+        </div>
+      </div>
+      <div class="roi-result-card roi-result-total">
+        <div class="roi-result-lbl">Estimated Net Gain / Season</div>
+        <div class="roi-result-val roi-total-val" id="roi-out-total">₹0</div>
+      </div>
+      <div class="roi-chart-wrap">
+        <canvas id="roi-chart" width="480" height="200"></canvas>
+        <div class="roi-chart-legend">
+          <span><i style="background:rgba(122,136,112,.55)"></i>Without i-Farmate</span>
+          <span><i style="background:var(--chloro)"></i>With i-Farmate</span>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 

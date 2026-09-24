@@ -37,7 +37,7 @@ function updateScrollProgress(){
   pb.style.width=(prog*100)+'%';
   const offset=ringCircumference*(1-prog);
   navRingCircle.style.strokeDashoffset=offset;
-  const sections=['hero','cap','about','ben','explore','prod','cta'];
+  const sections=['hero','about','cap','live','ben','how','prod','explore','roi','cta'];
   let current='hero';
   sections.forEach(id=>{const el=document.getElementById(id);if(el&&el.getBoundingClientRect().top<window.innerHeight*0.5)current=id;});
   document.querySelectorAll('.nb-link').forEach(a=>{const href=a.getAttribute('href').replace('#','');a.classList.toggle('nb-active',href===current);});
@@ -445,7 +445,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
     backBtn.addEventListener('click', e => { e.stopPropagation(); returnToVideo(); });
   }
 
-  /* ── Click ANYWHERE on the page closes the enlarged photo ── */
+  
   document.addEventListener('click', () => {
     if(centerWrap.classList.contains('show-photo')) returnToVideo();
   });
@@ -531,22 +531,24 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
 
   function setPeek(b, on){ if (b) b.classList.toggle('qa-peek', !!on); }
 
-  /* ── Dialogue script — one Q&A pair per major section ── */
+
   var DIALOGUE = {
     hero:    { q: "What exactly does i-Farmate do?",              a: "I'm an autonomous field robot — I weed, seed, monitor and protect crops around the clock, on my own." },
     about:   { q: "So who actually builds you?",                  a: "AUXWIT Technologies engineered me, fusing edge-AI, multi-spectral vision and precision mechanics into one field companion." },
     cap:     { q: "What can you actually detect out there?",      a: "Weeds, pests, early disease signs, weather shifts — thousands of sensor readings an hour, all analysed on the move." },
+    live:    { q: "Are you really reading live weather right now?", a: "Yes — that panel is live telemetry. I read it continuously and decide what to run or pause in real time." },
     ben:     { q: "Who really benefits from having you around?",  a: "Farmers, crops, consumers, soil and water all gain — chemical-free operation keeps the whole ecosystem healthier." },
     how:     { q: "Walk me through how you actually work a field.", a: "I patrol with GPS and vision, detect issues with AI, act with precision, then log everything to your dashboard." },
     prod:    { q: "Is it just you, or is there more to this?",    a: "There's a whole stack — FarmFair for direct sales, TerraMate for soil IoT, and Thaniyas Organic growing produce with me." },
     explore: { q: "Where has i-Farmate actually been shown off?", a: "From VIT Chennai's labs to United AgriTech 2025 and NAARM's incubation program — real fields, real farmers, real feedback." },
+    roi:     { q: "Can you show me what I'd actually save?",      a: "Slide the calculator to your farm size and labor cost — the savings and yield gain update instantly." },
     cta:     { q: "How do I actually get you on my farm?",        a: "Fill out the form below or call us directly — our team will get a demo scheduled on your field within days." }
   };
 
   var currentSection = null;
   var typeTimerR = null, typeTimerH = null;
-  var hudVisible = true;       // now controlled by clicking the farmer
-  var autoSuppressed = false;  // footer / form-focus auto-hide
+  var hudVisible = true;      
+  var autoSuppressed = false;  
   var pendingKey = null;
 
   function typeText(el, text, speed, isRobot){
@@ -612,18 +614,16 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
     sections.forEach(function(sec){ io.observe(sec); });
   }
 
-  /* ── Combined visibility state (farmer-click closes, icon reopens, + auto-suppression) ── */
+  
   function applyHudState(){
     var show = hudVisible && !autoSuppressed;
     hud.classList.toggle('qa-hidden', !show);
     hud.style.pointerEvents = show ? '' : 'none';
     if (humanCanvas){
-      humanCanvas.style.pointerEvents = 'auto'; // farmer stays clickable even when hud is faded
+      humanCanvas.style.pointerEvents = 'auto'; 
       humanCanvas.setAttribute('aria-label', 'Hide field companion chat');
     }
     if (toggleBtn){
-      // the reopen icon only appears once the user has actively closed the chat
-      // (not during the brief footer/form auto-suppression)
       toggleBtn.classList.toggle('show', !hudVisible);
       toggleBtn.setAttribute('aria-expanded', hudVisible ? 'true' : 'false');
     }
@@ -633,8 +633,6 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
       playDialogue(replay);
     }
   }
-
-  /* ── Clicking the farmer CLOSES the chat ── */
   if (humanCanvas){
     humanCanvas.style.cursor = 'pointer';
     humanCanvas.style.pointerEvents = 'auto';
@@ -654,7 +652,6 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
     });
   }
 
-  /* ── Clicking the glowing icon REOPENS the chat ── */
   if (toggleBtn){
     toggleBtn.addEventListener('click', function(e){
       e.stopPropagation();
@@ -700,13 +697,6 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
     });
   }
 
-  /* ══════════════════════════════════════════════════════════
-     REALISTIC FARMER CANVAS AVATAR
-     Jointed limbs (upper/lower segments), breathing chest,
-     idle weight-shift, natural arm pendulum, blink + brow,
-     shaded straw hat, fabric folds, cheek blush.
-     Walking gait blended in on scroll (see WALK ENGINE below).
-  ══════════════════════════════════════════════════════════ */
 
   function fitCanvas(canvas){
     if (!canvas || canvas._scaled) return;
@@ -740,17 +730,12 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
     ctx.beginPath(); ctx.arc(x2, y2, w2, 0, Math.PI*2); ctx.fillStyle = color; ctx.fill();
   }
 
-  /* ── WALK ENGINE — driven by scroll activity ──
-     walkAmt eases toward 1 while the page is being scrolled and back
-     toward 0 a moment after scrolling stops. walkPhase advances only
-     while walkAmt > 0, so the gait cycle runs at a natural cadence
-     tied to how much you're actually scrolling. */
   var walkTarget = 0, walkAmt = 0, walkPhase = 0, walkDir = 1;
   var scrollStopTimer = null, lastScrollY = window.scrollY;
 
   window.addEventListener('scroll', function(){
     var sy = window.scrollY;
-    walkDir = (sy < lastScrollY) ? -1 : 1; // walk "backwards" feel when scrolling up
+    walkDir = (sy < lastScrollY) ? -1 : 1; 
     lastScrollY = sy;
     walkTarget = 1;
     clearTimeout(scrollStopTimer);
@@ -763,14 +748,12 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
     var cx = w / 2;
     var groundY = h - 4;
 
-    /* idle rhythms — slow, human, mixed frequencies so it never feels looped */
     var breathe   = Math.sin(t / 1400);
     var weightSh  = Math.sin(t / 2600) * 1.4 * (1 - walkAmt);
     var bodyTilt  = Math.sin(t / 3100) * 0.035 * (1 - walkAmt) + Math.sin(walkPhase) * 0.05 * walkAmt;
     var headTurn  = Math.sin(t / 5200) * 2.2 * (1 - walkAmt);
     var blink     = (Math.sin(t / 2500 + 0.7) > 0.965) ? 0.15 : 1;
 
-    /* walking gait cycle — alternating stride, knee bend on swing, footfall bounce */
     var strideL   = Math.sin(walkPhase) * walkDir;
     var strideR   = Math.sin(walkPhase + Math.PI) * walkDir;
     var kneeBendL = Math.max(0, Math.sin(walkPhase + Math.PI/2)) * 5;
@@ -788,7 +771,6 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
     ctx.rotate(bodyTilt);
     ctx.translate(-cx, 0);
 
-    /* contact shadow, widens slightly with weight shift / stride */
     var shadowW = 20 + Math.abs(weightSh) * 0.8 + Math.abs(strideL - strideR) * 1.2 * walkAmt;
     var shGrad = ctx.createRadialGradient(cx, groundY, 1, cx, groundY, shadowW);
     shGrad.addColorStop(0, 'rgba(0,0,0,.32)');
@@ -799,7 +781,6 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
     var hipY   = h - 40;
     var footY  = groundY - 2;
 
-    /* ── Legs (thigh + shin, bent knees, idle stance blended with walk stride) ── */
     var hipL = { x: cx - 5.5 + weightSh*0.3, y: hipY };
     var hipR = { x: cx + 5.5 + weightSh*0.3, y: hipY };
 
@@ -863,7 +844,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
     ctx.moveTo(cx - 4, torsoTop + 2); ctx.lineTo(cx, torsoTop + 6); ctx.lineTo(cx + 4, torsoTop + 2);
     ctx.strokeStyle = 'rgba(0,0,0,.2)'; ctx.stroke();
 
-    /* ── Arms (upper arm + forearm, natural pendulum, walk-swing blended) ── */
+    /* ── Arms ── */
     var shoulderL = { x: cx - chestW*0.7, y: torsoTop + 7 };
     var shoulderR = { x: cx + chestW*0.7, y: torsoTop + 7 };
     var elbowL = { x: shoulderL.x - 5 + armSwingL*0.12, y: shoulderL.y + 13 };
@@ -970,9 +951,6 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
 
   var raf;
   function loop(t){
-    /* ease walkAmt toward its target and advance the gait phase only
-       while there is walking motion, so the stride stays smooth and
-       comes to a natural, non-abrupt stop */
     walkAmt += (walkTarget - walkAmt) * 0.1;
     if (walkAmt > 0.01) walkPhase += 0.16 * walkAmt;
     else walkAmt = 0;
@@ -1061,4 +1039,268 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&currentModal)closeM
   window.addEventListener('scroll', updateParallax, { passive: true });
   window.addEventListener('resize', updateParallax, { passive: true });
   window.addEventListener('load', () => { if (open) setOpenHeight(); });
+})();
+
+/* ══════════════════════════════════════════════════════════════
+   NEW FEATURE — LIVE FIELD INTELLIGENCE (real weather + AI logic)
+   ══════════════════════════════════════════════════════════════ */
+(function initLiveFieldIntelligence(){
+  const section = document.getElementById('live');
+  if(!section) return;
+
+  const locEl       = document.getElementById('lwp-location');
+  const iconEl       = document.getElementById('lwp-icon');
+  const tempEl       = document.getElementById('lwp-temp');
+  const condEl       = document.getElementById('lwp-condition');
+  const humEl        = document.getElementById('lwp-humidity');
+  const windEl        = document.getElementById('lwp-wind');
+  const statusDot     = document.getElementById('ldp-status-dot');
+  const statusText    = document.getElementById('ldp-status-text');
+  const actionEl       = document.getElementById('ldp-action');
+  const tasksEl         = document.getElementById('ldp-tasks');
+
+  const DEFAULT_LAT = 12.9165, DEFAULT_LON = 79.1325; // Vellore, Tamil Nadu (fallback)
+  const DEFAULT_LABEL = 'Vellore, Tamil Nadu';
+
+  const WEATHER_CODE_MAP = {
+    0:{icon:'☀️',label:'Clear Sky'},1:{icon:'🌤️',label:'Mostly Clear'},2:{icon:'⛅',label:'Partly Cloudy'},
+    3:{icon:'☁️',label:'Overcast'},45:{icon:'🌫️',label:'Fog'},48:{icon:'🌫️',label:'Dense Fog'},
+    51:{icon:'🌦️',label:'Light Drizzle'},53:{icon:'🌦️',label:'Drizzle'},55:{icon:'🌧️',label:'Dense Drizzle'},
+    61:{icon:'🌧️',label:'Light Rain'},63:{icon:'🌧️',label:'Rain'},65:{icon:'🌧️',label:'Heavy Rain'},
+    71:{icon:'🌨️',label:'Light Snow'},73:{icon:'🌨️',label:'Snow'},75:{icon:'❄️',label:'Heavy Snow'},
+    80:{icon:'🌦️',label:'Rain Showers'},81:{icon:'🌧️',label:'Rain Showers'},82:{icon:'⛈️',label:'Violent Showers'},
+    95:{icon:'⛈️',label:'Thunderstorm'},96:{icon:'⛈️',label:'Storm + Hail'},99:{icon:'⛈️',label:'Severe Storm'}
+  };
+
+  function renderTasks(tasks){
+    tasksEl.innerHTML = tasks.map(t=>`<div class="ldp-task"><span class="ldp-task-dot ${t.active?'active':'paused'}"></span>${t.label}</div>`).join('');
+  }
+
+  function applyDecision(weather){
+    const wind = weather.windspeed;
+    const code = weather.weathercode;
+    const isStormy = code >= 95;
+    const isRainy  = (code >= 51 && code <= 82);
+    const isWindy  = wind >= 28;
+
+    if(isStormy || isWindy){
+      statusDot.className = 'ldp-status-dot warn';
+      statusText.textContent = 'Field Ops Paused';
+      actionEl.textContent = isStormy
+        ? 'Storm activity detected nearby — i-Farmate has parked at its charging dock and paused all field operations until conditions clear.'
+        : `Wind speed at ${Math.round(wind)} km/h exceeds the safe precision threshold — weeding and seeding are paused; monitoring continues.`;
+      renderTasks([
+        {label:'24/7 Weeding — Paused', active:false},
+        {label:'Precision Seeding — Paused', active:false},
+        {label:'Crop Monitoring — Active', active:true},
+        {label:'Weather Watch — Active', active:true}
+      ]);
+    } else if(isRainy){
+      statusDot.className = 'ldp-status-dot warn';
+      statusText.textContent = 'Adjusting Operations';
+      actionEl.textContent = 'Light rain detected — i-Farmate has switched from weeding to disease-risk scanning, since wet foliage raises fungal risk.';
+      renderTasks([
+        {label:'24/7 Weeding — Paused', active:false},
+        {label:'Disease Risk Scan — Active', active:true},
+        {label:'Crop Monitoring — Active', active:true},
+        {label:'Irrigation — Skipped Today', active:false}
+      ]);
+    } else {
+      statusDot.className = 'ldp-status-dot ok';
+      statusText.textContent = 'All Systems Nominal';
+      actionEl.textContent = 'Conditions are favorable — i-Farmate is running its full autonomous routine across the field right now.';
+      renderTasks([
+        {label:'24/7 Weeding — Active', active:true},
+        {label:'Precision Seeding — Active', active:true},
+        {label:'Crop Monitoring — Active', active:true},
+        {label:'Pest Scan — Active', active:true}
+      ]);
+    }
+  }
+
+  function renderWeather(weather, label){
+    const meta = WEATHER_CODE_MAP[weather.weathercode] || {icon:'⛅',label:'Reading…'};
+    if(locEl) locEl.textContent = label;
+    if(iconEl) iconEl.textContent = meta.icon;
+    if(tempEl) tempEl.innerHTML = Math.round(weather.temperature)+'°<span class="lwp-temp-unit">C</span>';
+    if(condEl) condEl.textContent = meta.label;
+    if(windEl) windEl.textContent = Math.round(weather.windspeed)+' km/h';
+    if(humEl) humEl.textContent = (typeof weather.humidity === 'number' ? Math.round(weather.humidity) : '--')+'%';
+    applyDecision(weather);
+  }
+
+  function fetchWeather(lat, lon, label){
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=relative_humidity_2m&timezone=auto`;
+    fetch(url).then(r=>r.json()).then(data=>{
+      const cw = data.current_weather;
+      let humidity = null;
+      if(data.hourly && data.hourly.time && data.hourly.relative_humidity_2m){
+        const idx = data.hourly.time.indexOf(cw.time.slice(0,13)+':00');
+        humidity = idx >= 0 ? data.hourly.relative_humidity_2m[idx] : data.hourly.relative_humidity_2m[0];
+      }
+      renderWeather({
+        temperature: cw.temperature,
+        windspeed: cw.windspeed,
+        weathercode: cw.weathercode,
+        humidity: humidity
+      }, label);
+    }).catch(()=>{
+      if(locEl) locEl.textContent = 'Feed unavailable';
+      if(condEl) condEl.textContent = 'Could not reach weather service';
+      statusDot.className = 'ldp-status-dot warn';
+      statusText.textContent = 'Live Feed Offline';
+      actionEl.textContent = 'i-Farmate falls back to its onboard sensor array whenever the external weather feed is unreachable.';
+      renderTasks([
+        {label:'24/7 Weeding — Active (onboard sensors)', active:true},
+        {label:'Crop Monitoring — Active', active:true}
+      ]);
+    });
+  }
+
+  if('geolocation' in navigator){
+    navigator.geolocation.getCurrentPosition(
+      pos => fetchWeather(pos.coords.latitude, pos.coords.longitude, 'Your Location'),
+      () => fetchWeather(DEFAULT_LAT, DEFAULT_LON, DEFAULT_LABEL),
+      { timeout: 4000 }
+    );
+  } else {
+    fetchWeather(DEFAULT_LAT, DEFAULT_LON, DEFAULT_LABEL);
+  }
+
+  // Refresh every 10 minutes while the tab is open
+  setInterval(()=>{
+    if('geolocation' in navigator){
+      navigator.geolocation.getCurrentPosition(
+        pos => fetchWeather(pos.coords.latitude, pos.coords.longitude, 'Your Location'),
+        () => fetchWeather(DEFAULT_LAT, DEFAULT_LON, DEFAULT_LABEL),
+        { timeout: 4000 }
+      );
+    } else {
+      fetchWeather(DEFAULT_LAT, DEFAULT_LON, DEFAULT_LABEL);
+    }
+  }, 10*60*1000);
+})();
+
+/* ══════════════════════════════════════════════════════════════
+   NEW FEATURE — ROI / SAVINGS CALCULATOR
+   ══════════════════════════════════════════════════════════════ */
+(function initRoiCalculator(){
+  const section = document.getElementById('roi');
+  if(!section) return;
+
+  const landInput   = document.getElementById('roi-land');
+  const laborInput  = document.getElementById('roi-labor');
+  const yieldInput  = document.getElementById('roi-yield');
+  const landVal     = document.getElementById('roi-land-val');
+  const laborVal    = document.getElementById('roi-labor-val');
+  const yieldVal    = document.getElementById('roi-yield-val');
+  const outLabor    = document.getElementById('roi-out-labor');
+  const outYield    = document.getElementById('roi-out-yield');
+  const outTotal    = document.getElementById('roi-out-total');
+  const barLabor    = document.getElementById('roi-bar-labor');
+  const barYield    = document.getElementById('roi-bar-yield');
+  const chartCvs    = document.getElementById('roi-chart');
+  const ctx         = chartCvs ? chartCvs.getContext('2d') : null;
+
+  const LABOR_SAVINGS_RATE = 0.60;
+  const YIELD_GAIN_RATE    = 0.40;
+
+  function formatINR(n){
+    n = Math.round(n);
+    return '₹' + n.toLocaleString('en-IN');
+  }
+
+  function animateNumber(el, from, to, duration){
+    const start = performance.now();
+    function tick(now){
+      const p = Math.min(1, (now-start)/duration);
+      const eased = 1 - Math.pow(1-p, 3);
+      const val = from + (to-from)*eased;
+      el.textContent = formatINR(val);
+      if(p < 1) requestAnimationFrame(tick);
+      else el.textContent = formatINR(to);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  function drawChart(before, after){
+    if(!ctx) return;
+    const w = chartCvs.width, h = chartCvs.height;
+    ctx.clearRect(0,0,w,h);
+    const max = Math.max(before, after) * 1.15 || 1;
+    const barW = 90, gap = 60;
+    const baseY = h - 30;
+    const chartH = h - 60;
+    const x1 = w/2 - gap/2 - barW;
+    const x2 = w/2 + gap/2;
+
+    // grid lines
+    ctx.strokeStyle = 'rgba(57,255,20,.08)';
+    ctx.lineWidth = 1;
+    for(let i=0;i<=4;i++){
+      const y = 20 + (chartH/4)*i;
+      ctx.beginPath(); ctx.moveTo(10,y); ctx.lineTo(w-10,y); ctx.stroke();
+    }
+
+    const h1 = (before/max)*chartH;
+    const h2 = (after/max)*chartH;
+
+    ctx.fillStyle = 'rgba(122,136,112,.55)';
+    ctx.fillRect(x1, baseY-h1, barW, h1);
+    const grad = ctx.createLinearGradient(0, baseY-h2, 0, baseY);
+    grad.addColorStop(0,'#39FF14');
+    grad.addColorStop(1,'rgba(57,255,20,.35)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(x2, baseY-h2, barW, h2);
+
+    ctx.fillStyle = '#F0F4EC';
+    ctx.font = '700 13px Space Grotesk, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(formatINR(before), x1+barW/2, baseY-h1-10);
+    ctx.fillText(formatINR(after), x2+barW/2, baseY-h2-10);
+
+    ctx.fillStyle = 'rgba(240,244,236,.55)';
+    ctx.font = '600 11px Inter, sans-serif';
+    ctx.fillText('Without', x1+barW/2, baseY+18);
+    ctx.fillText('With i-Farmate', x2+barW/2, baseY+18);
+  }
+
+  let prevLabor=0, prevYield=0, prevTotal=0;
+
+  function recalc(){
+    const land  = parseInt(landInput.value,10);
+    const labor = parseInt(laborInput.value,10);
+    const yld   = parseInt(yieldInput.value,10);
+
+    landVal.textContent = land + (land===1?' acre':' acres');
+    laborVal.textContent = formatINR(labor);
+    yieldVal.textContent = formatINR(yld);
+
+    const laborSaved = labor * LABOR_SAVINGS_RATE;
+    const yieldGain  = yld * YIELD_GAIN_RATE;
+    const total      = laborSaved + yieldGain;
+
+    animateNumber(outLabor, prevLabor, laborSaved, 500);
+    animateNumber(outYield, prevYield, yieldGain, 500);
+    animateNumber(outTotal, prevTotal, total, 600);
+
+    requestAnimationFrame(()=>{
+      barLabor.style.width = Math.min(100, LABOR_SAVINGS_RATE*100) + '%';
+      barYield.style.width = Math.min(100, YIELD_GAIN_RATE*100) + '%';
+    });
+
+    const before = labor + yld;
+    const after  = (labor - laborSaved) + (yld + yieldGain);
+    drawChart(before, after);
+
+    prevLabor = laborSaved;
+    prevYield = yieldGain;
+    prevTotal = total;
+  }
+
+  [landInput, laborInput, yieldInput].forEach(inp=>{
+    if(inp) inp.addEventListener('input', recalc);
+  });
+
+  recalc();
 })();
